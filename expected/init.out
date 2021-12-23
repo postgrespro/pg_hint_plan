@@ -169,6 +169,7 @@ SELECT * FROM settings;
  geqo_seed                       | 0         | Query Tuning / Genetic Query Optimizer
  geqo_selection_bias             | 2         | Query Tuning / Genetic Query Optimizer
  geqo_threshold                  | 12        | Query Tuning / Genetic Query Optimizer
+ autoprepare_for_protocol        | all       | Query Tuning / Other Planner Options
  autoprepare_limit               | 100       | Query Tuning / Other Planner Options
  autoprepare_memory_limit        | 0         | Query Tuning / Other Planner Options
  autoprepare_threshold           | 0         | Query Tuning / Other Planner Options
@@ -213,6 +214,6 @@ SELECT * FROM settings;
  enable_sort                     | on        | Query Tuning / Planner Method Configuration
  enable_tidscan                  | on        | Query Tuning / Planner Method Configuration
  seq_scan_startup_cost_first_row | off       | Query Tuning / Planner Method Configuration
-(52 rows)
+(53 rows)
 
 ANALYZE;
