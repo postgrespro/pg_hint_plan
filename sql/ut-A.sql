@@ -69,8 +69,6 @@ EXPLAIN (COSTS false) SELECT * /*+SeqScan(t1)*/ FROM s1.t1 WHERE t1.c1 = 1;
 ----
 
 SET pg_hint_plan.enable_hint_table TO on;
--- No. A-6-1-1
-\d hint_plan.hints
 
 ----
 ---- No. A-6-2 search condition
@@ -442,14 +440,6 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 "Set SeqScan Leading" WHERE "Set SeqSc
 
 -- No. A-7-3-10
 -- No. A-9-2-10
-/*+SeqScan(あ)*/
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 あ WHERE あ.c1 = 1;
-/*+SeqScan(あいう)*/
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 あいう WHERE あいう.c1 = 1;
-/*+SeqScan("あ")*/
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 あ WHERE あ.c1 = 1;
-/*+SeqScan("あいう")*/
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 あいう WHERE あいう.c1 = 1;
 
 -- No. A-7-3-11
 -- No. A-9-2-11
@@ -977,40 +967,32 @@ EXPLAIN (COSTS false) EXECUTE p1;
 
 -- No. A-12-1-1
 -- No. A-12-2-1
-SELECT name, setting FROM settings;
 SET pg_hint_plan.parse_messages TO error;
 /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)NestLoop(t1 t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
-SELECT name, setting FROM settings;
 /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 
 -- No. A-12-1-2
 -- No. A-12-2-2
-SELECT name, setting FROM settings;
 SET pg_hint_plan.parse_messages TO error;
 /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)NestLoop(t1 t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
-SELECT name, setting FROM settings;
 EXPLAIN (COSTS false) EXECUTE p1;
 
 -- No. A-12-1-3
 -- No. A-12-2-3
-SELECT name, setting FROM settings;
 SET pg_hint_plan.parse_messages TO error;
 EXPLAIN (COSTS false) EXECUTE p2;
 /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 EXPLAIN (COSTS false) EXECUTE p1;
-SELECT name, setting FROM settings;
 
 -- No. A-12-1-4
 -- No. A-12-2-4
-SELECT name, setting FROM settings;
 SET pg_hint_plan.parse_messages TO error;
 EXPLAIN (COSTS false) EXECUTE p2;
 EXPLAIN (COSTS false) EXECUTE p1;
-SELECT name, setting FROM settings;
 
 DEALLOCATE p1;
 SET pg_hint_plan.parse_messages TO LOG;
@@ -1025,23 +1007,19 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 SET enable_indexscan TO off;
 SET enable_mergejoin TO off;
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
-SELECT name, setting FROM settings;
 /*+Set(enable_indexscan on)Set(geqo_threshold 100)IndexScan(t2)MergeJoin(t1 t2)Leading(t2 t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
-SELECT name, setting FROM settings;
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 
 -- No. A-12-3-2
 SET enable_indexscan TO off;
 SET enable_mergejoin TO off;
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
-SELECT name, setting FROM settings;
 BEGIN;
 /*+Set(enable_indexscan on)Set(geqo_threshold 100)IndexScan(t2)MergeJoin(t1 t2)Leading(t2 t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 COMMIT;
 BEGIN;
-SELECT name, setting FROM settings;
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 COMMIT;
 
@@ -1049,14 +1027,12 @@ COMMIT;
 SET enable_indexscan TO off;
 SET enable_mergejoin TO off;
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
-SELECT name, setting FROM settings;
 /*+Set(enable_indexscan on)Set(geqo_threshold 100)IndexScan(t2)MergeJoin(t1 t2)Leading(t2 t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 \connect
 SET enable_indexscan TO off;
 SET enable_mergejoin TO off;
 LOAD 'pg_hint_plan';
-SELECT name, setting FROM settings;
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 
 SET pg_hint_plan.enable_hint TO on;

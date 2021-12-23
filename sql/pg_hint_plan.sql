@@ -1049,84 +1049,49 @@ SELECT val::int FROM p2 WHERE id < 1000;
 -- Rows hint tests
 --
 -- Explain result includes "Planning time" if COSTS is enabled, but
--- this test needs it enabled for get rows count. So do tests via psql
--- and grep -v the mutable line.
+-- this test needs it enabled for get rows count.
 
 -- Parse error check
 /*+ Rows() */ SELECT 1;
 /*+ Rows(x) */ SELECT 1;
 
 -- value types
-\o results/pg_hint_plan.tmpout
 EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 #99) */
 EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 +99) */
 EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 -99) */
 EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 *99) */
 EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 *0.01) */
 EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 #aa) */
 EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id); -- ERROR
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 /99) */
 EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id); -- ERROR
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
 
 -- round up to 1
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 -99999) */
 EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
 
 -- complex join tree
-\o results/pg_hint_plan.tmpout
 EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id) JOIN t3 ON (t3.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 #22) */
 EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id) JOIN t3 ON (t3.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t3 *10) */
 EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id) JOIN t3 ON (t3.id = t2.id);
-\o
+
 set max_parallel_workers_per_gather to DEFAULT;
 \! sql/maskout.sh results/pg_hint_plan.tmpout
 \! rm results/pg_hint_plan.tmpout

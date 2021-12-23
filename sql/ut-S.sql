@@ -655,7 +655,6 @@ EXPLAIN (COSTS false) SELECT c2 FROM s1.ti1 WHERE ti1.c2 >= 1;
 ---- No. S-3-4 index type
 ----
 
-\d s1.ti1
 EXPLAIN (COSTS false) SELECT * FROM s1.ti1 WHERE c1 < 100 AND c2 = 1 AND lower(c4) = '1' AND to_tsvector('english', c4) @@ 'a & b' AND ctid = '(1,1)';
 
 -- No. S-3-4-1
@@ -806,26 +805,33 @@ EXPLAIN (COSTS false) SELECT c2 FROM s1.ti1 WHERE c2 >= 1;
 ----
 
 -- No. S-3-5-1
-\! psql contrib_regression -c "/*+IndexScan(ti1 ti1_pred)*/ EXPLAIN (COSTS true) SELECT * FROM s1.ti1 WHERE c1 = 100" | grep -v "Planning time:"
+/*+IndexScan(ti1 ti1_pred)*/
+EXPLAIN (COSTS true, SUMMARY false) SELECT * FROM s1.ti1 WHERE c1 = 100;
 
 -- No. S-3-5-2
-\! psql contrib_regression -c "/*+BitmapScan(ti1 ti1_pred)*/ EXPLAIN (COSTS true) SELECT * FROM s1.ti1 WHERE c1 = 100" | grep -v "Planning time:"
+/*+BitmapScan(ti1 ti1_pred)*/
+EXPLAIN (COSTS true, SUMMARY false) SELECT * FROM s1.ti1 WHERE c1 = 100;
 
 -- No. S-3-5-3
-\! psql contrib_regression -c "/*+IndexOnlyScan(ti1 ti1_pred)*/ EXPLAIN (COSTS true) SELECT c1 FROM s1.ti1 WHERE c1 = 100" | grep -v "Planning time:"
+/*+IndexOnlyScan(ti1 ti1_pred)*/
+EXPLAIN (COSTS true, SUMMARY false) SELECT c1 FROM s1.ti1 WHERE c1 = 100;
 
 -- No. S-3-5-4
-\! psql contrib_regression -c "/*+IndexScan(ti1 not_exist)*/ EXPLAIN (COSTS true) SELECT * FROM s1.ti1 WHERE c1 = 100" | grep -v "Planning time:"
+/*+IndexScan(ti1 not_exist)*/
+EXPLAIN (COSTS true, SUMMARY false) SELECT * FROM s1.ti1 WHERE c1 = 100;
 
 -- No. S-3-5-5
-\! psql contrib_regression -c "/*+BitmapScan(ti1 not_exist)*/ EXPLAIN (COSTS true) SELECT * FROM s1.ti1 WHERE c1 = 100" | grep -v "Planning time:"
+/*+BitmapScan(ti1 not_exist)*/
+EXPLAIN (COSTS true, SUMMARY false) SELECT * FROM s1.ti1 WHERE c1 = 100;
 
 -- No. S-3-5-6
-\! psql contrib_regression -c "/*+IndexOnlyScan(ti1 not_exist)*/ EXPLAIN (COSTS true) SELECT c1 FROM s1.ti1 WHERE c1 = 100" | grep -v "Planning time:"
+/*+IndexOnlyScan(ti1 not_exist)*/
+EXPLAIN (COSTS true, SUMMARY false) SELECT c1 FROM s1.ti1 WHERE c1 = 100;
 
 -- No. S-3-5-7
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
-\! psql contrib_regression -c "/*+TidScan(t1)*/ EXPLAIN (COSTS true) SELECT * FROM s1.t1 WHERE t1.c1 = 1" | grep -v "Planning time:"
+/*+TidScan(t1)*/
+EXPLAIN (COSTS true, SUMMARY false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 
 ----
 ---- No. S-3-6 query structure
@@ -850,7 +856,7 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1 AND t1.ctid
 ----
 
 -- No. S-3-7-1
-EXPLAIN (COSTS false) 
+EXPLAIN (COSTS false)
 WITH c1 (c1) AS (
 SELECT max(b1t1.c1) FROM s1.t1 b1t1 WHERE b1t1.c1 = 1)
 SELECT max(b3t1.c1), (
@@ -859,7 +865,7 @@ SELECT max(b2t1.c1) FROM s1.t1 b2t1 WHERE b2t1.c1 = 1
 SELECT max(b4t1.c1) FROM s1.t1 b4t1 WHERE b4t1.c1 = 1);
 /*+SeqScan(b1t1)IndexScan(b2t1 t1_pkey)BitmapScan(b3t1 t1_pkey)TidScan(b4t1)
 */
-EXPLAIN (COSTS false) 
+EXPLAIN (COSTS false)
 WITH c1 (c1) AS (
 SELECT max(b1t1.c1) FROM s1.t1 b1t1 WHERE b1t1.c1 = 1)
 SELECT max(b3t1.c1), (
@@ -868,7 +874,7 @@ SELECT max(b2t1.c1) FROM s1.t1 b2t1 WHERE b2t1.c1 = 1
 SELECT max(b4t1.c1) FROM s1.t1 b4t1 WHERE b4t1.c1 = 1);
 
 -- No. S-3-7-2
-EXPLAIN (COSTS false) 
+EXPLAIN (COSTS false)
 WITH cte1 (c1) AS (
 SELECT max(b1t1.c1) FROM s1.t1 b1t1 JOIN s1.t2 b1t2 ON(b1t1.c1 = b1t2.c1) WHERE b1t1.c1 = 1)
 SELECT max(b3t1.c1), (
@@ -878,7 +884,7 @@ SELECT max(b4t1.c1) FROM s1.t1 b4t1 JOIN s1.t2 b4t2 ON(b4t1.c1 = b4t2.c1) WHERE 
 /*+SeqScan(b1t1)IndexScan(b2t1 t1_pkey)BitmapScan(b3t1 t1_pkey)TidScan(b4t1)
 TidScan(b1t2)SeqScan(b2t2)IndexScan(b3t2 t2_pkey)BitmapScan(b4t2 t2_pkey)
 */
-EXPLAIN (COSTS false) 
+EXPLAIN (COSTS false)
 WITH cte1 (c1) AS (
 SELECT max(b1t1.c1) FROM s1.t1 b1t1 JOIN s1.t2 b1t2 ON(b1t1.c1 = b1t2.c1) WHERE b1t1.c1 = 1)
 SELECT max(b3t1.c1), (
@@ -887,7 +893,7 @@ SELECT max(b2t1.c1) FROM s1.t1 b2t1 JOIN s1.t2 b2t2 ON(b2t1.c1 = b2t2.c1) WHERE 
 SELECT max(b4t1.c1) FROM s1.t1 b4t1 JOIN s1.t2 b4t2 ON(b4t1.c1 = b4t2.c1) WHERE b4t1.c1 = 1);
 
 -- No. S-3-7-3
-EXPLAIN (COSTS false) 
+EXPLAIN (COSTS false)
 WITH cte1 (c1) AS (
 SELECT max(b1t1.c1) FROM s1.t1 b1t1 JOIN s1.t2 b1t2 ON(b1t1.c1 = b1t2.c1) WHERE b1t1.c1 = 1)
 SELECT max(b3t1.c1), (
@@ -897,7 +903,7 @@ SELECT max(b4t1.c1) FROM s1.t1 b4t1 WHERE b4t1.c1 = 1);
 /*+SeqScan(b1t1)IndexScan(b2t1 t1_pkey)BitmapScan(b3t1 t1_pkey)TidScan(b4t1)
 TidScan(b1t2)IndexScan(b3t2 t2_pkey)
 */
-EXPLAIN (COSTS false) 
+EXPLAIN (COSTS false)
 WITH cte1 (c1) AS (
 SELECT max(b1t1.c1) FROM s1.t1 b1t1 JOIN s1.t2 b1t2 ON(b1t1.c1 = b1t2.c1) WHERE b1t1.c1 = 1)
 SELECT max(b3t1.c1), (
@@ -962,28 +968,16 @@ EXPLAIN (COSTS false) SELECT * FROM s1.p2 WHERE c1 = 1;
 EXPLAIN (COSTS false) SELECT * FROM s1.p2 WHERE c1 = 1;
 
 -- No. S-3-10-3
-\o results/ut-S.tmpout
-EXPLAIN SELECT c4 FROM s1.p1 WHERE c2 * 2 < 100 AND c1 < 10;
-\o
-\! sql/maskout.sh results/ut-S.tmpout
+EXPLAIN (COSTS false) SELECT c4 FROM s1.p1 WHERE c2 * 2 < 100 AND c1 < 10;
 
-\o results/ut-S.tmpout
-/*+IndexScan(p1 p1_parent)*/ EXPLAIN SELECT c4 FROM s1.p1 WHERE c2 * 2 < 100 AND c1 < 10;
-\o
-\! sql/maskout.sh results/ut-S.tmpout
+/*+IndexScan(p1 p1_parent)*/ EXPLAIN (COSTS false) SELECT c4 FROM s1.p1 WHERE c2 * 2 < 100 AND c1 < 10;
 
 
 -- No. S-3-10-4
-\o results/ut-S.tmpout
-/*+IndexScan(p1 p1_i2)*/ EXPLAIN SELECT c2 FROM s1.p1 WHERE c2 = 1;
-\o
-\! sql/maskout.sh results/ut-S.tmpout
+/*+IndexScan(p1 p1_i2)*/ EXPLAIN (COSTS false) SELECT c2 FROM s1.p1 WHERE c2 = 1;
 
 -- No. S-3-10-5
-\o results/ut-S.tmpout
-/*+IndexScan(p2 p2c1_pkey)*/ EXPLAIN (COSTS true) SELECT * FROM s1.p2 WHERE c1 = 1;
-\o
-\! sql/maskout.sh results/ut-S.tmpout
+/*+IndexScan(p2 p2c1_pkey)*/ EXPLAIN (COSTS false) SELECT * FROM s1.p2 WHERE c1 = 1;
 
 
 ----
@@ -1184,4 +1178,3 @@ DELETE FROM pg_db_role_setting WHERE setrole = (SELECT oid FROM pg_roles WHERE r
 
 ALTER SYSTEM SET session_preload_libraries TO DEFAULT;
 SELECT pg_reload_conf();
-\! rm results/ut-S.tmpout

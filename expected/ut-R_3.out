@@ -553,11 +553,14 @@ error hint:
 -- No. R-1-6-3
 EXPLAIN SELECT * FROM s1.ul1 t1, s1.ul1 t2 WHERE t1.c1 = t2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.ul1 t1, s1.ul1 t2 WHERE t1.c1 = t2.c1;
-                        QUERY PLAN                         
------------------------------------------------------------
- Seq Scan on ul1 t2  (cost=0.00..21.30 rows=1124 width=88)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                              QUERY PLAN                               
+-----------------------------------------------------------------------
+ Hash Join  (cost=35.42..59.70 rows=1130 width=88)
+   Hash Cond: (t1.c1 = t2.c1)
+   ->  Seq Scan on ul1 t1  (cost=0.00..21.30 rows=1130 width=44)
+   ->  Hash  (cost=21.30..21.30 rows=1130 width=44)
+         ->  Seq Scan on ul1 t2  (cost=0.00..21.30 rows=1130 width=44)
+(5 rows)
 
 /*+Rows(t1 t2 #1)*/
 EXPLAIN SELECT * FROM s1.ul1 t1, s1.ul1 t2 WHERE t1.c1 = t2.c1;
@@ -565,27 +568,33 @@ LOG:  statement: /*+Rows(t1 t2 #1)*/
 EXPLAIN SELECT * FROM s1.ul1 t1, s1.ul1 t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 Rows(t1 t2 #1)
+not used hint:
 duplication hint:
 error hint:
 
-                        QUERY PLAN                         
------------------------------------------------------------
- Seq Scan on ul1 t2  (cost=0.00..21.30 rows=1124 width=88)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                              QUERY PLAN                               
+-----------------------------------------------------------------------
+ Hash Join  (cost=35.42..59.70 rows=1 width=88)
+   Hash Cond: (t1.c1 = t2.c1)
+   ->  Seq Scan on ul1 t1  (cost=0.00..21.30 rows=1130 width=44)
+   ->  Hash  (cost=21.30..21.30 rows=1130 width=44)
+         ->  Seq Scan on ul1 t2  (cost=0.00..21.30 rows=1130 width=44)
+(5 rows)
 
 -- No. R-1-6-4
 CREATE TEMP TABLE tm1 (LIKE s1.t1 INCLUDING ALL);
 LOG:  statement: CREATE TEMP TABLE tm1 (LIKE s1.t1 INCLUDING ALL);
 EXPLAIN SELECT * FROM tm1 t1, tm1 t2 WHERE t1.c1 = t2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM tm1 t1, tm1 t2 WHERE t1.c1 = t2.c1;
-                        QUERY PLAN                         
------------------------------------------------------------
- Seq Scan on tm1 t2  (cost=0.00..21.30 rows=1124 width=88)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                              QUERY PLAN                               
+-----------------------------------------------------------------------
+ Hash Join  (cost=35.42..59.70 rows=1130 width=88)
+   Hash Cond: (t1.c1 = t2.c1)
+   ->  Seq Scan on tm1 t1  (cost=0.00..21.30 rows=1130 width=44)
+   ->  Hash  (cost=21.30..21.30 rows=1130 width=44)
+         ->  Seq Scan on tm1 t2  (cost=0.00..21.30 rows=1130 width=44)
+(5 rows)
 
 /*+Rows(t1 t2 #1)*/
 EXPLAIN SELECT * FROM tm1 t1, tm1 t2 WHERE t1.c1 = t2.c1;
@@ -593,16 +602,19 @@ LOG:  statement: /*+Rows(t1 t2 #1)*/
 EXPLAIN SELECT * FROM tm1 t1, tm1 t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 Rows(t1 t2 #1)
+not used hint:
 duplication hint:
 error hint:
 
-                        QUERY PLAN                         
------------------------------------------------------------
- Seq Scan on tm1 t2  (cost=0.00..21.30 rows=1124 width=88)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                              QUERY PLAN                               
+-----------------------------------------------------------------------
+ Hash Join  (cost=35.42..59.70 rows=1 width=88)
+   Hash Cond: (t1.c1 = t2.c1)
+   ->  Seq Scan on tm1 t1  (cost=0.00..21.30 rows=1130 width=44)
+   ->  Hash  (cost=21.30..21.30 rows=1130 width=44)
+         ->  Seq Scan on tm1 t2  (cost=0.00..21.30 rows=1130 width=44)
+(5 rows)
 
 -- No. R-1-6-5
 CREATE TEMP TABLE t_pg_class WITH OIDS AS SELECT * from pg_class LIMIT 100;
@@ -772,11 +784,14 @@ error hint:
 -- No. R-1-6-10
 EXPLAIN SELECT * FROM s1.v1 t1, s1.v1 t2 WHERE t1.c1 = t2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.v1 t1, s1.v1 t2 WHERE t1.c1 = t2.c1;
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1000 width=30)
+   Hash Cond: (v1t1.c1 = v1t1_1.c1)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 v1t1_1  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 /*+Rows(t1 t2 #1)*/
 EXPLAIN SELECT * FROM s1.v1 t1, s1.v1 t2 WHERE t1.c1 = t2.c1;
@@ -789,11 +804,14 @@ Rows(t1 t2 #1)
 duplication hint:
 error hint:
 
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1000 width=30)
+   Hash Cond: (v1t1.c1 = v1t1_1.c1)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 v1t1_1  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 /*+Rows(v1t1 v1t1_ #1)*/
 EXPLAIN SELECT * FROM s1.v1 t1, s1.v1_ t2 WHERE t1.c1 = t2.c1;
@@ -801,16 +819,19 @@ LOG:  statement: /*+Rows(v1t1 v1t1_ #1)*/
 EXPLAIN SELECT * FROM s1.v1 t1, s1.v1_ t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 Rows(v1t1 v1t1_ #1)
+not used hint:
 duplication hint:
 error hint:
 
-                         QUERY PLAN                          
--------------------------------------------------------------
- Seq Scan on t1 v1t1_  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                               QUERY PLAN                                
+-------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1 width=30)
+   Hash Cond: (v1t1.c1 = v1t1_.c1)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 v1t1_  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 -- No. R-1-6-11
 EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1 AND t1.c1 = (SELECT max(st1.c1) FROM s1.t1 st1, s1.t2 st2 WHERE st1.c1 = st2.c1);
@@ -1070,7 +1091,7 @@ error hint:
    InitPlan 2 (returns $3)
      ->  Aggregate  (cost=342.85..342.86 rows=1 width=4)
            ->  Nested Loop  (cost=28.95..342.60 rows=100 width=4)
-                 ->  Hash Join  (cost=28.80..170.63 rows=1000 width=12)
+                 ->  Hash Join  (cost=28.81..170.63 rows=1000 width=12)
                        Hash Cond: (b2t3.c1 = b2t1.c1)
                        ->  Merge Join  (cost=0.30..139.16 rows=1130 width=8)
                              Merge Cond: (b2t3.c1 = b2t4.c1)
@@ -1290,7 +1311,7 @@ error hint:
    InitPlan 2 (returns $3)
      ->  Aggregate  (cost=342.85..342.86 rows=1 width=4)
            ->  Nested Loop  (cost=28.95..342.60 rows=100 width=4)
-                 ->  Hash Join  (cost=28.80..170.63 rows=1000 width=12)
+                 ->  Hash Join  (cost=28.81..170.63 rows=1000 width=12)
                        Hash Cond: (b2t3.c1 = b2t1.c1)
                        ->  Merge Join  (cost=0.30..139.16 rows=1130 width=8)
                              Merge Cond: (b2t3.c1 = b2t4.c1)
@@ -1685,7 +1706,7 @@ error hint:
    InitPlan 2 (returns $3)
      ->  Aggregate  (cost=342.85..342.86 rows=1 width=4)
            ->  Nested Loop  (cost=28.95..342.60 rows=100 width=4)
-                 ->  Hash Join  (cost=28.80..170.63 rows=1000 width=12)
+                 ->  Hash Join  (cost=28.81..170.63 rows=1000 width=12)
                        Hash Cond: (b2t3.c1 = b2t1.c1)
                        ->  Merge Join  (cost=0.30..139.16 rows=1130 width=8)
                              Merge Cond: (b2t3.c1 = b2t4.c1)
@@ -1909,7 +1930,7 @@ error hint:
    InitPlan 2 (returns $3)
      ->  Aggregate  (cost=342.85..342.86 rows=1 width=4)
            ->  Nested Loop  (cost=28.95..342.60 rows=100 width=4)
-                 ->  Hash Join  (cost=28.80..170.63 rows=1000 width=12)
+                 ->  Hash Join  (cost=28.81..170.63 rows=1000 width=12)
                        Hash Cond: (b2t3.c1 = b2t1.c1)
                        ->  Merge Join  (cost=0.30..139.16 rows=1130 width=8)
                              Merge Cond: (b2t3.c1 = b2t4.c1)
@@ -2176,7 +2197,7 @@ error hint:
    CTE c2
      ->  Aggregate  (cost=342.85..342.86 rows=1 width=4)
            ->  Nested Loop  (cost=28.95..342.60 rows=100 width=4)
-                 ->  Hash Join  (cost=28.80..170.63 rows=1000 width=12)
+                 ->  Hash Join  (cost=28.81..170.63 rows=1000 width=12)
                        Hash Cond: (b2t3.c1 = b2t1.c1)
                        ->  Merge Join  (cost=0.30..139.16 rows=1130 width=8)
                              Merge Cond: (b2t3.c1 = b2t4.c1)
@@ -2447,7 +2468,7 @@ error hint:
    CTE c2
      ->  Aggregate  (cost=342.85..342.86 rows=1 width=4)
            ->  Nested Loop  (cost=28.95..342.60 rows=100 width=4)
-                 ->  Hash Join  (cost=28.80..170.63 rows=1000 width=12)
+                 ->  Hash Join  (cost=28.81..170.63 rows=1000 width=12)
                        Hash Cond: (b2t3.c1 = b2t1.c1)
                        ->  Merge Join  (cost=0.30..139.16 rows=1130 width=8)
                              Merge Cond: (b2t3.c1 = b2t4.c1)
@@ -3607,12 +3628,12 @@ error hint:
          Join Filter: (t1.c1 = t4.c1)
          ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
                Join Filter: (t1.c1 = t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.59..14.39 rows=1 width=8)
                      Merge Cond: (t1.c1 = t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r1  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r1  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
                      ->  Sort  (cost=2.26..2.26 rows=1 width=4)
                            Sort Key: t2.c1
@@ -3669,7 +3690,7 @@ error hint:
                      ->  Nested Loop  (cost=0.00..28.20 rows=2 width=4)
                            ->  Tid Scan on t1  (cost=0.00..4.01 rows=1 width=4)
                                  TID Cond: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r1  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r1  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
 (18 rows)
 
@@ -3695,12 +3716,12 @@ error hint:
          Join Filter: (b1t1.c1 = b1t4.c1)
          ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
                Join Filter: (b1t1.c1 = b1t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.59..14.39 rows=1 width=8)
                      Merge Cond: (b1t1.c1 = b1t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1 b1t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r1_  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r1_  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
                      ->  Sort  (cost=2.26..2.26 rows=1 width=4)
                            Sort Key: b1t2.c1
@@ -3757,7 +3778,7 @@ error hint:
                      ->  Nested Loop  (cost=0.00..28.20 rows=2 width=4)
                            ->  Tid Scan on t1 b1t1  (cost=0.00..4.01 rows=1 width=4)
                                  TID Cond: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r1_  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r1_  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
 (18 rows)
 
@@ -3791,12 +3812,12 @@ error hint:
          Join Filter: (t1.c1 = t4.c1)
          ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
                Join Filter: (t1.c1 = t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.59..14.39 rows=1 width=8)
                      Merge Cond: (t1.c1 = t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r2  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r2  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
                      ->  Sort  (cost=2.26..2.26 rows=1 width=4)
                            Sort Key: t2.c1
@@ -3812,12 +3833,12 @@ error hint:
          Join Filter: (t1.c1 = t4.c1)
          ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
                Join Filter: (t1.c1 = t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.59..14.39 rows=1 width=8)
                      Merge Cond: (t1.c1 = t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r2  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r2  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
                      ->  Sort  (cost=2.26..2.26 rows=1 width=4)
                            Sort Key: t2.c1
@@ -3885,7 +3906,7 @@ error hint:
                      ->  Nested Loop  (cost=0.00..28.20 rows=2 width=4)
                            ->  Tid Scan on t1  (cost=0.00..4.01 rows=1 width=4)
                                  TID Cond: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r2  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r2  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
  
  Aggregate  (cost=38.55..38.56 rows=1 width=4)
@@ -3904,7 +3925,7 @@ error hint:
                      ->  Nested Loop  (cost=0.00..28.20 rows=2 width=4)
                            ->  Tid Scan on t1  (cost=0.00..4.01 rows=1 width=4)
                                  TID Cond: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r2  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r2  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
 (37 rows)
 
@@ -3941,12 +3962,12 @@ error hint:
          Join Filter: (b1t1.c1 = b1t4.c1)
          ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
                Join Filter: (b1t1.c1 = b1t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.59..14.39 rows=1 width=8)
                      Merge Cond: (b1t1.c1 = b1t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1 b1t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r2_  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r2_  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
                      ->  Sort  (cost=2.26..2.26 rows=1 width=4)
                            Sort Key: b1t2.c1
@@ -3962,12 +3983,12 @@ error hint:
          Join Filter: (b2t1.c1 = b2t4.c1)
          ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
                Join Filter: (b2t1.c1 = b2t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.59..14.39 rows=1 width=8)
                      Merge Cond: (b2t1.c1 = b2t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1 b2t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r2_  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r2_  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
                      ->  Sort  (cost=2.26..2.26 rows=1 width=4)
                            Sort Key: b2t2.c1
@@ -4055,7 +4076,7 @@ error hint:
                      ->  Nested Loop  (cost=0.00..28.20 rows=2 width=4)
                            ->  Tid Scan on t1 b1t1  (cost=0.00..4.01 rows=1 width=4)
                                  TID Cond: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r2_  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r2_  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
  
  Aggregate  (cost=38.55..38.56 rows=1 width=4)
@@ -4074,7 +4095,7 @@ error hint:
                      ->  Nested Loop  (cost=0.00..28.20 rows=2 width=4)
                            ->  Tid Scan on t1 b2t1  (cost=0.00..4.01 rows=1 width=4)
                                  TID Cond: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r2_  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r2_  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
 (37 rows)
 
@@ -4115,12 +4136,12 @@ error hint:
          Join Filter: (t1.c1 = t4.c1)
          ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
                Join Filter: (t1.c1 = t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.59..14.39 rows=1 width=8)
                      Merge Cond: (t1.c1 = t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r3  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r3  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
                      ->  Sort  (cost=2.26..2.26 rows=1 width=4)
                            Sort Key: t2.c1
@@ -4136,12 +4157,12 @@ error hint:
          Join Filter: (t1.c1 = t4.c1)
          ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
                Join Filter: (t1.c1 = t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.59..14.39 rows=1 width=8)
                      Merge Cond: (t1.c1 = t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r3  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r3  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
                      ->  Sort  (cost=2.26..2.26 rows=1 width=4)
                            Sort Key: t2.c1
@@ -4157,12 +4178,12 @@ error hint:
          Join Filter: (t1.c1 = t4.c1)
          ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
                Join Filter: (t1.c1 = t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.59..14.39 rows=1 width=8)
                      Merge Cond: (t1.c1 = t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r3  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r3  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
                      ->  Sort  (cost=2.26..2.26 rows=1 width=4)
                            Sort Key: t2.c1
@@ -4241,7 +4262,7 @@ error hint:
                      ->  Nested Loop  (cost=0.00..28.20 rows=2 width=4)
                            ->  Tid Scan on t1  (cost=0.00..4.01 rows=1 width=4)
                                  TID Cond: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r3  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r3  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
  
  Aggregate  (cost=38.55..38.56 rows=1 width=4)
@@ -4260,7 +4281,7 @@ error hint:
                      ->  Nested Loop  (cost=0.00..28.20 rows=2 width=4)
                            ->  Tid Scan on t1  (cost=0.00..4.01 rows=1 width=4)
                                  TID Cond: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r3  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r3  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
  
  Aggregate  (cost=38.55..38.56 rows=1 width=4)
@@ -4279,7 +4300,7 @@ error hint:
                      ->  Nested Loop  (cost=0.00..28.20 rows=2 width=4)
                            ->  Tid Scan on t1  (cost=0.00..4.01 rows=1 width=4)
                                  TID Cond: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r3  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r3  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
 (56 rows)
 
@@ -4329,12 +4350,12 @@ error hint:
          Join Filter: (b1t1.c1 = b1t4.c1)
          ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
                Join Filter: (b1t1.c1 = b1t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.59..14.39 rows=1 width=8)
                      Merge Cond: (b1t1.c1 = b1t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1 b1t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r3_  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r3_  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
                      ->  Sort  (cost=2.26..2.26 rows=1 width=4)
                            Sort Key: b1t2.c1
@@ -4350,12 +4371,12 @@ error hint:
          Join Filter: (b2t1.c1 = b2t4.c1)
          ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
                Join Filter: (b2t1.c1 = b2t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.59..14.39 rows=1 width=8)
                      Merge Cond: (b2t1.c1 = b2t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1 b2t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r3_  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r3_  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
                      ->  Sort  (cost=2.26..2.26 rows=1 width=4)
                            Sort Key: b2t2.c1
@@ -4371,12 +4392,12 @@ error hint:
          Join Filter: (b3t1.c1 = b3t4.c1)
          ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
                Join Filter: (b3t1.c1 = b3t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.59..14.39 rows=1 width=8)
                      Merge Cond: (b3t1.c1 = b3t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1 b3t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r3_  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r3_  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
                      ->  Sort  (cost=2.26..2.26 rows=1 width=4)
                            Sort Key: b3t2.c1
@@ -4505,7 +4526,7 @@ error hint:
                      ->  Nested Loop  (cost=0.00..28.20 rows=2 width=4)
                            ->  Tid Scan on t1 b1t1  (cost=0.00..4.01 rows=1 width=4)
                                  TID Cond: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r3_  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r3_  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
  
  Aggregate  (cost=38.55..38.56 rows=1 width=4)
@@ -4524,7 +4545,7 @@ error hint:
                      ->  Nested Loop  (cost=0.00..28.20 rows=2 width=4)
                            ->  Tid Scan on t1 b2t1  (cost=0.00..4.01 rows=1 width=4)
                                  TID Cond: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r3_  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r3_  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
  
  Aggregate  (cost=38.55..38.56 rows=1 width=4)
@@ -4543,7 +4564,7 @@ error hint:
                      ->  Nested Loop  (cost=0.00..28.20 rows=2 width=4)
                            ->  Tid Scan on t1 b3t1  (cost=0.00..4.01 rows=1 width=4)
                                  TID Cond: (ctid = '(1,1)'::tid)
-                           ->  Seq Scan on r3_  (cost=0.00..24.12 rows=6 width=0)
+                           ->  Seq Scan on r3_  (cost=0.00..24.13 rows=6 width=0)
                                  Filter: (c1 = 1)
 (56 rows)
 
@@ -4552,36 +4573,48 @@ error hint:
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1 v2 WHERE v1.c1 = v2.c1;
 LOG:  statement: /*+HashJoin(v1t1 v1t1)*/
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1 v2 WHERE v1.c1 = v2.c1;
+INFO:  pg_hint_plan: hint syntax error at or near "HashJoin(v1t1 v1t1)"
+DETAIL:  Relation name "v1t1" is ambiguous.
 LOG:  pg_hint_plan:
 used hint:
 not used hint:
-HashJoin(v1t1 v1t1)
 duplication hint:
 error hint:
+HashJoin(v1t1 v1t1)
 
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1000 width=30)
+   Hash Cond: (v1t1.c1 = v1t1_1.c1)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 v1t1_1  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 /*+HashJoin(v1t1 v1t1)Rows(v1t1 v1t1 #1)*/
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1 v2 WHERE v1.c1 = v2.c1;
 LOG:  statement: /*+HashJoin(v1t1 v1t1)Rows(v1t1 v1t1 #1)*/
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1 v2 WHERE v1.c1 = v2.c1;
+INFO:  pg_hint_plan: hint syntax error at or near "HashJoin(v1t1 v1t1)Rows(v1t1 v1t1 #1)"
+DETAIL:  Relation name "v1t1" is ambiguous.
+INFO:  pg_hint_plan: hint syntax error at or near "Rows(v1t1 v1t1 #1)"
+DETAIL:  Relation name "v1t1" is ambiguous.
 LOG:  pg_hint_plan:
 used hint:
 not used hint:
-HashJoin(v1t1 v1t1)
-Rows(v1t1 v1t1 #1)
 duplication hint:
 error hint:
+HashJoin(v1t1 v1t1)
+Rows(v1t1 v1t1 #1)
 
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1000 width=30)
+   Hash Cond: (v1t1.c1 = v1t1_1.c1)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 v1t1_1  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 -- No. R-2-3-5
 /*+NestLoop(v1t1 v1t1_)*/
@@ -4590,16 +4623,18 @@ LOG:  statement: /*+NestLoop(v1t1 v1t1_)*/
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1_ v2 WHERE v1.c1 = v2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 NestLoop(v1t1 v1t1_)
+not used hint:
 duplication hint:
 error hint:
 
-                         QUERY PLAN                          
--------------------------------------------------------------
- Seq Scan on t1 v1t1_  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                 QUERY PLAN                                  
+-----------------------------------------------------------------------------
+ Nested Loop  (cost=0.28..352.44 rows=1000 width=30)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Index Scan using t1_i1 on t1 v1t1_  (cost=0.28..0.34 rows=1 width=15)
+         Index Cond: (c1 = v1t1.c1)
+(4 rows)
 
 /*+NestLoop(v1t1 v1t1_)Rows(v1t1 v1t1_ #1)*/
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1_ v2 WHERE v1.c1 = v2.c1;
@@ -4607,17 +4642,19 @@ LOG:  statement: /*+NestLoop(v1t1 v1t1_)Rows(v1t1 v1t1_ #1)*/
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1_ v2 WHERE v1.c1 = v2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 NestLoop(v1t1 v1t1_)
 Rows(v1t1 v1t1_ #1)
+not used hint:
 duplication hint:
 error hint:
 
-                         QUERY PLAN                          
--------------------------------------------------------------
- Seq Scan on t1 v1t1_  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                 QUERY PLAN                                  
+-----------------------------------------------------------------------------
+ Nested Loop  (cost=0.28..352.44 rows=1 width=30)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Index Scan using t1_i1 on t1 v1t1_  (cost=0.28..0.34 rows=1 width=15)
+         Index Cond: (c1 = v1t1.c1)
+(4 rows)
 
 -- No. R-2-3-6
 /*+RowsHashJoin(r4t1 r4t1)*/
@@ -4626,11 +4663,14 @@ LOG:  statement: /*+RowsHashJoin(r4t1 r4t1)*/
 EXPLAIN SELECT * FROM s1.r4 t1, s1.r4 t2 WHERE t1.c1 = t2.c1;
 INFO:  pg_hint_plan: hint syntax error at or near "RowsHashJoin(r4t1 r4t1)"
 DETAIL:  Unrecognized hint keyword "RowsHashJoin".
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 r4t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1000 width=30)
+   Hash Cond: (r4t1.c1 = r4t1_1.c1)
+   ->  Seq Scan on t1 r4t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 r4t1_1  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 /*+RowsHashJoin(r4t1 r4t1)Rows(r4t1 r4t1 #1)*/
 EXPLAIN SELECT * FROM s1.r4 t1, s1.r4 t2 WHERE t1.c1 = t2.c1;
@@ -4638,11 +4678,14 @@ LOG:  statement: /*+RowsHashJoin(r4t1 r4t1)Rows(r4t1 r4t1 #1)*/
 EXPLAIN SELECT * FROM s1.r4 t1, s1.r4 t2 WHERE t1.c1 = t2.c1;
 INFO:  pg_hint_plan: hint syntax error at or near "RowsHashJoin(r4t1 r4t1)Rows(r4t1 r4t1 #1)"
 DETAIL:  Unrecognized hint keyword "RowsHashJoin".
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 r4t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1000 width=30)
+   Hash Cond: (r4t1.c1 = r4t1_1.c1)
+   ->  Seq Scan on t1 r4t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 r4t1_1  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 -- No. R-2-3-7
 /*+NestLoop(r4t1 r5t1)*/
@@ -4651,16 +4694,18 @@ LOG:  statement: /*+NestLoop(r4t1 r5t1)*/
 EXPLAIN SELECT * FROM s1.r4 t1, s1.r5 t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 NestLoop(r4t1 r5t1)
+not used hint:
 duplication hint:
 error hint:
 
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 r5t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                 QUERY PLAN                                 
+----------------------------------------------------------------------------
+ Nested Loop  (cost=0.28..352.44 rows=1000 width=30)
+   ->  Seq Scan on t1 r4t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Index Scan using t1_i1 on t1 r5t1  (cost=0.28..0.34 rows=1 width=15)
+         Index Cond: (c1 = r4t1.c1)
+(4 rows)
 
 /*+NestLoop(r4t1 r5t1)Rows(r4t1 r5t1 #1)*/
 EXPLAIN SELECT * FROM s1.r4 t1, s1.r5 t2 WHERE t1.c1 = t2.c1;
@@ -4668,17 +4713,19 @@ LOG:  statement: /*+NestLoop(r4t1 r5t1)Rows(r4t1 r5t1 #1)*/
 EXPLAIN SELECT * FROM s1.r4 t1, s1.r5 t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 NestLoop(r4t1 r5t1)
 Rows(r4t1 r5t1 #1)
+not used hint:
 duplication hint:
 error hint:
 
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 r5t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                 QUERY PLAN                                 
+----------------------------------------------------------------------------
+ Nested Loop  (cost=0.28..352.44 rows=1 width=30)
+   ->  Seq Scan on t1 r4t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Index Scan using t1_i1 on t1 r5t1  (cost=0.28..0.34 rows=1 width=15)
+         Index Cond: (c1 = r4t1.c1)
+(4 rows)
 
 ----
 ---- No. R-2-4 VALUES clause

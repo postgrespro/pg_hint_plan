@@ -3,25 +3,34 @@ SET pg_hint_plan.enable_hint TO on;
 SET pg_hint_plan.debug_print TO on;
 SET client_min_messages TO LOG;
 SET search_path TO public;
+LOG:  statement: SET search_path TO public;
 ----
 ---- No.A-1-1 install
 ---- No.A-2-1 uninstall
 ----
 -- No.A-1-1-3
 CREATE EXTENSION pg_hint_plan;
+LOG:  statement: CREATE EXTENSION pg_hint_plan;
 -- No.A-1-2-3
 DROP EXTENSION pg_hint_plan;
+LOG:  statement: DROP EXTENSION pg_hint_plan;
 -- No.A-1-1-4
 CREATE SCHEMA other_schema;
+LOG:  statement: CREATE SCHEMA other_schema;
 CREATE EXTENSION pg_hint_plan SCHEMA other_schema;
+LOG:  statement: CREATE EXTENSION pg_hint_plan SCHEMA other_schema;
 ERROR:  extension "pg_hint_plan" must be installed in schema "hint_plan"
 CREATE EXTENSION pg_hint_plan;
+LOG:  statement: CREATE EXTENSION pg_hint_plan;
 DROP SCHEMA other_schema;
+LOG:  statement: DROP SCHEMA other_schema;
 ----
 ---- No. A-5-1 comment pattern
 ----
 -- No. A-5-1-1
 /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -39,6 +48,8 @@ error hint:
 -- No. A-5-1-2
 /* +SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /* +SeqScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
           QUERY PLAN          
 ------------------------------
  Index Scan using t1_i1 on t1
@@ -47,6 +58,8 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 
 -- No. A-5-1-3
 /*SeqScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
           QUERY PLAN          
 ------------------------------
@@ -57,6 +70,7 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 -- No. A-5-1-4
 --+SeqScan(t1)
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
           QUERY PLAN          
 ------------------------------
  Index Scan using t1_i1 on t1
@@ -65,6 +79,8 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 
 -- No. A-5-1-5
 /* /*+SeqScan(t1)*/  */
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /* /*+SeqScan(t1)*/  */
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
           QUERY PLAN          
 ------------------------------
@@ -77,6 +93,7 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 ----
 -- No. A-5-2-1
 EXPLAIN (COSTS false) SELECT c1 FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT c1 FROM s1.t1 WHERE t1.c1 = 1;
             QUERY PLAN             
 -----------------------------------
  Index Only Scan using t1_i1 on t1
@@ -84,6 +101,8 @@ EXPLAIN (COSTS false) SELECT c1 FROM s1.t1 WHERE t1.c1 = 1;
 (2 rows)
 
 /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) SELECT c1 FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT c1 FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -100,6 +119,7 @@ error hint:
 
 -- No. A-5-2-2
 EXPLAIN (COSTS false) SELECT c1, c2 AS c_2 /*+SeqScan(t1)*/ FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT c1, c2 AS c_2 /*+SeqScan(t1)*/ FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -115,6 +135,7 @@ error hint:
 
 -- No. A-5-2-3
 EXPLAIN (COSTS false) SELECT c1 AS "c1"/*+SeqScan(t1)*/ FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT c1 AS "c1"/*+SeqScan(t1)*/ FROM s1.t1 WHERE t1.c1 = 1;
             QUERY PLAN             
 -----------------------------------
  Index Only Scan using t1_i1 on t1
@@ -123,6 +144,7 @@ EXPLAIN (COSTS false) SELECT c1 AS "c1"/*+SeqScan(t1)*/ FROM s1.t1 WHERE t1.c1 =
 
 -- No. A-5-2-4
 EXPLAIN (COSTS false) SELECT * /*+SeqScan(t1)*/ FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * /*+SeqScan(t1)*/ FROM s1.t1 WHERE t1.c1 = 1;
           QUERY PLAN          
 ------------------------------
  Index Scan using t1_i1 on t1
@@ -133,23 +155,12 @@ EXPLAIN (COSTS false) SELECT * /*+SeqScan(t1)*/ FROM s1.t1 WHERE t1.c1 = 1;
 ---- No. A-6-1 hint's table definition
 ----
 SET pg_hint_plan.enable_hint_table TO on;
--- No. A-6-1-1
-\d hint_plan.hints
-                                     Table "hint_plan.hints"
-      Column       |  Type   | Collation | Nullable |                   Default                   
--------------------+---------+-----------+----------+---------------------------------------------
- id                | integer |           | not null | nextval('hint_plan.hints_id_seq'::regclass)
- norm_query_string | text    |           | not null | 
- application_name  | text    |           | not null | 
- hints             | text    |           | not null | 
-Indexes:
-    "hints_pkey" PRIMARY KEY, btree (id)
-    "hints_norm_and_app" UNIQUE, btree (norm_query_string, application_name)
-
+LOG:  statement: SET pg_hint_plan.enable_hint_table TO on;
 ----
 ---- No. A-6-2 search condition
 ----
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
           QUERY PLAN          
 ------------------------------
  Index Scan using t1_i1 on t1
@@ -162,7 +173,13 @@ INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
 	'EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = ?;',
 	'',
 	'SeqScan(t1)');
+LOG:  statement: INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
+	VALUES (
+	'EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = ?;',
+	'',
+	'SeqScan(t1)');
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -182,7 +199,13 @@ INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
 	'EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = ?;',
 	'psql',
 	'BitmapScan(t1)');
+LOG:  statement: INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
+	VALUES (
+	'EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = ?;',
+	'psql',
+	'BitmapScan(t1)');
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -197,6 +220,7 @@ error hint:
 (2 rows)
 
 TRUNCATE hint_plan.hints;
+LOG:  statement: TRUNCATE hint_plan.hints;
 -- No. A-6-2-3
 INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
 	VALUES (
@@ -204,7 +228,14 @@ INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
 	'dummy_application_name',
 	'SeqScan(t1)'
 );
+LOG:  statement: INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
+	VALUES (
+	'EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = ?;',
+	'dummy_application_name',
+	'SeqScan(t1)'
+);
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
           QUERY PLAN          
 ------------------------------
  Index Scan using t1_i1 on t1
@@ -212,6 +243,7 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 (2 rows)
 
 TRUNCATE hint_plan.hints;
+LOG:  statement: TRUNCATE hint_plan.hints;
 -- No. A-6-2-4
 INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
 	VALUES (
@@ -219,7 +251,14 @@ INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
 	'',
 	'SeqScan(t1)'
 );
+LOG:  statement: INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
+	VALUES (
+	'EXPLAIN (COSTS false) SELECT * FROM s1.t1;',
+	'',
+	'SeqScan(t1)'
+);
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
           QUERY PLAN          
 ------------------------------
  Index Scan using t1_i1 on t1
@@ -227,6 +266,7 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 (2 rows)
 
 TRUNCATE hint_plan.hints;
+LOG:  statement: TRUNCATE hint_plan.hints;
 ----
 ---- No. A-6-3 number of constant
 ----
@@ -237,7 +277,14 @@ INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
 	'',
 	'SeqScan(t1)'
 );
+LOG:  statement: INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
+	VALUES (
+	'EXPLAIN (COSTS false) SELECT c1 FROM s1.t1;',
+	'',
+	'SeqScan(t1)'
+);
 EXPLAIN (COSTS false) SELECT c1 FROM s1.t1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT c1 FROM s1.t1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -251,6 +298,7 @@ error hint:
 (1 row)
 
 TRUNCATE hint_plan.hints;
+LOG:  statement: TRUNCATE hint_plan.hints;
 -- No. A-6-3-2
 INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
 	VALUES (
@@ -258,7 +306,14 @@ INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
 	'',
 	'SeqScan(t1)'
 );
+LOG:  statement: INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
+	VALUES (
+	'EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = ?;',
+	'',
+	'SeqScan(t1)'
+);
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -273,6 +328,7 @@ error hint:
 (2 rows)
 
 TRUNCATE hint_plan.hints;
+LOG:  statement: TRUNCATE hint_plan.hints;
 -- No. A-6-3-3
 INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
 	VALUES (
@@ -280,7 +336,14 @@ INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
 	'',
 	'SeqScan(t1)'
 );
+LOG:  statement: INSERT INTO hint_plan.hints (norm_query_string, application_name, hints)
+	VALUES (
+	'EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = ? OR t1.c1 = ?;',
+	'',
+	'SeqScan(t1)'
+);
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1 OR t1.c1 = 0;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1 OR t1.c1 = 0;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -295,11 +358,14 @@ error hint:
 (2 rows)
 
 TRUNCATE hint_plan.hints;
+LOG:  statement: TRUNCATE hint_plan.hints;
 SET pg_hint_plan.enable_hint_table TO off;
+LOG:  statement: SET pg_hint_plan.enable_hint_table TO off;
 ----
 ---- No. A-7-2 hint delimiter
 ----
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
           QUERY PLAN          
 ------------------------------
  Index Scan using t1_i1 on t1
@@ -314,6 +380,8 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 -- No. A-7-2-6
 -- No. A-7-2-7
 /*+Set(enable_indexscan"off")Set(enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan"off")Set(enable_bitmapscan"off")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -332,6 +400,8 @@ error hint:
 -- No. A-7-2-8
 /*+ Set(enable_indexscan"off")Set(enable_bitmapscan"off")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+ Set(enable_indexscan"off")Set(enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -348,6 +418,8 @@ error hint:
 
 -- No. A-7-2-9
 /*+Set(enable_indexscan"off")Set(enable_bitmapscan"off") */
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan"off")Set(enable_bitmapscan"off") */
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -366,6 +438,8 @@ error hint:
 -- No. A-7-2-10
 /*+ Set (enable_indexscan"off") Set (enable_bitmapscan"off")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+ Set (enable_indexscan"off") Set (enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -382,6 +456,8 @@ error hint:
 
 -- No. A-7-2-11
 /*+Set ( enable_indexscan"off")Set ( enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set ( enable_indexscan"off")Set ( enable_bitmapscan"off")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -400,6 +476,8 @@ error hint:
 -- No. A-7-2-12
 /*+Set(enable_indexscan"off" ) Set(enable_bitmapscan"off" ) */
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan"off" ) Set(enable_bitmapscan"off" ) */
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -416,6 +494,8 @@ error hint:
 
 -- No. A-7-2-13
 /*+Set( enable_indexscan "off" )Set( enable_bitmapscan "off" )*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set( enable_indexscan "off" )Set( enable_bitmapscan "off" )*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -434,6 +514,8 @@ error hint:
 -- No. A-7-2-14
 /*+ Set ( enable_indexscan "off" ) Set ( enable_bitmapscan "off" ) */
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+ Set ( enable_indexscan "off" ) Set ( enable_bitmapscan "off" ) */
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -450,6 +532,8 @@ error hint:
 
 -- No. A-7-2-15
 /*+	Set(enable_indexscan"off")Set(enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+	Set(enable_indexscan"off")Set(enable_bitmapscan"off")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -468,6 +552,8 @@ error hint:
 -- No. A-7-2-16
 /*+Set(enable_indexscan"off")Set(enable_bitmapscan"off")	*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan"off")Set(enable_bitmapscan"off")	*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -484,6 +570,8 @@ error hint:
 
 -- No. A-7-2-17
 /*+	Set	(enable_indexscan"off")	Set	(enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+	Set	(enable_indexscan"off")	Set	(enable_bitmapscan"off")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -502,6 +590,8 @@ error hint:
 -- No. A-7-2-18
 /*+Set	(	enable_indexscan"off")Set	(	enable_bitmapscan"off")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set	(	enable_indexscan"off")Set	(	enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -518,6 +608,8 @@ error hint:
 
 -- No. A-7-2-19
 /*+Set(enable_indexscan"off"	)	Set(enable_bitmapscan"off"	)	*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan"off"	)	Set(enable_bitmapscan"off"	)	*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -536,6 +628,8 @@ error hint:
 -- No. A-7-2-20
 /*+Set(	enable_indexscan	"off"	)Set(	enable_bitmapscan	"off"	)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(	enable_indexscan	"off"	)Set(	enable_bitmapscan	"off"	)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -553,6 +647,8 @@ error hint:
 -- No. A-7-2-21
 /*+	Set	(	enable_indexscan	"off"	)	Set	(	enable_bitmapscan	"off"	)	*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+	Set	(	enable_indexscan	"off"	)	Set	(	enable_bitmapscan	"off"	)	*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -569,6 +665,9 @@ error hint:
 
 -- No. A-7-2-22
 /*+
+Set(enable_indexscan"off")Set(enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+
 Set(enable_indexscan"off")Set(enable_bitmapscan"off")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
@@ -589,6 +688,9 @@ error hint:
 /*+Set(enable_indexscan"off")Set(enable_bitmapscan"off")
 */
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan"off")Set(enable_bitmapscan"off")
+*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -605,6 +707,12 @@ error hint:
 
 -- No. A-7-2-24
 /*+
+Set
+(enable_indexscan"off")
+Set
+(enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+
 Set
 (enable_indexscan"off")
 Set
@@ -631,6 +739,12 @@ enable_indexscan"off")Set
 (
 enable_bitmapscan"off")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set
+(
+enable_indexscan"off")Set
+(
+enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -652,6 +766,12 @@ Set(enable_bitmapscan"off"
 )
 */
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan"off"
+)
+Set(enable_bitmapscan"off"
+)
+*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -668,6 +788,14 @@ error hint:
 
 -- No. A-7-2-27
 /*+Set(
+enable_indexscan
+"off"
+)Set(
+enable_bitmapscan
+"off"
+)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(
 enable_indexscan
 "off"
 )Set(
@@ -703,6 +831,19 @@ enable_bitmapscan
 )
 */
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+
+Set
+(
+enable_indexscan
+"off"
+)
+Set
+(
+enable_bitmapscan
+"off"
+)
+*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -719,6 +860,9 @@ error hint:
 
 -- No. A-7-2-29
 /*+ 	
+	 Set(enable_indexscan"off")Set(enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+ 	
 	 Set(enable_indexscan"off")Set(enable_bitmapscan"off")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
@@ -739,6 +883,9 @@ error hint:
 /*+Set(enable_indexscan"off")Set(enable_bitmapscan"off") 	
 	 */
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan"off")Set(enable_bitmapscan"off") 	
+	 */
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -755,6 +902,12 @@ error hint:
 
 -- No. A-7-2-31
 /*+ 	
+	 Set 	
+	 (enable_indexscan"off") 	
+	 Set 	
+	 (enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+ 	
 	 Set 	
 	 (enable_indexscan"off") 	
 	 Set 	
@@ -781,6 +934,12 @@ error hint:
 	 ( 	
 	 enable_bitmapscan"off")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set 	
+	 ( 	
+	 enable_indexscan"off")Set 	
+	 ( 	
+	 enable_bitmapscan"off")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -802,6 +961,12 @@ error hint:
 	 ) 	
 	 */
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan"off" 	
+	 ) 	
+	 Set(enable_bitmapscan"off" 	
+	 ) 	
+	 */
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -818,6 +983,14 @@ error hint:
 
 -- No. A-7-2-34
 /*+Set( 	
+	 enable_indexscan 	
+	 "off" 	
+	 )Set( 	
+	 enable_bitmapscan 	
+	 "off" 	
+	 )*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set( 	
 	 enable_indexscan 	
 	 "off" 	
 	 )Set( 	
@@ -853,6 +1026,19 @@ error hint:
 	 ) 	
 	 */
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+ 	
+	 Set 	
+	 ( 	
+	 enable_indexscan 	
+	 "off" 	
+	 ) 	
+	 Set 	
+	 ( 	
+	 enable_bitmapscan 	
+	 "off" 	
+	 ) 	
+	 */
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_bitmapscan off)
@@ -875,6 +1061,8 @@ error hint:
 -- No. A-9-2-1
 /*+SeqScan(t)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 t WHERE t.c1 = 1;
+LOG:  statement: /*+SeqScan(t)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 t WHERE t.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t)
@@ -889,6 +1077,8 @@ error hint:
 (2 rows)
 
 /*+SeqScan(ttt)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 ttt WHERE ttt.c1 = 1;
+LOG:  statement: /*+SeqScan(ttt)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 ttt WHERE ttt.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -905,6 +1095,8 @@ error hint:
 
 /*+SeqScan("t")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 t WHERE t.c1 = 1;
+LOG:  statement: /*+SeqScan("t")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 t WHERE t.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t)
@@ -919,6 +1111,8 @@ error hint:
 (2 rows)
 
 /*+SeqScan("ttt")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 ttt WHERE ttt.c1 = 1;
+LOG:  statement: /*+SeqScan("ttt")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 ttt WHERE ttt.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -937,6 +1131,8 @@ error hint:
 -- No. A-9-2-2
 /*+SeqScan(T)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "T" WHERE "T".c1 = 1;
+LOG:  statement: /*+SeqScan(T)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "T" WHERE "T".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(T)
@@ -951,6 +1147,8 @@ error hint:
 (2 rows)
 
 /*+SeqScan(TTT)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "TTT" WHERE "TTT".c1 = 1;
+LOG:  statement: /*+SeqScan(TTT)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "TTT" WHERE "TTT".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -967,6 +1165,8 @@ error hint:
 
 /*+SeqScan("T")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "T" WHERE "T".c1 = 1;
+LOG:  statement: /*+SeqScan("T")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "T" WHERE "T".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(T)
@@ -981,6 +1181,8 @@ error hint:
 (2 rows)
 
 /*+SeqScan("TTT")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "TTT" WHERE "TTT".c1 = 1;
+LOG:  statement: /*+SeqScan("TTT")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "TTT" WHERE "TTT".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -999,6 +1201,8 @@ error hint:
 -- No. A-9-2-3
 /*+SeqScan(()*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "(" WHERE "(".c1 = 1;
+LOG:  statement: /*+SeqScan(()*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "(" WHERE "(".c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near "()"
 DETAIL:  Zero-length delimited string.
             QUERY PLAN            
@@ -1008,6 +1212,8 @@ DETAIL:  Zero-length delimited string.
 (2 rows)
 
 /*+SeqScan("(")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "(" WHERE "(".c1 = 1;
+LOG:  statement: /*+SeqScan("(")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "(" WHERE "(".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -1025,6 +1231,8 @@ error hint:
 -- No. A-7-3-4
 -- No. A-9-2-4
 /*+SeqScan())*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 ")" WHERE ")".c1 = 1;
+LOG:  statement: /*+SeqScan())*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 ")" WHERE ")".c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near ")"
 DETAIL:  SeqScan hint requires a relation.
@@ -1045,6 +1253,8 @@ SeqScan()
 
 /*+SeqScan(")")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 ")" WHERE ")".c1 = 1;
+LOG:  statement: /*+SeqScan(")")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 ")" WHERE ")".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(")")
@@ -1059,6 +1269,8 @@ error hint:
 (2 rows)
 
 /*+SeqScan(")))")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 ")))" WHERE ")))".c1 = 1;
+LOG:  statement: /*+SeqScan(")))")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 ")))" WHERE ")))".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -1077,6 +1289,8 @@ error hint:
 -- No. A-9-2-5
 /*+SeqScan(")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 """" WHERE """".c1 = 1;
+LOG:  statement: /*+SeqScan(")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 """" WHERE """".c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near ""
 DETAIL:  Unterminated quoted string.
             QUERY PLAN             
@@ -1086,6 +1300,8 @@ DETAIL:  Unterminated quoted string.
 (2 rows)
 
 /*+SeqScan("""")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 """" WHERE """".c1 = 1;
+LOG:  statement: /*+SeqScan("""")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 """" WHERE """".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -1101,6 +1317,8 @@ error hint:
 (2 rows)
 
 /*+SeqScan("""""""")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 """""""" WHERE """""""".c1 = 1;
+LOG:  statement: /*+SeqScan("""""""")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 """""""" WHERE """""""".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -1119,6 +1337,8 @@ error hint:
 -- No. A-9-2-6
 /*+SeqScan( )*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 " " WHERE " ".c1 = 1;
+LOG:  statement: /*+SeqScan( )*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 " " WHERE " ".c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near ""
 DETAIL:  SeqScan hint requires a relation.
 LOG:  pg_hint_plan:
@@ -1136,6 +1356,8 @@ SeqScan()
 
 /*+SeqScan(" ")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 " " WHERE " ".c1 = 1;
+LOG:  statement: /*+SeqScan(" ")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 " " WHERE " ".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(" ")
@@ -1150,6 +1372,8 @@ error hint:
 (2 rows)
 
 /*+SeqScan("   ")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "   " WHERE "   ".c1 = 1;
+LOG:  statement: /*+SeqScan("   ")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "   " WHERE "   ".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -1168,6 +1392,8 @@ error hint:
 -- No. A-9-2-7
 /*+SeqScan(	)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "	" WHERE "	".c1 = 1;
+LOG:  statement: /*+SeqScan(	)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "	" WHERE "	".c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near ""
 DETAIL:  SeqScan hint requires a relation.
 LOG:  pg_hint_plan:
@@ -1185,6 +1411,8 @@ SeqScan()
 
 /*+SeqScan("	")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "	" WHERE "	".c1 = 1;
+LOG:  statement: /*+SeqScan("	")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "	" WHERE "	".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan("	")
@@ -1199,6 +1427,8 @@ error hint:
 (2 rows)
 
 /*+SeqScan("			")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "			" WHERE "			".c1 = 1;
+LOG:  statement: /*+SeqScan("			")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "			" WHERE "			".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -1216,6 +1446,11 @@ error hint:
 -- No. A-7-3-8
 -- No. A-9-2-8
 /*+SeqScan(
+)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "
+" WHERE "
+".c1 = 1;
+LOG:  statement: /*+SeqScan(
 )*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "
 " WHERE "
@@ -1241,6 +1476,11 @@ SeqScan()
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "
 " WHERE "
 ".c1 = 1;
+LOG:  statement: /*+SeqScan("
+")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "
+" WHERE "
+".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan("
@@ -1257,6 +1497,17 @@ error hint:
 (3 rows)
 
 /*+SeqScan("
+
+
+")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "
+
+
+" WHERE "
+
+
+".c1 = 1;
+LOG:  statement: /*+SeqScan("
 
 
 ")*/
@@ -1290,6 +1541,8 @@ error hint:
 -- No. A-9-2-9
 /*+SeqScan(Set)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "Set" WHERE "Set".c1 = 1;
+LOG:  statement: /*+SeqScan(Set)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "Set" WHERE "Set".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(Set)
@@ -1304,6 +1557,8 @@ error hint:
 (2 rows)
 
 /*+SeqScan("Set")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "Set" WHERE "Set".c1 = 1;
+LOG:  statement: /*+SeqScan("Set")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "Set" WHERE "Set".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -1320,6 +1575,8 @@ error hint:
 
 /*+SeqScan("Set SeqScan Leading")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "Set SeqScan Leading" WHERE "Set SeqScan Leading".c1 = 1;
+LOG:  statement: /*+SeqScan("Set SeqScan Leading")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "Set SeqScan Leading" WHERE "Set SeqScan Leading".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan("Set SeqScan Leading")
@@ -1335,69 +1592,11 @@ error hint:
 
 -- No. A-7-3-10
 -- No. A-9-2-10
-/*+SeqScan(あ)*/
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 あ WHERE あ.c1 = 1;
-LOG:  pg_hint_plan:
-used hint:
-SeqScan(あ)
-not used hint:
-duplication hint:
-error hint:
-
-     QUERY PLAN      
----------------------
- Seq Scan on t1 "あ"
-   Filter: (c1 = 1)
-(2 rows)
-
-/*+SeqScan(あいう)*/
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 あいう WHERE あいう.c1 = 1;
-LOG:  pg_hint_plan:
-used hint:
-SeqScan(あいう)
-not used hint:
-duplication hint:
-error hint:
-
-       QUERY PLAN        
--------------------------
- Seq Scan on t1 "あいう"
-   Filter: (c1 = 1)
-(2 rows)
-
-/*+SeqScan("あ")*/
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 あ WHERE あ.c1 = 1;
-LOG:  pg_hint_plan:
-used hint:
-SeqScan(あ)
-not used hint:
-duplication hint:
-error hint:
-
-     QUERY PLAN      
----------------------
- Seq Scan on t1 "あ"
-   Filter: (c1 = 1)
-(2 rows)
-
-/*+SeqScan("あいう")*/
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 あいう WHERE あいう.c1 = 1;
-LOG:  pg_hint_plan:
-used hint:
-SeqScan(あいう)
-not used hint:
-duplication hint:
-error hint:
-
-       QUERY PLAN        
--------------------------
- Seq Scan on t1 "あいう"
-   Filter: (c1 = 1)
-(2 rows)
-
 -- No. A-7-3-11
 -- No. A-9-2-11
 /*+SeqScan(/**/)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "/**/" WHERE "/**/".c1 = 1;
+LOG:  statement: /*+SeqScan(/**/)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "/**/" WHERE "/**/".c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near "/**/)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "/**/" WHERE "/**/".c1 = 1;"
@@ -1409,6 +1608,8 @@ DETAIL:  Nested block comments are not supported.
 (2 rows)
 
 /*+SeqScan(/**//**//**/)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "/**//**//**/" WHERE "/**//**//**/".c1 = 1;
+LOG:  statement: /*+SeqScan(/**//**//**/)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "/**//**//**/" WHERE "/**//**//**/".c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near "/**//**//**/)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "/**//**//**/" WHERE "/**//**//**/".c1 = 1;"
@@ -1422,6 +1623,11 @@ DETAIL:  Nested block comments are not supported.
 -- No. A-7-3-12
 -- No. A-9-2-12
 /*+SeqScan("tT()"" 	
+Set/**/あ")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "tT()"" 	
+Set/**/あ" WHERE "tT()"" 	
+Set/**/あ".c1 = 1;
+LOG:  statement: /*+SeqScan("tT()"" 	
 Set/**/あ")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "tT()"" 	
 Set/**/あ" WHERE "tT()"" 	
@@ -1440,6 +1646,11 @@ DETAIL:  Nested block comments are not supported.
 
 --"
 /*+SeqScan("tT()"" 	
+Setあ")*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "tT()"" 	
+Setあ" WHERE "tT()"" 	
+Setあ".c1 = 1;
+LOG:  statement: /*+SeqScan("tT()"" 	
 Setあ")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "tT()"" 	
 Setあ" WHERE "tT()"" 	
@@ -1463,6 +1674,8 @@ error hint:
 -- No. A-9-2-13
 /*+SeqScan(a123456789b123456789c123456789d123456789e123456789f123)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "123456789012345678901234567890123456789012345678901234" WHERE "123456789012345678901234567890123456789012345678901234".c1 = 1;
+LOG:  statement: /*+SeqScan(a123456789b123456789c123456789d123456789e123456789f123)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 "123456789012345678901234567890123456789012345678901234" WHERE "123456789012345678901234567890123456789012345678901234".c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 not used hint:
@@ -1481,6 +1694,8 @@ error hint:
 ----
 -- No. A-7-4-1
 /*+Set(enable_indexscan off)Set enable_tidscan off)Set(enable_bitmapscan off)SeqScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan off)Set enable_tidscan off)Set(enable_bitmapscan off)SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near "enable_tidscan off)Set(enable_bitmapscan off)SeqScan(t1)"
 DETAIL:  Opening parenthesis is necessary.
@@ -1502,6 +1717,8 @@ error hint:
 -- No. A-7-4-2
 /*+Set(enable_indexscan off)Set(enable_tidscan off Set(enable_bitmapscan off)SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan off)Set(enable_tidscan off Set(enable_bitmapscan off)SeqScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near "(enable_bitmapscan off)SeqScan(t1)"
 DETAIL:  Zero-length delimited string.
 LOG:  pg_hint_plan:
@@ -1521,6 +1738,8 @@ error hint:
 
 -- No. A-7-4-3
 /*+Set(enable_indexscan off)Set(enable_tidscan "off)Set(enable_bitmapscan off)SeqScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan off)Set(enable_tidscan "off)Set(enable_bitmapscan off)SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near ""
 DETAIL:  Unterminated quoted string.
@@ -1542,6 +1761,8 @@ error hint:
 -- No. A-7-4-4
 /*+Set(enable_indexscan off)SeqScan("")Set(enable_bitmapscan off)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan off)SeqScan("")Set(enable_bitmapscan off)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near ")Set(enable_bitmapscan off)"
 DETAIL:  Zero-length delimited string.
 LOG:  pg_hint_plan:
@@ -1561,6 +1782,8 @@ error hint:
 
 -- No. A-7-4-5
 /*+Set(enable_indexscan off)NoSet(enable_tidscan off)Set(enable_bitmapscan off)SeqScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan off)NoSet(enable_tidscan off)Set(enable_bitmapscan off)SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near "NoSet(enable_tidscan off)Set(enable_bitmapscan off)SeqScan(t1)"
 DETAIL:  Unrecognized hint keyword "NoSet".
@@ -1582,6 +1805,8 @@ error hint:
 -- No. A-7-4-6
 /*+Set(enable_indexscan off)"Set"(enable_tidscan off)Set(enable_bitmapscan off)SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan off)"Set"(enable_tidscan off)Set(enable_bitmapscan off)SeqScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near ""Set"(enable_tidscan off)Set(enable_bitmapscan off)SeqScan(t1)"
 DETAIL:  Unrecognized hint keyword ""Set"".
 LOG:  pg_hint_plan:
@@ -1601,6 +1826,8 @@ error hint:
 
 -- No. A-7-4-7
 /*+Set(enable_indexscan off)Set(enable_tidscan /* value */off)Set(enable_bitmapscan off)SeqScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan off)Set(enable_tidscan /* value */off)Set(enable_bitmapscan off)SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 INFO:  pg_hint_plan: hint syntax error at or near "/* value */off)Set(enable_bitmapscan off)SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;"
@@ -1658,14 +1885,19 @@ DETAIL:  Nested block comments are not supported.
 ----
 -- No. A-8-2-1
 SET pg_hint_plan.debug_print TO off;
+LOG:  statement: SET pg_hint_plan.debug_print TO off;
 SET pg_hint_plan.enable_hint TO on;
+LOG:  statement: SET pg_hint_plan.enable_hint TO on;
 SHOW pg_hint_plan.enable_hint;
+LOG:  statement: SHOW pg_hint_plan.enable_hint;
  pg_hint_plan.enable_hint 
 --------------------------
  on
 (1 row)
 
 /*+Set(enable_indexscan off)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan off)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
             QUERY PLAN            
 ----------------------------------
@@ -1677,13 +1909,17 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 
 -- No. A-8-2-2
 SET pg_hint_plan.enable_hint TO off;
+LOG:  statement: SET pg_hint_plan.enable_hint TO off;
 SHOW pg_hint_plan.enable_hint;
+LOG:  statement: SHOW pg_hint_plan.enable_hint;
  pg_hint_plan.enable_hint 
 --------------------------
  off
 (1 row)
 
 /*+Set(enable_indexscan off)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan off)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
           QUERY PLAN          
 ------------------------------
@@ -1706,20 +1942,26 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 ----
 -- No. A-8-3-1
 SET pg_hint_plan.enable_hint TO on;
+LOG:  statement: SET pg_hint_plan.enable_hint TO on;
 SHOW pg_hint_plan.enable_hint;
+LOG:  statement: SHOW pg_hint_plan.enable_hint;
  pg_hint_plan.enable_hint 
 --------------------------
  on
 (1 row)
 
 SET pg_hint_plan.debug_print TO on;
+LOG:  statement: SET pg_hint_plan.debug_print TO on;
 SHOW pg_hint_plan.debug_print;
+LOG:  statement: SHOW pg_hint_plan.debug_print;
  pg_hint_plan.debug_print 
 --------------------------
  on
 (1 row)
 
 /*+Set(enable_indexscan off)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan off)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
@@ -1738,13 +1980,17 @@ error hint:
 
 -- No. A-8-3-2
 SET pg_hint_plan.debug_print TO off;
+LOG:  statement: SET pg_hint_plan.debug_print TO off;
 SHOW pg_hint_plan.debug_print;
+LOG:  statement: SHOW pg_hint_plan.debug_print;
  pg_hint_plan.debug_print 
 --------------------------
  off
 (1 row)
 
 /*+Set(enable_indexscan off)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan off)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
             QUERY PLAN            
 ----------------------------------
@@ -1756,13 +2002,17 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 
 -- No. A-8-3-3
 SET pg_hint_plan.debug_print TO DEFAULT;
+LOG:  statement: SET pg_hint_plan.debug_print TO DEFAULT;
 SHOW pg_hint_plan.debug_print;
+LOG:  statement: SHOW pg_hint_plan.debug_print;
  pg_hint_plan.debug_print 
 --------------------------
  off
 (1 row)
 
 /*+Set(enable_indexscan off)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan off)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
             QUERY PLAN            
 ----------------------------------
@@ -1774,9 +2024,11 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 
 -- No. A-8-3-4
 SET pg_hint_plan.debug_print TO enable;
+LOG:  statement: SET pg_hint_plan.debug_print TO enable;
 ERROR:  invalid value for parameter "pg_hint_plan.debug_print": "enable"
 HINT:  Available values: off, on, detailed, verbose.
 SHOW pg_hint_plan.debug_print;
+LOG:  statement: SHOW pg_hint_plan.debug_print;
  pg_hint_plan.debug_print 
 --------------------------
  off
@@ -1786,13 +2038,18 @@ SHOW pg_hint_plan.debug_print;
 ---- No. A-8-4 original GUC parameter pg_hint_plan.parse_messages
 ----
 SET client_min_messages TO debug5;
+LOG:  statement: SET client_min_messages TO debug5;
 DEBUG:  CommitTransaction(1) name: unnamed; blockState: STARTED; state: INPROGRESS, xid/subid/cid: 0/1/0
+DEBUG:  level 1, atx level 0, commit 1, state 1
 -- No. A-8-4-1
 SET pg_hint_plan.parse_messages TO debug5;
 DEBUG:  StartTransaction(1) name: unnamed; blockState: DEFAULT; state: INPROGRESS, xid/subid/cid: 0/1/0
+LOG:  statement: SET pg_hint_plan.parse_messages TO debug5;
 DEBUG:  CommitTransaction(1) name: unnamed; blockState: STARTED; state: INPROGRESS, xid/subid/cid: 0/1/0
+DEBUG:  level 1, atx level 0, commit 1, state 1
 SHOW pg_hint_plan.parse_messages;
 DEBUG:  StartTransaction(1) name: unnamed; blockState: DEFAULT; state: INPROGRESS, xid/subid/cid: 0/1/0
+LOG:  statement: SHOW pg_hint_plan.parse_messages;
 DEBUG:  CommitTransaction(1) name: unnamed; blockState: STARTED; state: INPROGRESS, xid/subid/cid: 0/1/0
  pg_hint_plan.parse_messages 
 -----------------------------
@@ -1801,6 +2058,7 @@ DEBUG:  CommitTransaction(1) name: unnamed; blockState: STARTED; state: INPROGRE
 
 /*+Set*/SELECT 1;
 DEBUG:  StartTransaction(1) name: unnamed; blockState: DEFAULT; state: INPROGRESS, xid/subid/cid: 0/1/0
+LOG:  statement: /*+Set*/SELECT 1;
 DEBUG:  pg_hint_plan: hint syntax error at or near ""
 DETAIL:  Opening parenthesis is necessary.
 DEBUG:  CommitTransaction(1) name: unnamed; blockState: STARTED; state: INPROGRESS, xid/subid/cid: 0/1/0
@@ -1811,7 +2069,10 @@ DEBUG:  CommitTransaction(1) name: unnamed; blockState: STARTED; state: INPROGRE
 
 SET client_min_messages TO debug4;
 DEBUG:  StartTransaction(1) name: unnamed; blockState: DEFAULT; state: INPROGRESS, xid/subid/cid: 0/1/0
+LOG:  statement: SET client_min_messages TO debug4;
+DEBUG:  level 1, atx level 0, commit 1, state 1
 /*+Set*/SELECT 1;
+LOG:  statement: /*+Set*/SELECT 1;
  ?column? 
 ----------
         1
@@ -1819,13 +2080,17 @@ DEBUG:  StartTransaction(1) name: unnamed; blockState: DEFAULT; state: INPROGRES
 
 -- No. A-8-4-2
 SET pg_hint_plan.parse_messages TO debug4;
+LOG:  statement: SET pg_hint_plan.parse_messages TO debug4;
+DEBUG:  level 1, atx level 0, commit 1, state 1
 SHOW pg_hint_plan.parse_messages;
+LOG:  statement: SHOW pg_hint_plan.parse_messages;
  pg_hint_plan.parse_messages 
 -----------------------------
  debug4
 (1 row)
 
 /*+Set*/SELECT 1;
+LOG:  statement: /*+Set*/SELECT 1;
 DEBUG:  pg_hint_plan: hint syntax error at or near ""
 DETAIL:  Opening parenthesis is necessary.
  ?column? 
@@ -1834,7 +2099,10 @@ DETAIL:  Opening parenthesis is necessary.
 (1 row)
 
 SET client_min_messages TO debug3;
+LOG:  statement: SET client_min_messages TO debug3;
+DEBUG:  level 1, atx level 0, commit 1, state 1
 /*+Set*/SELECT 1;
+LOG:  statement: /*+Set*/SELECT 1;
  ?column? 
 ----------
         1
@@ -1842,13 +2110,17 @@ SET client_min_messages TO debug3;
 
 -- No. A-8-4-3
 SET pg_hint_plan.parse_messages TO debug3;
+LOG:  statement: SET pg_hint_plan.parse_messages TO debug3;
+DEBUG:  level 1, atx level 0, commit 1, state 1
 SHOW pg_hint_plan.parse_messages;
+LOG:  statement: SHOW pg_hint_plan.parse_messages;
  pg_hint_plan.parse_messages 
 -----------------------------
  debug3
 (1 row)
 
 /*+Set*/SELECT 1;
+LOG:  statement: /*+Set*/SELECT 1;
 DEBUG:  pg_hint_plan: hint syntax error at or near ""
 DETAIL:  Opening parenthesis is necessary.
  ?column? 
@@ -1857,7 +2129,9 @@ DETAIL:  Opening parenthesis is necessary.
 (1 row)
 
 SET client_min_messages TO debug2;
+LOG:  statement: SET client_min_messages TO debug2;
 /*+Set*/SELECT 1;
+LOG:  statement: /*+Set*/SELECT 1;
  ?column? 
 ----------
         1
@@ -1865,13 +2139,16 @@ SET client_min_messages TO debug2;
 
 -- No. A-8-4-4
 SET pg_hint_plan.parse_messages TO debug2;
+LOG:  statement: SET pg_hint_plan.parse_messages TO debug2;
 SHOW pg_hint_plan.parse_messages;
+LOG:  statement: SHOW pg_hint_plan.parse_messages;
  pg_hint_plan.parse_messages 
 -----------------------------
  debug
 (1 row)
 
 /*+Set*/SELECT 1;
+LOG:  statement: /*+Set*/SELECT 1;
 DEBUG:  pg_hint_plan: hint syntax error at or near ""
 DETAIL:  Opening parenthesis is necessary.
  ?column? 
@@ -1880,7 +2157,9 @@ DETAIL:  Opening parenthesis is necessary.
 (1 row)
 
 SET client_min_messages TO debug1;
+LOG:  statement: SET client_min_messages TO debug1;
 /*+Set*/SELECT 1;
+LOG:  statement: /*+Set*/SELECT 1;
  ?column? 
 ----------
         1
@@ -1888,13 +2167,16 @@ SET client_min_messages TO debug1;
 
 -- No. A-8-4-5
 SET pg_hint_plan.parse_messages TO debug1;
+LOG:  statement: SET pg_hint_plan.parse_messages TO debug1;
 SHOW pg_hint_plan.parse_messages;
+LOG:  statement: SHOW pg_hint_plan.parse_messages;
  pg_hint_plan.parse_messages 
 -----------------------------
  debug1
 (1 row)
 
 /*+Set*/SELECT 1;
+LOG:  statement: /*+Set*/SELECT 1;
 DEBUG:  pg_hint_plan: hint syntax error at or near ""
 DETAIL:  Opening parenthesis is necessary.
  ?column? 
@@ -1903,7 +2185,9 @@ DETAIL:  Opening parenthesis is necessary.
 (1 row)
 
 SET client_min_messages TO log;
+LOG:  statement: SET client_min_messages TO log;
 /*+Set*/SELECT 1;
+LOG:  statement: /*+Set*/SELECT 1;
  ?column? 
 ----------
         1
@@ -1911,13 +2195,16 @@ SET client_min_messages TO log;
 
 -- No. A-8-4-6
 SET pg_hint_plan.parse_messages TO log;
+LOG:  statement: SET pg_hint_plan.parse_messages TO log;
 SHOW pg_hint_plan.parse_messages;
+LOG:  statement: SHOW pg_hint_plan.parse_messages;
  pg_hint_plan.parse_messages 
 -----------------------------
  log
 (1 row)
 
 /*+Set*/SELECT 1;
+LOG:  statement: /*+Set*/SELECT 1;
 LOG:  pg_hint_plan: hint syntax error at or near ""
 DETAIL:  Opening parenthesis is necessary.
  ?column? 
@@ -1926,6 +2213,7 @@ DETAIL:  Opening parenthesis is necessary.
 (1 row)
 
 SET client_min_messages TO info;
+LOG:  statement: SET client_min_messages TO info;
 /*+Set*/SELECT 1;
  ?column? 
 ----------
@@ -2166,6 +2454,8 @@ SET client_min_messages TO LOG;
 -- No. A-9-3-1
 /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -2182,6 +2472,8 @@ error hint:
 -- No. A-9-3-2
 /*+SeqScan(no_table)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+SeqScan(no_table)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 not used hint:
@@ -2197,6 +2489,7 @@ error hint:
 
 -- No. A-9-3-3
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1 AND t1.ctid = '(1,1)';
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1 AND t1.ctid = '(1,1)';
             QUERY PLAN             
 -----------------------------------
  Tid Scan on t1
@@ -2205,6 +2498,8 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1 AND t1.ctid = '(1,1)';
 (3 rows)
 
 /*+TidScan(t1)BitmapScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1 AND t1.ctid = '(1,1)';
+LOG:  statement: /*+TidScan(t1)BitmapScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1 AND t1.ctid = '(1,1)';
 INFO:  pg_hint_plan: hint syntax error at or near "TidScan(t1)BitmapScan(t1)"
 DETAIL:  Conflict scan method hint.
@@ -2227,6 +2522,8 @@ error hint:
 
 /*+TidScan(t1)BitmapScan(t1)IndexScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1 AND t1.ctid = '(1,1)';
+LOG:  statement: /*+TidScan(t1)BitmapScan(t1)IndexScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1 AND t1.ctid = '(1,1)';
 INFO:  pg_hint_plan: hint syntax error at or near "TidScan(t1)BitmapScan(t1)IndexScan(t1)"
 DETAIL:  Conflict scan method hint.
 INFO:  pg_hint_plan: hint syntax error at or near "BitmapScan(t1)IndexScan(t1)"
@@ -2248,6 +2545,8 @@ error hint:
 (3 rows)
 
 /*+TidScan(t1)BitmapScan(t1)IndexScan(t1)SeqScan(t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1 AND t1.ctid = '(1,1)';
+LOG:  statement: /*+TidScan(t1)BitmapScan(t1)IndexScan(t1)SeqScan(t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1 AND t1.ctid = '(1,1)';
 INFO:  pg_hint_plan: hint syntax error at or near "TidScan(t1)BitmapScan(t1)IndexScan(t1)SeqScan(t1)"
 DETAIL:  Conflict scan method hint.
@@ -2274,6 +2573,8 @@ error hint:
 -- No. A-9-3-4
 /*+Set(enable_indexscan enable)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_indexscan enable)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 INFO:  parameter "enable_indexscan" requires a Boolean value
 LOG:  pg_hint_plan:
 used hint:
@@ -2292,7 +2593,9 @@ Set(enable_indexscan enable)
 ---- No. A-10-1 hint state output
 ----
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 EXPLAIN (COSTS false) EXECUTE p1;
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1;
           QUERY PLAN          
 ------------------------------
  Index Scan using t1_i1 on t1
@@ -2300,8 +2603,11 @@ EXPLAIN (COSTS false) EXECUTE p1;
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
+LOG:  statement: PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
       QUERY PLAN       
 -----------------------
  Seq Scan on t1
@@ -2309,6 +2615,7 @@ EXPLAIN (COSTS false) EXECUTE p1 (1000);
 (2 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
       QUERY PLAN       
 -----------------------
  Seq Scan on t1
@@ -2316,6 +2623,7 @@ EXPLAIN (COSTS false) EXECUTE p1 (1000);
 (2 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
       QUERY PLAN       
 -----------------------
  Seq Scan on t1
@@ -2323,6 +2631,7 @@ EXPLAIN (COSTS false) EXECUTE p1 (1000);
 (2 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
       QUERY PLAN       
 -----------------------
  Seq Scan on t1
@@ -2330,6 +2639,7 @@ EXPLAIN (COSTS false) EXECUTE p1 (1000);
 (2 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
       QUERY PLAN       
 -----------------------
  Seq Scan on t1
@@ -2337,6 +2647,7 @@ EXPLAIN (COSTS false) EXECUTE p1 (1000);
 (2 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
      QUERY PLAN      
 ---------------------
  Seq Scan on t1
@@ -2344,11 +2655,16 @@ EXPLAIN (COSTS false) EXECUTE p1 (1000);
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 -- No. A-10-1-1
 -- No. A-10-1-2
 /*+SeqScan(t1)*/
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+SeqScan(t1)*/
+PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) EXECUTE p1;
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1;
 LOG:  pg_hint_plan:
 used hint:
@@ -2364,7 +2680,10 @@ error hint:
 (2 rows)
 
 UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
+LOG:  statement: UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
 /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) EXECUTE p1;
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1;
 LOG:  pg_hint_plan:
 used hint:
@@ -2380,26 +2699,14 @@ error hint:
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 /*+BitmapScan(t1)*/
+PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
+LOG:  statement: /*+BitmapScan(t1)*/
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
 /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
-LOG:  pg_hint_plan:
-used hint:
-BitmapScan(t1)
-not used hint:
-duplication hint:
-error hint:
-
-            QUERY PLAN            
-----------------------------------
- Bitmap Heap Scan on t1
-   Recheck Cond: (c1 < 1000)
-   ->  Bitmap Index Scan on t1_i1
-         Index Cond: (c1 < 1000)
-(4 rows)
-
-/*+SeqScan(t1)*/
+LOG:  statement: /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
@@ -2418,22 +2725,7 @@ error hint:
 
 /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
-LOG:  pg_hint_plan:
-used hint:
-BitmapScan(t1)
-not used hint:
-duplication hint:
-error hint:
-
-            QUERY PLAN            
-----------------------------------
- Bitmap Heap Scan on t1
-   Recheck Cond: (c1 < 1000)
-   ->  Bitmap Index Scan on t1_i1
-         Index Cond: (c1 < 1000)
-(4 rows)
-
-/*+SeqScan(t1)*/
+LOG:  statement: /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
@@ -2452,6 +2744,8 @@ error hint:
 
 /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2468,6 +2762,46 @@ error hint:
 (4 rows)
 
 /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  pg_hint_plan:
+used hint:
+BitmapScan(t1)
+not used hint:
+duplication hint:
+error hint:
+
+            QUERY PLAN            
+----------------------------------
+ Bitmap Heap Scan on t1
+   Recheck Cond: (c1 < 1000)
+   ->  Bitmap Index Scan on t1_i1
+         Index Cond: (c1 < 1000)
+(4 rows)
+
+/*+SeqScan(t1)*/
+EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  pg_hint_plan:
+used hint:
+BitmapScan(t1)
+not used hint:
+duplication hint:
+error hint:
+
+            QUERY PLAN            
+----------------------------------
+ Bitmap Heap Scan on t1
+   Recheck Cond: (c1 < 1000)
+   ->  Bitmap Index Scan on t1_i1
+         Index Cond: (c1 < 1000)
+(4 rows)
+
+/*+SeqScan(t1)*/
+EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
@@ -2485,7 +2819,10 @@ error hint:
 (4 rows)
 
 UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
+LOG:  statement: UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
 /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
@@ -2503,11 +2840,15 @@ error hint:
 (4 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 -- No. A-10-1-3
 -- No. A-10-1-4
 /*+SeqScan(t1)*/
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+SeqScan(t1)*/
+PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 EXPLAIN (COSTS false) EXECUTE p1;
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -2522,7 +2863,9 @@ error hint:
 (2 rows)
 
 UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
+LOG:  statement: UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
 EXPLAIN (COSTS false) EXECUTE p1;
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -2537,9 +2880,13 @@ error hint:
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 /*+BitmapScan(t1)*/
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
+LOG:  statement: /*+BitmapScan(t1)*/
+PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2556,6 +2903,7 @@ error hint:
 (4 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2572,6 +2920,7 @@ error hint:
 (4 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2588,6 +2937,7 @@ error hint:
 (4 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2604,6 +2954,7 @@ error hint:
 (4 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2620,6 +2971,7 @@ error hint:
 (4 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2636,7 +2988,9 @@ error hint:
 (4 rows)
 
 UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
+LOG:  statement: UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2653,10 +3007,14 @@ error hint:
 (4 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 -- No. A-10-1-5
 -- No. A-10-1-6
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) EXECUTE p1;
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1;
           QUERY PLAN          
 ------------------------------
@@ -2665,7 +3023,10 @@ EXPLAIN (COSTS false) EXECUTE p1;
 (2 rows)
 
 UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
+LOG:  statement: UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
 /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) EXECUTE p1;
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1;
           QUERY PLAN          
 ------------------------------
@@ -2674,15 +3035,12 @@ EXPLAIN (COSTS false) EXECUTE p1;
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
+LOG:  statement: PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
 /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
-      QUERY PLAN       
------------------------
- Seq Scan on t1
-   Filter: (c1 < 1000)
-(2 rows)
-
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
       QUERY PLAN       
 -----------------------
@@ -2691,6 +3049,7 @@ EXPLAIN (COSTS false) EXECUTE p1 (1000);
 (2 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
       QUERY PLAN       
 -----------------------
  Seq Scan on t1
@@ -2698,6 +3057,7 @@ EXPLAIN (COSTS false) EXECUTE p1 (1000);
 (2 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
       QUERY PLAN       
 -----------------------
  Seq Scan on t1
@@ -2705,6 +3065,7 @@ EXPLAIN (COSTS false) EXECUTE p1 (1000);
 (2 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
       QUERY PLAN       
 -----------------------
  Seq Scan on t1
@@ -2712,6 +3073,15 @@ EXPLAIN (COSTS false) EXECUTE p1 (1000);
 (2 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
+      QUERY PLAN       
+-----------------------
+ Seq Scan on t1
+   Filter: (c1 < 1000)
+(2 rows)
+
+EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1 (1000);
      QUERY PLAN      
 ---------------------
  Seq Scan on t1
@@ -2719,7 +3089,10 @@ EXPLAIN (COSTS false) EXECUTE p1 (1000);
 (2 rows)
 
 UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
+LOG:  statement: UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
 /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) EXECUTE p1 (1000);
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) EXECUTE p1 (1000);
      QUERY PLAN      
 ---------------------
@@ -2728,11 +3101,16 @@ EXPLAIN (COSTS false) EXECUTE p1 (1000);
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 -- No. A-10-1-9
 -- No. A-10-1-10
 /*+SeqScan(t1)*/
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+SeqScan(t1)*/
+PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
 LOG:  pg_hint_plan:
 used hint:
@@ -2748,7 +3126,10 @@ error hint:
 (2 rows)
 
 UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
+LOG:  statement: UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
 /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
 LOG:  pg_hint_plan:
 used hint:
@@ -2764,26 +3145,14 @@ error hint:
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 /*+BitmapScan(t1)*/
+PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
+LOG:  statement: /*+BitmapScan(t1)*/
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
 /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
-LOG:  pg_hint_plan:
-used hint:
-BitmapScan(t1)
-not used hint:
-duplication hint:
-error hint:
-
-            QUERY PLAN            
-----------------------------------
- Bitmap Heap Scan on t1
-   Recheck Cond: (c1 < 1000)
-   ->  Bitmap Index Scan on t1_i1
-         Index Cond: (c1 < 1000)
-(4 rows)
-
-/*+SeqScan(t1)*/
+LOG:  statement: /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
@@ -2802,22 +3171,7 @@ error hint:
 
 /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
-LOG:  pg_hint_plan:
-used hint:
-BitmapScan(t1)
-not used hint:
-duplication hint:
-error hint:
-
-            QUERY PLAN            
-----------------------------------
- Bitmap Heap Scan on t1
-   Recheck Cond: (c1 < 1000)
-   ->  Bitmap Index Scan on t1_i1
-         Index Cond: (c1 < 1000)
-(4 rows)
-
-/*+SeqScan(t1)*/
+LOG:  statement: /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
@@ -2836,6 +3190,8 @@ error hint:
 
 /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2852,6 +3208,46 @@ error hint:
 (4 rows)
 
 /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  pg_hint_plan:
+used hint:
+BitmapScan(t1)
+not used hint:
+duplication hint:
+error hint:
+
+            QUERY PLAN            
+----------------------------------
+ Bitmap Heap Scan on t1
+   Recheck Cond: (c1 < 1000)
+   ->  Bitmap Index Scan on t1_i1
+         Index Cond: (c1 < 1000)
+(4 rows)
+
+/*+SeqScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  pg_hint_plan:
+used hint:
+BitmapScan(t1)
+not used hint:
+duplication hint:
+error hint:
+
+            QUERY PLAN            
+----------------------------------
+ Bitmap Heap Scan on t1
+   Recheck Cond: (c1 < 1000)
+   ->  Bitmap Index Scan on t1_i1
+         Index Cond: (c1 < 1000)
+(4 rows)
+
+/*+SeqScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
@@ -2869,7 +3265,10 @@ error hint:
 (4 rows)
 
 UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
+LOG:  statement: UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
 /*+SeqScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: /*+SeqScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
@@ -2887,11 +3286,15 @@ error hint:
 (4 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 -- No. A-10-1-11
 -- No. A-10-1-12
 /*+SeqScan(t1)*/
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+SeqScan(t1)*/
+PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
+LOG:  statement: EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -2906,7 +3309,9 @@ error hint:
 (2 rows)
 
 UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
+LOG:  statement: UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
+LOG:  statement: EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -2921,9 +3326,13 @@ error hint:
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 /*+BitmapScan(t1)*/
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
+LOG:  statement: /*+BitmapScan(t1)*/
+PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2940,6 +3349,7 @@ error hint:
 (4 rows)
 
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2956,6 +3366,7 @@ error hint:
 (4 rows)
 
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2972,6 +3383,7 @@ error hint:
 (4 rows)
 
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -2988,6 +3400,7 @@ error hint:
 (4 rows)
 
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -3004,6 +3417,7 @@ error hint:
 (4 rows)
 
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -3020,7 +3434,9 @@ error hint:
 (4 rows)
 
 UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
+LOG:  statement: UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 LOG:  pg_hint_plan:
 used hint:
 BitmapScan(t1)
@@ -3037,10 +3453,14 @@ error hint:
 (4 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 -- No. A-10-1-13
 -- No. A-10-1-14
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
           QUERY PLAN          
 ------------------------------
@@ -3049,7 +3469,10 @@ EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
 (2 rows)
 
 UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
+LOG:  statement: UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
 /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
           QUERY PLAN          
 ------------------------------
@@ -3058,8 +3481,12 @@ EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1;
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
+LOG:  statement: PREPARE p1 AS SELECT * FROM s1.t1 WHERE t1.c1 < $1;
 /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
       QUERY PLAN       
 -----------------------
@@ -3069,13 +3496,7 @@ EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 
 /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
-      QUERY PLAN       
------------------------
- Seq Scan on t1
-   Filter: (c1 < 1000)
-(2 rows)
-
-/*+BitmapScan(t1)*/
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
       QUERY PLAN       
 -----------------------
@@ -3085,13 +3506,7 @@ EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 
 /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
-      QUERY PLAN       
------------------------
- Seq Scan on t1
-   Filter: (c1 < 1000)
-(2 rows)
-
-/*+BitmapScan(t1)*/
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
       QUERY PLAN       
 -----------------------
@@ -3100,6 +3515,28 @@ EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 (2 rows)
 
 /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+      QUERY PLAN       
+-----------------------
+ Seq Scan on t1
+   Filter: (c1 < 1000)
+(2 rows)
+
+/*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+      QUERY PLAN       
+-----------------------
+ Seq Scan on t1
+   Filter: (c1 < 1000)
+(2 rows)
+
+/*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
      QUERY PLAN      
 ---------------------
@@ -3108,7 +3545,10 @@ EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 (2 rows)
 
 UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
+LOG:  statement: UPDATE pg_catalog.pg_class SET relpages = relpages WHERE relname = 't1';
 /*+BitmapScan(t1)*/
+EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
+LOG:  statement: /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
      QUERY PLAN      
 ---------------------
@@ -3117,13 +3557,16 @@ EXPLAIN (COSTS false) CREATE TABLE test AS EXECUTE p1 (1000);
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 ----
 ---- No. A-10-4 EXECUTE statement name error
 ----
 -- No. A-10-4-1
 EXECUTE p1;
+LOG:  statement: EXECUTE p1;
 ERROR:  prepared statement "p1" does not exist
 SHOW pg_hint_plan.debug_print;
+LOG:  statement: SHOW pg_hint_plan.debug_print;
  pg_hint_plan.debug_print 
 --------------------------
  on
@@ -3134,18 +3577,21 @@ SHOW pg_hint_plan.debug_print;
 ----
 -- No. A-11-5-1
 SELECT pg_stat_statements_reset();
+LOG:  statement: SELECT pg_stat_statements_reset();
  pg_stat_statements_reset 
 --------------------------
  
 (1 row)
 
 SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: SELECT * FROM s1.t1 WHERE t1.c1 = 1;
  c1 | c2 | c3 | c4 
 ----+----+----+----
   1 |  1 |  1 | 1
 (1 row)
 
 /*+Set(enable_seqscan off)*/ SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+Set(enable_seqscan off)*/ SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 Set(enable_seqscan off)
@@ -3159,6 +3605,7 @@ error hint:
 (1 row)
 
 /*+SeqScan(t1)*/ SELECT * FROM s1.t1 WHERE t1.c1 = 1;
+LOG:  statement: /*+SeqScan(t1)*/ SELECT * FROM s1.t1 WHERE t1.c1 = 1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -3176,6 +3623,11 @@ SELECT s.query, s.calls
   JOIN pg_catalog.pg_database d
     ON (s.dbid = d.oid)
  ORDER BY 1;
+LOG:  statement: SELECT s.query, s.calls
+  FROM public.pg_stat_statements s
+  JOIN pg_catalog.pg_database d
+    ON (s.dbid = d.oid)
+ ORDER BY 1;
                 query                 | calls 
 --------------------------------------+-------
  SELECT * FROM s1.t1 WHERE t1.c1 = $1 |     3
@@ -3187,6 +3639,7 @@ SELECT s.query, s.calls
 ---- No. A-12-2 reset of global variable of original at the error
 ----
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
              QUERY PLAN             
 ------------------------------------
  Merge Join
@@ -3199,7 +3652,10 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 
 /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)NestLoop(t1 t1)*/
 PREPARE p1 AS SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)NestLoop(t1 t1)*/
+PREPARE p1 AS SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 EXPLAIN (COSTS false) EXECUTE p1;
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1;
 INFO:  pg_hint_plan: hint syntax error at or near "NestLoop(t1 t1)"
 DETAIL:  Relation name "t1" is duplicated.
 LOG:  pg_hint_plan:
@@ -3225,112 +3681,17 @@ NestLoop(t1 t1)
 
 -- No. A-12-1-1
 -- No. A-12-2-1
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | on
- enable_material                | on
- enable_mergejoin               | on
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
 SET pg_hint_plan.parse_messages TO error;
+LOG:  statement: SET pg_hint_plan.parse_messages TO error;
 /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)NestLoop(t1 t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)NestLoop(t1 t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 ERROR:  pg_hint_plan: hint syntax error at or near "NestLoop(t1 t1)"
 DETAIL:  Relation name "t1" is duplicated.
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | on
- enable_material                | on
- enable_mergejoin               | on
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
 /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
@@ -3354,112 +3715,16 @@ error hint:
 
 -- No. A-12-1-2
 -- No. A-12-2-2
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | on
- enable_material                | on
- enable_mergejoin               | on
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
 SET pg_hint_plan.parse_messages TO error;
+LOG:  statement: SET pg_hint_plan.parse_messages TO error;
 /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)NestLoop(t1 t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)NestLoop(t1 t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 ERROR:  pg_hint_plan: hint syntax error at or near "NestLoop(t1 t1)"
 DETAIL:  Relation name "t1" is duplicated.
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | on
- enable_material                | on
- enable_mergejoin               | on
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
 EXPLAIN (COSTS false) EXECUTE p1;
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1;
              QUERY PLAN             
 ------------------------------------
  Merge Join
@@ -3472,60 +3737,14 @@ EXPLAIN (COSTS false) EXECUTE p1;
 
 -- No. A-12-1-3
 -- No. A-12-2-3
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | on
- enable_material                | on
- enable_mergejoin               | on
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
 SET pg_hint_plan.parse_messages TO error;
+LOG:  statement: SET pg_hint_plan.parse_messages TO error;
 EXPLAIN (COSTS false) EXECUTE p2;
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p2;
 ERROR:  prepared statement "p2" does not exist
 /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: /*+Set(enable_seqscan off)Set(geqo_threshold 100)SeqScan(t1)MergeJoin(t1 t2)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
@@ -3548,6 +3767,7 @@ error hint:
 (6 rows)
 
 EXPLAIN (COSTS false) EXECUTE p1;
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1;
              QUERY PLAN             
 ------------------------------------
  Merge Join
@@ -3557,113 +3777,16 @@ EXPLAIN (COSTS false) EXECUTE p1;
          ->  Seq Scan on t1
    ->  Index Scan using t2_i1 on t2
 (6 rows)
-
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | on
- enable_material                | on
- enable_mergejoin               | on
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
 
 -- No. A-12-1-4
 -- No. A-12-2-4
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | on
- enable_material                | on
- enable_mergejoin               | on
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
 SET pg_hint_plan.parse_messages TO error;
+LOG:  statement: SET pg_hint_plan.parse_messages TO error;
 EXPLAIN (COSTS false) EXECUTE p2;
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p2;
 ERROR:  prepared statement "p2" does not exist
 EXPLAIN (COSTS false) EXECUTE p1;
+LOG:  statement: EXPLAIN (COSTS false) EXECUTE p1;
              QUERY PLAN             
 ------------------------------------
  Merge Join
@@ -3674,62 +3797,15 @@ EXPLAIN (COSTS false) EXECUTE p1;
    ->  Index Scan using t2_i1 on t2
 (6 rows)
 
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | on
- enable_material                | on
- enable_mergejoin               | on
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 SET pg_hint_plan.parse_messages TO LOG;
+LOG:  statement: SET pg_hint_plan.parse_messages TO LOG;
 ----
 ---- No. A-12-3 effective range of the hint
 ----
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
              QUERY PLAN             
 ------------------------------------
  Merge Join
@@ -3742,8 +3818,11 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 
 -- No. A-12-3-1
 SET enable_indexscan TO off;
+LOG:  statement: SET enable_indexscan TO off;
 SET enable_mergejoin TO off;
+LOG:  statement: SET enable_mergejoin TO off;
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
           QUERY PLAN          
 ------------------------------
  Hash Join
@@ -3753,57 +3832,9 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
          ->  Seq Scan on t2
 (5 rows)
 
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | off
- enable_material                | on
- enable_mergejoin               | off
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
 /*+Set(enable_indexscan on)Set(geqo_threshold 100)IndexScan(t2)MergeJoin(t1 t2)Leading(t2 t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: /*+Set(enable_indexscan on)Set(geqo_threshold 100)IndexScan(t2)MergeJoin(t1 t2)Leading(t2 t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
@@ -3824,57 +3855,8 @@ error hint:
    ->  Index Scan using t2_i1 on t2
 (4 rows)
 
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | off
- enable_material                | on
- enable_mergejoin               | off
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
           QUERY PLAN          
 ------------------------------
  Hash Join
@@ -3886,8 +3868,11 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 
 -- No. A-12-3-2
 SET enable_indexscan TO off;
+LOG:  statement: SET enable_indexscan TO off;
 SET enable_mergejoin TO off;
+LOG:  statement: SET enable_mergejoin TO off;
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
           QUERY PLAN          
 ------------------------------
  Hash Join
@@ -3897,58 +3882,11 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
          ->  Seq Scan on t2
 (5 rows)
 
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | off
- enable_material                | on
- enable_mergejoin               | off
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
 BEGIN;
+LOG:  statement: BEGIN;
 /*+Set(enable_indexscan on)Set(geqo_threshold 100)IndexScan(t2)MergeJoin(t1 t2)Leading(t2 t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: /*+Set(enable_indexscan on)Set(geqo_threshold 100)IndexScan(t2)MergeJoin(t1 t2)Leading(t2 t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
@@ -3970,58 +3908,11 @@ error hint:
 (4 rows)
 
 COMMIT;
+LOG:  statement: COMMIT;
 BEGIN;
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | off
- enable_material                | on
- enable_mergejoin               | off
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
+LOG:  statement: BEGIN;
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
           QUERY PLAN          
 ------------------------------
  Hash Join
@@ -4032,10 +3923,14 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 (5 rows)
 
 COMMIT;
+LOG:  statement: COMMIT;
 -- No. A-12-3-3
 SET enable_indexscan TO off;
+LOG:  statement: SET enable_indexscan TO off;
 SET enable_mergejoin TO off;
+LOG:  statement: SET enable_mergejoin TO off;
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
           QUERY PLAN          
 ------------------------------
  Hash Join
@@ -4045,57 +3940,9 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
          ->  Seq Scan on t2
 (5 rows)
 
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | log
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | off
- enable_material                | on
- enable_mergejoin               | off
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
 /*+Set(enable_indexscan on)Set(geqo_threshold 100)IndexScan(t2)MergeJoin(t1 t2)Leading(t2 t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: /*+Set(enable_indexscan on)Set(geqo_threshold 100)IndexScan(t2)MergeJoin(t1 t2)Leading(t2 t1)*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
@@ -4120,56 +3967,6 @@ error hint:
 SET enable_indexscan TO off;
 SET enable_mergejoin TO off;
 LOAD 'pg_hint_plan';
-SELECT name, setting FROM settings;
-              name              |  setting  
---------------------------------+-----------
- client_min_messages            | notice
- geqo                           | on
- geqo_effort                    | 5
- geqo_generations               | 0
- geqo_pool_size                 | 0
- geqo_seed                      | 0
- geqo_selection_bias            | 2
- geqo_threshold                 | 12
- constraint_exclusion           | partition
- cursor_tuple_fraction          | 0.1
- default_statistics_target      | 100
- force_parallel_mode            | off
- from_collapse_limit            | 8
- jit                            | off
- join_collapse_limit            | 8
- cpu_index_tuple_cost           | 0.005
- cpu_operator_cost              | 0.0025
- cpu_tuple_cost                 | 0.01
- effective_cache_size           | 16384
- jit_above_cost                 | 100000
- jit_inline_above_cost          | 500000
- jit_optimize_above_cost        | 500000
- min_parallel_index_scan_size   | 64
- min_parallel_table_scan_size   | 1024
- parallel_setup_cost            | 1000
- parallel_tuple_cost            | 0.1
- random_page_cost               | 4
- seq_page_cost                  | 1
- enable_bitmapscan              | on
- enable_gathermerge             | on
- enable_hashagg                 | on
- enable_hashjoin                | on
- enable_indexonlyscan           | on
- enable_indexscan               | off
- enable_material                | on
- enable_mergejoin               | off
- enable_nestloop                | on
- enable_parallel_append         | on
- enable_parallel_hash           | on
- enable_partition_pruning       | on
- enable_partitionwise_aggregate | off
- enable_partitionwise_join      | off
- enable_seqscan                 | on
- enable_sort                    | on
- enable_tidscan                 | on
-(45 rows)
-
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
           QUERY PLAN          
 ------------------------------
@@ -4184,12 +3981,34 @@ SET pg_hint_plan.enable_hint TO on;
 SET pg_hint_plan.debug_print TO on;
 SET client_min_messages TO LOG;
 SET search_path TO public;
+LOG:  statement: SET search_path TO public;
 RESET enable_indexscan;
+LOG:  statement: RESET enable_indexscan;
 RESET enable_mergejoin;
+LOG:  statement: RESET enable_mergejoin;
 ----
 ---- No. A-13 call planner recursively
 ----
 CREATE OR REPLACE FUNCTION nested_planner(cnt int) RETURNS int AS $$
+DECLARE
+    new_cnt int;
+BEGIN
+    RAISE NOTICE 'nested_planner(%)', cnt;
+
+    /* 再帰終了の判断 */
+    IF cnt <= 1 THEN
+        RETURN 0;
+    END IF;
+
+	SELECT /*+ IndexScan(t_1) */ nested_planner(cnt - 1) INTO new_cnt
+	  FROM s1.t1 t_1
+	  JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
+	 ORDER BY t_1.c1 LIMIT 1;
+
+    RETURN new_cnt;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+LOG:  statement: CREATE OR REPLACE FUNCTION nested_planner(cnt int) RETURNS int AS $$
 DECLARE
     new_cnt int;
 BEGIN
@@ -4213,6 +4032,7 @@ $$ LANGUAGE plpgsql IMMUTABLE;
 ----
 --No.13-2-1
 EXPLAIN (COSTS false) SELECT nested_planner(1) FROM s1.t1 t_1 ORDER BY t_1.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT nested_planner(1) FROM s1.t1 t_1 ORDER BY t_1.c1;
 NOTICE:  nested_planner(1)
               QUERY PLAN               
 ---------------------------------------
@@ -4220,6 +4040,8 @@ NOTICE:  nested_planner(1)
 (1 row)
 
 /*+SeqScan(t_1)*/
+EXPLAIN (COSTS false) SELECT nested_planner(1) FROM s1.t1 t_1 ORDER BY t_1.c1;
+LOG:  statement: /*+SeqScan(t_1)*/
 EXPLAIN (COSTS false) SELECT nested_planner(1) FROM s1.t1 t_1 ORDER BY t_1.c1;
 NOTICE:  nested_planner(1)
 LOG:  pg_hint_plan:
@@ -4241,6 +4063,7 @@ error hint:
 ----
 --No.13-3-1
 EXPLAIN (COSTS false) SELECT nested_planner(1) FROM s1.t1 t_1 ORDER BY t_1.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT nested_planner(1) FROM s1.t1 t_1 ORDER BY t_1.c1;
 NOTICE:  nested_planner(1)
               QUERY PLAN               
 ---------------------------------------
@@ -4248,6 +4071,8 @@ NOTICE:  nested_planner(1)
 (1 row)
 
 /*+SeqScan(t_2)*/
+EXPLAIN (COSTS false) SELECT nested_planner(1) FROM s1.t1 t_1 ORDER BY t_1.c1;
+LOG:  statement: /*+SeqScan(t_2)*/
 EXPLAIN (COSTS false) SELECT nested_planner(1) FROM s1.t1 t_1 ORDER BY t_1.c1;
 NOTICE:  nested_planner(1)
 LOG:  pg_hint_plan:
@@ -4264,6 +4089,7 @@ error hint:
 
 --No.13-3-2
 EXPLAIN (COSTS false) SELECT nested_planner(2) FROM s1.t1 t_1 ORDER BY t_1.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT nested_planner(2) FROM s1.t1 t_1 ORDER BY t_1.c1;
 NOTICE:  nested_planner(2)
 NOTICE:  nested_planner(1)
 LOG:  pg_hint_plan:
@@ -4279,6 +4105,8 @@ error hint:
 (1 row)
 
 /*+SeqScan(t_2)*/
+EXPLAIN (COSTS false) SELECT nested_planner(2) FROM s1.t1 t_1 ORDER BY t_1.c1;
+LOG:  statement: /*+SeqScan(t_2)*/
 EXPLAIN (COSTS false) SELECT nested_planner(2) FROM s1.t1 t_1 ORDER BY t_1.c1;
 NOTICE:  nested_planner(2)
 NOTICE:  nested_planner(1)
@@ -4324,10 +4152,30 @@ BEGIN
     RETURN new_cnt;
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
+LOG:  statement: CREATE OR REPLACE FUNCTION nested_planner(cnt int) RETURNS int AS $$
+DECLARE
+    new_cnt int;
+BEGIN
+    RAISE NOTICE 'nested_planner(%)', cnt;
+
+    /* 再帰終了の判断 */
+    IF cnt <= 1 THEN
+        RETURN 0;
+    END IF;
+
+	SELECT /*+ IndexScan(t_1) */ nested_planner(cnt - 1) INTO new_cnt
+	  FROM s1.t1 t_1
+	  JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
+	 ORDER BY t_1.c1 LIMIT 1;
+
+    RETURN new_cnt;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
 -- The function called at the bottom desn't use a hint, the immediate
 -- caller level should restore its own hint. So, the first LOG from
 -- pg_hint_plan should use the IndexScan(t_1) hint
 EXPLAIN (COSTS false) SELECT nested_planner(5) FROM s1.t1 t_1 ORDER BY t_1.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT nested_planner(5) FROM s1.t1 t_1 ORDER BY t_1.c1;
 NOTICE:  nested_planner(5)
 NOTICE:  nested_planner(4)
 NOTICE:  nested_planner(3)
@@ -4369,6 +4217,8 @@ error hint:
 -- The top level uses SeqScan(t_1), but the function should use only
 -- the hint in the function.
 /*+SeqScan(t_1) SeqScan(t_2)*/
+EXPLAIN (COSTS false) SELECT nested_planner(5) FROM s1.t1 t_1 ORDER BY t_1.c1;
+LOG:  statement: /*+SeqScan(t_1) SeqScan(t_2)*/
 EXPLAIN (COSTS false) SELECT nested_planner(5) FROM s1.t1 t_1 ORDER BY t_1.c1;
 NOTICE:  nested_planner(5)
 NOTICE:  nested_planner(4)
@@ -4427,6 +4277,12 @@ CREATE OR REPLACE FUNCTION recall_planner() RETURNS int AS $$
 	  JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
 	 ORDER BY t_1.c1 LIMIT 1;
 $$ LANGUAGE SQL IMMUTABLE;
+LOG:  statement: CREATE OR REPLACE FUNCTION recall_planner() RETURNS int AS $$
+	SELECT /*+ IndexScan(t_1) */t_1.c1
+	  FROM s1.t1 t_1
+	  JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
+	 ORDER BY t_1.c1 LIMIT 1;
+$$ LANGUAGE SQL IMMUTABLE;
 --No.13-4-1
 -- recall_planner() is reduced to constant while planning using the
 -- hint defined in the function. Then the outer query is planned based
@@ -4434,6 +4290,11 @@ $$ LANGUAGE SQL IMMUTABLE;
 -- but the resulting explain output doesn't contain the corresponding
 -- plan.
 /*+HashJoin(t_1 t_2)*/
+EXPLAIN (COSTS false)
+ SELECT recall_planner() FROM s1.t1 t_1
+   JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
+  ORDER BY t_1.c1;
+LOG:  statement: /*+HashJoin(t_1 t_2)*/
 EXPLAIN (COSTS false)
  SELECT recall_planner() FROM s1.t1 t_1
    JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
@@ -4470,6 +4331,11 @@ EXPLAIN (COSTS false)
  SELECT recall_planner() FROM s1.t1 st_1
    JOIN s1.t2 st_2 ON (st_1.c1 = st_2.c1)
   ORDER BY st_1.c1;
+LOG:  statement: /*+HashJoin(st_1 st_2)*/
+EXPLAIN (COSTS false)
+ SELECT recall_planner() FROM s1.t1 st_1
+   JOIN s1.t2 st_2 ON (st_1.c1 = st_2.c1)
+  ORDER BY st_1.c1;
 LOG:  pg_hint_plan:
 used hint:
 IndexScan(t_1)
@@ -4498,6 +4364,11 @@ error hint:
 --No.13-4-3
 --See description for No.13-4-1
 /*+HashJoin(t_1 t_2)*/
+EXPLAIN (COSTS false)
+ SELECT recall_planner() FROM s1.t1 st_1
+   JOIN s1.t2 st_2 ON (st_1.c1 = st_2.c1)
+  ORDER BY st_1.c1;
+LOG:  statement: /*+HashJoin(t_1 t_2)*/
 EXPLAIN (COSTS false)
  SELECT recall_planner() FROM s1.t1 st_1
    JOIN s1.t2 st_2 ON (st_1.c1 = st_2.c1)
@@ -4533,6 +4404,11 @@ EXPLAIN (COSTS false)
  SELECT recall_planner() FROM s1.t1 t_1
    JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
   ORDER BY t_1.c1;
+LOG:  statement: /*+HashJoin(st_1 st_2)*/
+EXPLAIN (COSTS false)
+ SELECT recall_planner() FROM s1.t1 t_1
+   JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
+  ORDER BY t_1.c1;
 LOG:  pg_hint_plan:
 used hint:
 IndexScan(t_1)
@@ -4564,6 +4440,10 @@ error hint:
 EXPLAIN (COSTS false)
  SELECT recall_planner() FROM s1.t1 t_1
   ORDER BY t_1.c1;
+LOG:  statement: /*+HashJoin(t_1 t_1)*/
+EXPLAIN (COSTS false)
+ SELECT recall_planner() FROM s1.t1 t_1
+  ORDER BY t_1.c1;
 LOG:  pg_hint_plan:
 used hint:
 IndexScan(t_1)
@@ -4589,7 +4469,16 @@ CREATE OR REPLACE FUNCTION recall_planner_one_t() RETURNS int AS $$
 	  FROM s1.t1 t_1
 	 ORDER BY t_1.c1 LIMIT 1;
 $$ LANGUAGE SQL IMMUTABLE;
+LOG:  statement: CREATE OR REPLACE FUNCTION recall_planner_one_t() RETURNS int AS $$
+	SELECT /*+ IndexScan(t_1) */t_1.c1
+	  FROM s1.t1 t_1
+	 ORDER BY t_1.c1 LIMIT 1;
+$$ LANGUAGE SQL IMMUTABLE;
 EXPLAIN (COSTS false)
+ SELECT recall_planner_one_t() FROM s1.t1 t_1
+   JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
+  ORDER BY t_1.c1;
+LOG:  statement: EXPLAIN (COSTS false)
  SELECT recall_planner_one_t() FROM s1.t1 t_1
    JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
   ORDER BY t_1.c1;
@@ -4611,6 +4500,11 @@ error hint:
 (6 rows)
 
 /*+HashJoin(t_1 t_1)*/
+EXPLAIN (COSTS false)
+ SELECT recall_planner_one_t() FROM s1.t1 t_1
+   JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
+  ORDER BY t_1.c1;
+LOG:  statement: /*+HashJoin(t_1 t_1)*/
 EXPLAIN (COSTS false)
  SELECT recall_planner_one_t() FROM s1.t1 t_1
    JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
@@ -4642,10 +4536,16 @@ HashJoin(t_1 t_1)
 (6 rows)
 
 DROP FUNCTION recall_planner_one_t(int);
+LOG:  statement: DROP FUNCTION recall_planner_one_t(int);
 ERROR:  function recall_planner_one_t(integer) does not exist
 --No.13-4-7
 -- See description for No.13-4-1. Complains on the wrongly written hint.
 /*+HashJoin(t_1 t_1)*/
+EXPLAIN (COSTS false)
+ SELECT recall_planner() FROM s1.t1 t_1
+   JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
+  ORDER BY t_1.c1;
+LOG:  statement: /*+HashJoin(t_1 t_1)*/
 EXPLAIN (COSTS false)
  SELECT recall_planner() FROM s1.t1 t_1
    JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
@@ -4682,6 +4582,11 @@ EXPLAIN (COSTS false)
  SELECT recall_planner() FROM s1.t1 t_1
    JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
   ORDER BY t_1.c1;
+LOG:  statement: /*+MergeJoin(t_1 t_2)HashJoin(t_1 t_2)*/
+EXPLAIN (COSTS false)
+ SELECT recall_planner() FROM s1.t1 t_1
+   JOIN s1.t2 t_2 ON (t_1.c1 = t_2.c1)
+  ORDER BY t_1.c1;
 INFO:  pg_hint_plan: hint syntax error at or near "MergeJoin(t_1 t_2)HashJoin(t_1 t_2)"
 DETAIL:  Conflict join method hint.
 LOG:  pg_hint_plan:
@@ -4712,11 +4617,17 @@ error hint:
 
 --No.14-1-1 plancache invalidation
 CREATE TABLE s1.tpc AS SELECT a FROM generate_series(0, 999) a;
+LOG:  statement: CREATE TABLE s1.tpc AS SELECT a FROM generate_series(0, 999) a;
 CREATE INDEX ON s1.tpc(a);
+LOG:  statement: CREATE INDEX ON s1.tpc(a);
 PREPARE p1 AS SELECT * FROM s1.tpc WHERE a < 999;
+LOG:  statement: PREPARE p1 AS SELECT * FROM s1.tpc WHERE a < 999;
 /*+ IndexScan(tpc) */PREPARE p2 AS SELECT * FROM s1.tpc WHERE a < 999;
+LOG:  statement: /*+ IndexScan(tpc) */PREPARE p2 AS SELECT * FROM s1.tpc WHERE a < 999;
 /*+ SeqScan(tpc) */PREPARE p3(int) AS SELECT * FROM s1.tpc WHERE a = $1;
+LOG:  statement: /*+ SeqScan(tpc) */PREPARE p3(int) AS SELECT * FROM s1.tpc WHERE a = $1;
 EXPLAIN EXECUTE p1;
+LOG:  statement: EXPLAIN EXECUTE p1;
                       QUERY PLAN                      
 ------------------------------------------------------
  Seq Scan on tpc  (cost=0.00..17.50 rows=333 width=4)
@@ -4724,6 +4635,7 @@ EXPLAIN EXECUTE p1;
 (2 rows)
 
 EXPLAIN EXECUTE p2;
+LOG:  statement: EXPLAIN EXECUTE p2;
 LOG:  pg_hint_plan:
 used hint:
 IndexScan(tpc)
@@ -4738,6 +4650,7 @@ error hint:
 (2 rows)
 
 EXPLAIN EXECUTE p3(500);
+LOG:  statement: EXPLAIN EXECUTE p3(500);
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(tpc)
@@ -4753,15 +4666,22 @@ error hint:
 
 -- The DROP invalidates the plan caches
 DROP TABLE s1.tpc;
+LOG:  statement: DROP TABLE s1.tpc;
 EXPLAIN EXECUTE p1;
+LOG:  statement: EXPLAIN EXECUTE p1;
 ERROR:  relation "s1.tpc" does not exist
 EXPLAIN EXECUTE p2;
+LOG:  statement: EXPLAIN EXECUTE p2;
 ERROR:  relation "s1.tpc" does not exist
 EXPLAIN EXECUTE p3(500);
+LOG:  statement: EXPLAIN EXECUTE p3(500);
 ERROR:  relation "s1.tpc" does not exist
 CREATE TABLE s1.tpc AS SELECT a FROM generate_series(0, 999) a;
+LOG:  statement: CREATE TABLE s1.tpc AS SELECT a FROM generate_series(0, 999) a;
 CREATE INDEX ON s1.tpc(a);
+LOG:  statement: CREATE INDEX ON s1.tpc(a);
 EXPLAIN EXECUTE p1;
+LOG:  statement: EXPLAIN EXECUTE p1;
                       QUERY PLAN                      
 ------------------------------------------------------
  Seq Scan on tpc  (cost=0.00..17.50 rows=333 width=4)
@@ -4769,6 +4689,7 @@ EXPLAIN EXECUTE p1;
 (2 rows)
 
 EXPLAIN EXECUTE p2;
+LOG:  statement: EXPLAIN EXECUTE p2;
 LOG:  pg_hint_plan:
 used hint:
 IndexScan(tpc)
@@ -4783,6 +4704,7 @@ error hint:
 (2 rows)
 
 EXPLAIN EXECUTE p3(500);
+LOG:  statement: EXPLAIN EXECUTE p3(500);
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(tpc)
@@ -4797,6 +4719,10 @@ error hint:
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 DEALLOCATE p2;
+LOG:  statement: DEALLOCATE p2;
 DEALLOCATE p3;
+LOG:  statement: DEALLOCATE p3;
 DROP TABLE s1.tpc;
+LOG:  statement: DROP TABLE s1.tpc;

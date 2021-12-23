@@ -38,8 +38,9 @@ LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.t1, ft1 ft_1, ft1 ft_2 W
          Join Filter: (ft_1.id = ft_2.id)
          ->  Foreign Scan on ft1 ft_1
                Foreign File: @abs_srcdir@/data/data.csv
-         ->  Foreign Scan on ft1 ft_2
-               Foreign File: @abs_srcdir@/data/data.csv
+         ->  Materialize
+               ->  Foreign Scan on ft1 ft_2
+                     Foreign File: @abs_srcdir@/data/data.csv
    ->  Index Scan using t1_i1 on t1
          Index Cond: (c1 = ft_2.id)
 
@@ -68,8 +69,9 @@ error hint:
          ->  Hash
                ->  Foreign Scan on ft1 ft_1
                      Foreign File: @abs_srcdir@/data/data.csv
-   ->  Foreign Scan on ft1 ft_2
-         Foreign File: @abs_srcdir@/data/data.csv
+   ->  Materialize
+         ->  Foreign Scan on ft1 ft_2
+               Foreign File: @abs_srcdir@/data/data.csv
 
 ----
 ---- No. J-1-6 object type for the hint
@@ -123,8 +125,9 @@ error hint:
          Join Filter: (ft_1.id = ft_2.id)
          ->  Foreign Scan on ft1 ft_1
                Foreign File: @abs_srcdir@/data/data.csv
-         ->  Foreign Scan on ft1 ft_2
-               Foreign File: @abs_srcdir@/data/data.csv
+         ->  Materialize
+               ->  Foreign Scan on ft1 ft_2
+                     Foreign File: @abs_srcdir@/data/data.csv
    ->  Index Scan using t1_i1 on t1
          Index Cond: (c1 = ft_2.id)
 
@@ -144,16 +147,17 @@ not used hint:
 duplication hint:
 error hint:
 
- Nested Loop  (cost=0.28..10.52 rows=1 width=31)
+ Nested Loop  (cost=0.28..10.77 rows=1 width=31)
    Join Filter: (ft_1.id = t1.c1)
-   ->  Nested Loop  (cost=0.00..2.21 rows=1 width=16)
+   ->  Nested Loop  (cost=0.00..2.46 rows=1 width=16)
          Join Filter: (ft_1.id = ft_2.id)
-         ->  Foreign Scan on ft1 ft_1  (cost=0.00..1.10 rows=1 width=8)
+         ->  Foreign Scan on ft1 ft_1  (cost=0.00..1.20 rows=2 width=8)
                Foreign File: @abs_srcdir@/data/data.csv
-               Foreign File Size: 42 b
-         ->  Foreign Scan on ft1 ft_2  (cost=0.00..1.10 rows=1 width=8)
-               Foreign File: @abs_srcdir@/data/data.csv
-               Foreign File Size: 42 b
+               Foreign File Size: 52 b
+         ->  Materialize  (cost=0.00..1.21 rows=2 width=8)
+               ->  Foreign Scan on ft1 ft_2  (cost=0.00..1.20 rows=2 width=8)
+                     Foreign File: @abs_srcdir@/data/data.csv
+                     Foreign File Size: 52 b
    ->  Index Scan using t1_i1 on t1  (cost=0.28..8.29 rows=1 width=15)
          Index Cond: (c1 = ft_2.id)
 

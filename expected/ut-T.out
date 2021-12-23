@@ -5,15 +5,23 @@ SET pg_hint_plan.enable_hint TO on;
 SET pg_hint_plan.debug_print TO on;
 SET client_min_messages TO LOG;
 SET search_path TO public;
+LOG:  statement: SET search_path TO public;
 -- test for get_query_string
 INSERT INTO hint_plan.hints VALUES(DEFAULT,'EXPLAIN SELECT * FROM t1 WHERE id = ?;', '', 'SeqScan(t1)');
+LOG:  statement: INSERT INTO hint_plan.hints VALUES(DEFAULT,'EXPLAIN SELECT * FROM t1 WHERE id = ?;', '', 'SeqScan(t1)');
 INSERT INTO hint_plan.hints VALUES(DEFAULT,'PREPARE p1 AS SELECT * FROM t1 WHERE id = ?;', '', 'SeqScan(t1)');
+LOG:  statement: INSERT INTO hint_plan.hints VALUES(DEFAULT,'PREPARE p1 AS SELECT * FROM t1 WHERE id = ?;', '', 'SeqScan(t1)');
 INSERT INTO hint_plan.hints VALUES(DEFAULT,'EXPLAIN DECLARE c1 CURSOR FOR SELECT * FROM t1 WHERE id = ?;', '', 'SeqScan(t1)');
+LOG:  statement: INSERT INTO hint_plan.hints VALUES(DEFAULT,'EXPLAIN DECLARE c1 CURSOR FOR SELECT * FROM t1 WHERE id = ?;', '', 'SeqScan(t1)');
 INSERT INTO hint_plan.hints VALUES(DEFAULT,'EXPLAIN CREATE TABLE ct1 AS SELECT * FROM t1 WHERE id = ?;', '', 'SeqScan(t1)');
+LOG:  statement: INSERT INTO hint_plan.hints VALUES(DEFAULT,'EXPLAIN CREATE TABLE ct1 AS SELECT * FROM t1 WHERE id = ?;', '', 'SeqScan(t1)');
 PREPARE p1 AS SELECT * FROM t1 WHERE id = 100;
+LOG:  statement: PREPARE p1 AS SELECT * FROM t1 WHERE id = 100;
 -- These queries uses IndexScan without hints
 SET pg_hint_plan.enable_hint_table to off;
+LOG:  statement: SET pg_hint_plan.enable_hint_table to off;
 EXPLAIN SELECT * FROM t1 WHERE id = 100;
+LOG:  statement: EXPLAIN SELECT * FROM t1 WHERE id = 100;
                             QUERY PLAN                            
 ------------------------------------------------------------------
  Index Scan using t1_pkey on t1  (cost=0.29..8.30 rows=1 width=8)
@@ -21,6 +29,7 @@ EXPLAIN SELECT * FROM t1 WHERE id = 100;
 (2 rows)
 
 EXPLAIN DECLARE c1 CURSOR FOR SELECT * FROM t1 WHERE id = 100;
+LOG:  statement: EXPLAIN DECLARE c1 CURSOR FOR SELECT * FROM t1 WHERE id = 100;
                             QUERY PLAN                            
 ------------------------------------------------------------------
  Index Scan using t1_pkey on t1  (cost=0.29..8.30 rows=1 width=8)
@@ -28,6 +37,7 @@ EXPLAIN DECLARE c1 CURSOR FOR SELECT * FROM t1 WHERE id = 100;
 (2 rows)
 
 EXPLAIN CREATE TABLE ct1 AS SELECT * FROM t1 WHERE id = 100;
+LOG:  statement: EXPLAIN CREATE TABLE ct1 AS SELECT * FROM t1 WHERE id = 100;
                             QUERY PLAN                            
 ------------------------------------------------------------------
  Index Scan using t1_pkey on t1  (cost=0.29..8.30 rows=1 width=8)
@@ -35,6 +45,7 @@ EXPLAIN CREATE TABLE ct1 AS SELECT * FROM t1 WHERE id = 100;
 (2 rows)
 
 EXPLAIN EXECUTE p1;
+LOG:  statement: EXPLAIN EXECUTE p1;
                             QUERY PLAN                            
 ------------------------------------------------------------------
  Index Scan using t1_pkey on t1  (cost=0.29..8.30 rows=1 width=8)
@@ -42,8 +53,11 @@ EXPLAIN EXECUTE p1;
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 PREPARE p1 AS SELECT * FROM t1 WHERE id = 100;
+LOG:  statement: PREPARE p1 AS SELECT * FROM t1 WHERE id = 100;
 EXPLAIN CREATE TABLE ct1 AS EXECUTE p1;
+LOG:  statement: EXPLAIN CREATE TABLE ct1 AS EXECUTE p1;
                             QUERY PLAN                            
 ------------------------------------------------------------------
  Index Scan using t1_pkey on t1  (cost=0.29..8.30 rows=1 width=8)
@@ -51,10 +65,14 @@ EXPLAIN CREATE TABLE ct1 AS EXECUTE p1;
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 PREPARE p1 AS SELECT * FROM t1 WHERE id = 100;
+LOG:  statement: PREPARE p1 AS SELECT * FROM t1 WHERE id = 100;
 -- Forced to use SeqScan by table hints
 SET pg_hint_plan.enable_hint_table to on;
+LOG:  statement: SET pg_hint_plan.enable_hint_table to on;
 EXPLAIN SELECT * FROM t1 WHERE id = 100;
+LOG:  statement: EXPLAIN SELECT * FROM t1 WHERE id = 100;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -69,6 +87,7 @@ error hint:
 (2 rows)
 
 EXPLAIN DECLARE c1 CURSOR FOR SELECT * FROM t1 WHERE id = 100;
+LOG:  statement: EXPLAIN DECLARE c1 CURSOR FOR SELECT * FROM t1 WHERE id = 100;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -83,6 +102,7 @@ error hint:
 (2 rows)
 
 EXPLAIN CREATE TABLE ct1 AS SELECT * FROM t1 WHERE id = 100;
+LOG:  statement: EXPLAIN CREATE TABLE ct1 AS SELECT * FROM t1 WHERE id = 100;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -97,6 +117,7 @@ error hint:
 (2 rows)
 
 EXPLAIN EXECUTE p1;
+LOG:  statement: EXPLAIN EXECUTE p1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -111,8 +132,11 @@ error hint:
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 PREPARE p1 AS SELECT * FROM t1 WHERE id = 100;
+LOG:  statement: PREPARE p1 AS SELECT * FROM t1 WHERE id = 100;
 EXPLAIN CREATE TABLE ct1 AS EXECUTE p1;
+LOG:  statement: EXPLAIN CREATE TABLE ct1 AS EXECUTE p1;
 LOG:  pg_hint_plan:
 used hint:
 SeqScan(t1)
@@ -127,12 +151,16 @@ error hint:
 (2 rows)
 
 DEALLOCATE p1;
+LOG:  statement: DEALLOCATE p1;
 -- Check proper calling to generate_normalized_query
 \;\;SELECT 1,2;
+LOG:  statement: ;;SELECT 1,2;
  ?column? | ?column? 
 ----------+----------
         1 |        2
 (1 row)
 
 SET pg_hint_plan.enable_hint_table to off;
+LOG:  statement: SET pg_hint_plan.enable_hint_table to off;
 DELETE FROM hint_plan.hints;
+LOG:  statement: DELETE FROM hint_plan.hints;

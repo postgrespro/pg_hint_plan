@@ -8,7 +8,7 @@ EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -33,7 +33,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -55,7 +55,7 @@ error hint:
 
                                   QUERY PLAN                                   
 -------------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t_1.c1 = t_2.c1)
    ->  Index Scan using t1_i1 on t1 t_1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -77,7 +77,7 @@ error hint:
 
                                   QUERY PLAN                                   
 -------------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t_1.c1 = t_2.c1)
    ->  Index Scan using t1_i1 on t1 t_1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -102,7 +102,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -124,7 +124,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -149,7 +149,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -171,7 +171,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -196,7 +196,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -209,7 +209,7 @@ EXPLAIN SELECT * FROM s1.t1, s2.t1 WHERE s1.t1.c1 = s2.t1.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.t1, s2.t1 WHERE s1.t1.c1 = s2.t1.c1;
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t1_1.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -232,7 +232,7 @@ Rows(t1 t1 #1)
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t1_1.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -253,7 +253,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t1_1.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -265,7 +265,7 @@ EXPLAIN SELECT * FROM s1.t1, s2.t1 s2t1 WHERE s1.t1.c1 = s2t1.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.t1, s2.t1 s2t1 WHERE s1.t1.c1 = s2t1.c1;
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = s2t1.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -286,7 +286,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = s2t1.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -299,11 +299,11 @@ EXPLAIN SELECT *, (SELECT max(t1.c1) FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1) FROM
 LOG:  statement: EXPLAIN SELECT *, (SELECT max(t1.c1) FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1) FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
                                             QUERY PLAN                                            
 --------------------------------------------------------------------------------------------------
- Merge Join  (cost=22.60..28.75 rows=100 width=33)
+ Merge Join  (cost=17.60..23.75 rows=100 width=33)
    Merge Cond: (t1.c1 = t2.c1)
    InitPlan 1 (returns $0)
-     ->  Aggregate  (cost=14.50..14.51 rows=1 width=4)
-           ->  Merge Join  (cost=8.10..14.25 rows=100 width=4)
+     ->  Aggregate  (cost=12.00..12.01 rows=1 width=4)
+           ->  Merge Join  (cost=5.60..11.75 rows=100 width=4)
                  Merge Cond: (t1_1.c1 = t2_1.c1)
                  ->  Index Only Scan using t1_i1 on t1 t1_1  (cost=0.28..44.27 rows=1000 width=4)
                  ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -328,11 +328,11 @@ error hint:
 
                                             QUERY PLAN                                            
 --------------------------------------------------------------------------------------------------
- Merge Join  (cost=22.36..28.51 rows=100 width=33)
+ Merge Join  (cost=17.36..23.51 rows=100 width=33)
    Merge Cond: (t1.c1 = t2.c1)
    InitPlan 1 (returns $0)
-     ->  Aggregate  (cost=14.25..14.26 rows=1 width=4)
-           ->  Merge Join  (cost=8.10..14.25 rows=1 width=4)
+     ->  Aggregate  (cost=11.75..11.76 rows=1 width=4)
+           ->  Merge Join  (cost=5.60..11.75 rows=1 width=4)
                  Merge Cond: (t1_1.c1 = t2_1.c1)
                  ->  Index Only Scan using t1_i1 on t1 t1_1  (cost=0.28..44.27 rows=1000 width=4)
                  ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -358,11 +358,11 @@ error hint:
 
                                            QUERY PLAN                                            
 -------------------------------------------------------------------------------------------------
- Merge Join  (cost=22.36..28.51 rows=1 width=33)
+ Merge Join  (cost=17.36..23.51 rows=1 width=33)
    Merge Cond: (t1.c1 = t2.c1)
    InitPlan 1 (returns $0)
-     ->  Aggregate  (cost=14.25..14.26 rows=1 width=4)
-           ->  Merge Join  (cost=8.10..14.25 rows=1 width=4)
+     ->  Aggregate  (cost=11.75..11.76 rows=1 width=4)
+           ->  Merge Join  (cost=5.60..11.75 rows=1 width=4)
                  Merge Cond: (st1.c1 = st2.c1)
                  ->  Index Only Scan using t1_i1 on t1 st1  (cost=0.28..44.27 rows=1000 width=4)
                  ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -391,7 +391,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -415,7 +415,7 @@ Rows(t1 t1 #1)
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -432,7 +432,7 @@ INFO:  pg_hint_plan: hint syntax error at or near "(t1 t1)(t2 t2)"
 DETAIL:  Unrecognized hint keyword "".
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -444,7 +444,7 @@ EXPLAIN SELECT * FROM s1.t1, s1.t2, s1.t3 WHERE t1.c1 = t2.c1 AND t1.c1 = t3.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.t1, s1.t2, s1.t3 WHERE t1.c1 = t2.c1 AND t1.c1 = t3.c1;
                                    QUERY PLAN                                    
 ---------------------------------------------------------------------------------
- Merge Join  (cost=8.25..22.03 rows=100 width=73)
+ Merge Join  (cost=5.75..19.53 rows=100 width=73)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Merge Join  (cost=0.43..120.70 rows=1000 width=59)
          Merge Cond: (t1.c1 = t3.c1)
@@ -463,18 +463,18 @@ INFO:  pg_hint_plan: hint syntax error at or near "(t1 t2 t1 t2)"
 DETAIL:  Unrecognized hint keyword "".
                                       QUERY PLAN                                       
 ---------------------------------------------------------------------------------------
- Merge Join  (cost=8.40..29.81 rows=100 width=117)
-   Merge Cond: (t1.c1 = t2.c1)
-   ->  Merge Join  (cost=0.58..197.13 rows=1000 width=103)
-         Merge Cond: (t1.c1 = t4.c1)
+ Nested Loop  (cost=5.90..40.93 rows=100 width=117)
+   ->  Merge Join  (cost=5.75..19.53 rows=100 width=73)
+         Merge Cond: (t1.c1 = t2.c1)
          ->  Merge Join  (cost=0.43..120.70 rows=1000 width=59)
                Merge Cond: (t1.c1 = t3.c1)
                ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
                ->  Index Scan using t3_i1 on t3  (cost=0.15..61.10 rows=1130 width=44)
-         ->  Index Scan using t4_i1 on t4  (cost=0.15..61.10 rows=1130 width=44)
-   ->  Sort  (cost=5.32..5.57 rows=100 width=14)
-         Sort Key: t2.c1
-         ->  Seq Scan on t2  (cost=0.00..2.00 rows=100 width=14)
+         ->  Sort  (cost=5.32..5.57 rows=100 width=14)
+               Sort Key: t2.c1
+               ->  Seq Scan on t2  (cost=0.00..2.00 rows=100 width=14)
+   ->  Index Scan using t4_i1 on t4  (cost=0.15..0.21 rows=1 width=44)
+         Index Cond: (c1 = t1.c1)
 (12 rows)
 
 ----
@@ -494,7 +494,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -553,11 +553,14 @@ error hint:
 -- No. R-1-6-3
 EXPLAIN SELECT * FROM s1.ul1 t1, s1.ul1 t2 WHERE t1.c1 = t2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.ul1 t1, s1.ul1 t2 WHERE t1.c1 = t2.c1;
-                        QUERY PLAN                         
------------------------------------------------------------
- Seq Scan on ul1 t2  (cost=0.00..21.30 rows=1124 width=88)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                              QUERY PLAN                               
+-----------------------------------------------------------------------
+ Hash Join  (cost=35.43..59.70 rows=1130 width=88)
+   Hash Cond: (t1.c1 = t2.c1)
+   ->  Seq Scan on ul1 t1  (cost=0.00..21.30 rows=1130 width=44)
+   ->  Hash  (cost=21.30..21.30 rows=1130 width=44)
+         ->  Seq Scan on ul1 t2  (cost=0.00..21.30 rows=1130 width=44)
+(5 rows)
 
 /*+Rows(t1 t2 #1)*/
 EXPLAIN SELECT * FROM s1.ul1 t1, s1.ul1 t2 WHERE t1.c1 = t2.c1;
@@ -565,27 +568,33 @@ LOG:  statement: /*+Rows(t1 t2 #1)*/
 EXPLAIN SELECT * FROM s1.ul1 t1, s1.ul1 t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 Rows(t1 t2 #1)
+not used hint:
 duplication hint:
 error hint:
 
-                        QUERY PLAN                         
------------------------------------------------------------
- Seq Scan on ul1 t2  (cost=0.00..21.30 rows=1124 width=88)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                              QUERY PLAN                               
+-----------------------------------------------------------------------
+ Hash Join  (cost=35.43..59.70 rows=1 width=88)
+   Hash Cond: (t1.c1 = t2.c1)
+   ->  Seq Scan on ul1 t1  (cost=0.00..21.30 rows=1130 width=44)
+   ->  Hash  (cost=21.30..21.30 rows=1130 width=44)
+         ->  Seq Scan on ul1 t2  (cost=0.00..21.30 rows=1130 width=44)
+(5 rows)
 
 -- No. R-1-6-4
 CREATE TEMP TABLE tm1 (LIKE s1.t1 INCLUDING ALL);
 LOG:  statement: CREATE TEMP TABLE tm1 (LIKE s1.t1 INCLUDING ALL);
 EXPLAIN SELECT * FROM tm1 t1, tm1 t2 WHERE t1.c1 = t2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM tm1 t1, tm1 t2 WHERE t1.c1 = t2.c1;
-                        QUERY PLAN                         
------------------------------------------------------------
- Seq Scan on tm1 t2  (cost=0.00..21.30 rows=1124 width=88)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                              QUERY PLAN                               
+-----------------------------------------------------------------------
+ Hash Join  (cost=35.43..59.70 rows=1130 width=88)
+   Hash Cond: (t1.c1 = t2.c1)
+   ->  Seq Scan on tm1 t1  (cost=0.00..21.30 rows=1130 width=44)
+   ->  Hash  (cost=21.30..21.30 rows=1130 width=44)
+         ->  Seq Scan on tm1 t2  (cost=0.00..21.30 rows=1130 width=44)
+(5 rows)
 
 /*+Rows(t1 t2 #1)*/
 EXPLAIN SELECT * FROM tm1 t1, tm1 t2 WHERE t1.c1 = t2.c1;
@@ -593,16 +602,19 @@ LOG:  statement: /*+Rows(t1 t2 #1)*/
 EXPLAIN SELECT * FROM tm1 t1, tm1 t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 Rows(t1 t2 #1)
+not used hint:
 duplication hint:
 error hint:
 
-                        QUERY PLAN                         
------------------------------------------------------------
- Seq Scan on tm1 t2  (cost=0.00..21.30 rows=1124 width=88)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                              QUERY PLAN                               
+-----------------------------------------------------------------------
+ Hash Join  (cost=35.43..59.70 rows=1 width=88)
+   Hash Cond: (t1.c1 = t2.c1)
+   ->  Seq Scan on tm1 t1  (cost=0.00..21.30 rows=1130 width=44)
+   ->  Hash  (cost=21.30..21.30 rows=1130 width=44)
+         ->  Seq Scan on tm1 t2  (cost=0.00..21.30 rows=1130 width=44)
+(5 rows)
 
 -- No. R-1-6-5
 CREATE TEMP TABLE t_pg_class WITH OIDS AS SELECT * from pg_class LIMIT 100;
@@ -675,7 +687,7 @@ EXPLAIN SELECT * FROM (VALUES(1,1,1,'1'), (2,2,2,'2'), (3,3,3,'3')) AS t1 (c1, c
 LOG:  statement: EXPLAIN SELECT * FROM (VALUES(1,1,1,'1'), (2,2,2,'2'), (3,3,3,'3')) AS t1 (c1, c2, c3, c4),  s1.t2 WHERE t1.c1 = t2.c1;
                                 QUERY PLAN                                
 --------------------------------------------------------------------------
- Hash Join  (cost=0.08..2.48 rows=3 width=58)
+ Hash Join  (cost=0.07..2.48 rows=3 width=58)
    Hash Cond: (t2.c1 = "*VALUES*".column1)
    ->  Seq Scan on t2  (cost=0.00..2.00 rows=100 width=14)
    ->  Hash  (cost=0.04..0.04 rows=3 width=44)
@@ -695,7 +707,7 @@ error hint:
 
                                 QUERY PLAN                                
 --------------------------------------------------------------------------
- Hash Join  (cost=0.08..2.48 rows=3 width=58)
+ Hash Join  (cost=0.07..2.48 rows=3 width=58)
    Hash Cond: (t2.c1 = "*VALUES*".column1)
    ->  Seq Scan on t2  (cost=0.00..2.00 rows=100 width=14)
    ->  Hash  (cost=0.04..0.04 rows=3 width=44)
@@ -715,7 +727,7 @@ error hint:
 
                                 QUERY PLAN                                
 --------------------------------------------------------------------------
- Hash Join  (cost=0.08..2.48 rows=1 width=58)
+ Hash Join  (cost=0.07..2.48 rows=1 width=58)
    Hash Cond: (t2.c1 = "*VALUES*".column1)
    ->  Seq Scan on t2  (cost=0.00..2.00 rows=100 width=14)
    ->  Hash  (cost=0.04..0.04 rows=3 width=44)
@@ -727,10 +739,10 @@ EXPLAIN WITH c1(c1) AS (SELECT max(t1.c1) FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1)
 LOG:  statement: EXPLAIN WITH c1(c1) AS (SELECT max(t1.c1) FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1) SELECT * FROM s1.t1, c1 WHERE t1.c1 = c1.c1;
                                             QUERY PLAN                                            
 --------------------------------------------------------------------------------------------------
- Nested Loop  (cost=14.78..22.84 rows=1 width=19)
+ Nested Loop  (cost=12.28..20.34 rows=1 width=19)
    CTE c1
-     ->  Aggregate  (cost=14.50..14.51 rows=1 width=4)
-           ->  Merge Join  (cost=8.10..14.25 rows=100 width=4)
+     ->  Aggregate  (cost=12.00..12.01 rows=1 width=4)
+           ->  Merge Join  (cost=5.60..11.75 rows=100 width=4)
                  Merge Cond: (t1_1.c1 = t2.c1)
                  ->  Index Only Scan using t1_i1 on t1 t1_1  (cost=0.28..44.27 rows=1000 width=4)
                  ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -755,10 +767,10 @@ error hint:
 
                                             QUERY PLAN                                            
 --------------------------------------------------------------------------------------------------
- Nested Loop  (cost=14.53..22.59 rows=2 width=19)
+ Nested Loop  (cost=12.03..20.09 rows=2 width=19)
    CTE c1
-     ->  Aggregate  (cost=14.25..14.26 rows=1 width=4)
-           ->  Merge Join  (cost=8.10..14.25 rows=1 width=4)
+     ->  Aggregate  (cost=11.75..11.76 rows=1 width=4)
+           ->  Merge Join  (cost=5.60..11.75 rows=1 width=4)
                  Merge Cond: (t1_1.c1 = t2.c1)
                  ->  Index Only Scan using t1_i1 on t1 t1_1  (cost=0.28..44.27 rows=1000 width=4)
                  ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -772,11 +784,14 @@ error hint:
 -- No. R-1-6-10
 EXPLAIN SELECT * FROM s1.v1 t1, s1.v1 t2 WHERE t1.c1 = t2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.v1 t1, s1.v1 t2 WHERE t1.c1 = t2.c1;
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1000 width=30)
+   Hash Cond: (v1t1.c1 = v1t1_1.c1)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 v1t1_1  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 /*+Rows(t1 t2 #1)*/
 EXPLAIN SELECT * FROM s1.v1 t1, s1.v1 t2 WHERE t1.c1 = t2.c1;
@@ -789,11 +804,14 @@ Rows(t1 t2 #1)
 duplication hint:
 error hint:
 
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1000 width=30)
+   Hash Cond: (v1t1.c1 = v1t1_1.c1)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 v1t1_1  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 /*+Rows(v1t1 v1t1_ #1)*/
 EXPLAIN SELECT * FROM s1.v1 t1, s1.v1_ t2 WHERE t1.c1 = t2.c1;
@@ -801,26 +819,29 @@ LOG:  statement: /*+Rows(v1t1 v1t1_ #1)*/
 EXPLAIN SELECT * FROM s1.v1 t1, s1.v1_ t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 Rows(v1t1 v1t1_ #1)
+not used hint:
 duplication hint:
 error hint:
 
-                         QUERY PLAN                          
--------------------------------------------------------------
- Seq Scan on t1 v1t1_  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                               QUERY PLAN                                
+-------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1 width=30)
+   Hash Cond: (v1t1.c1 = v1t1_.c1)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 v1t1_  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 -- No. R-1-6-11
 EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1 AND t1.c1 = (SELECT max(st1.c1) FROM s1.t1 st1, s1.t2 st2 WHERE st1.c1 = st2.c1);
 LOG:  statement: EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1 AND t1.c1 = (SELECT max(st1.c1) FROM s1.t1 st1, s1.t2 st2 WHERE st1.c1 = st2.c1);
                                            QUERY PLAN                                            
 -------------------------------------------------------------------------------------------------
- Nested Loop  (cost=14.78..25.06 rows=1 width=29)
+ Nested Loop  (cost=12.28..22.56 rows=1 width=29)
    InitPlan 1 (returns $0)
-     ->  Aggregate  (cost=14.50..14.51 rows=1 width=4)
-           ->  Merge Join  (cost=8.10..14.25 rows=100 width=4)
+     ->  Aggregate  (cost=12.00..12.01 rows=1 width=4)
+           ->  Merge Join  (cost=5.60..11.75 rows=100 width=4)
                  Merge Cond: (st1.c1 = st2.c1)
                  ->  Index Only Scan using t1_i1 on t1 st1  (cost=0.28..44.27 rows=1000 width=4)
                  ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -846,10 +867,10 @@ error hint:
 
                                            QUERY PLAN                                            
 -------------------------------------------------------------------------------------------------
- Nested Loop  (cost=14.53..24.81 rows=1 width=29)
+ Nested Loop  (cost=12.03..22.31 rows=1 width=29)
    InitPlan 1 (returns $0)
-     ->  Aggregate  (cost=14.25..14.26 rows=1 width=4)
-           ->  Merge Join  (cost=8.10..14.25 rows=1 width=4)
+     ->  Aggregate  (cost=11.75..11.76 rows=1 width=4)
+           ->  Merge Join  (cost=5.60..11.75 rows=1 width=4)
                  Merge Cond: (st1.c1 = st2.c1)
                  ->  Index Only Scan using t1_i1 on t1 st1  (cost=0.28..44.27 rows=1000 width=4)
                  ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -869,7 +890,7 @@ EXPLAIN SELECT * FROM s1.t1, (SELECT t2.c1 FROM s1.t2) st2 WHERE t1.c1 = st2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.t1, (SELECT t2.c1 FROM s1.t2) st2 WHERE t1.c1 = st2.c1;
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=19)
+ Merge Join  (cost=5.60..11.75 rows=100 width=19)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -890,7 +911,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=19)
+ Merge Join  (cost=5.60..11.75 rows=100 width=19)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -911,7 +932,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=19)
+ Merge Join  (cost=5.60..11.75 rows=1 width=19)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -938,7 +959,7 @@ Rows(t1 #1)
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -962,7 +983,7 @@ Rows(t1 t2 1)
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -986,7 +1007,7 @@ Rows(t1 t2 #notrows)
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -1050,16 +1071,16 @@ error hint:
 
                                                      QUERY PLAN                                                     
 --------------------------------------------------------------------------------------------------------------------
- Aggregate  (cost=542.24..542.25 rows=1 width=12)
+ Aggregate  (cost=537.24..537.25 rows=1 width=12)
    InitPlan 1 (returns $1)
-     ->  Aggregate  (cost=135.68..135.69 rows=1 width=4)
-           ->  Nested Loop  (cost=74.77..135.43 rows=100 width=4)
+     ->  Aggregate  (cost=133.18..133.19 rows=1 width=4)
+           ->  Nested Loop  (cost=72.27..132.93 rows=100 width=4)
                  Join Filter: (b1t2.c1 = b1t1.c1)
-                 ->  Hash Join  (cost=74.50..101.04 rows=100 width=12)
+                 ->  Hash Join  (cost=72.00..98.54 rows=100 width=12)
                        Hash Cond: (b1t4.c1 = b1t2.c1)
                        ->  Seq Scan on t4 b1t4  (cost=0.00..21.30 rows=1130 width=4)
-                       ->  Hash  (cost=73.25..73.25 rows=100 width=8)
-                             ->  Merge Join  (cost=7.97..73.25 rows=100 width=8)
+                       ->  Hash  (cost=70.75..70.75 rows=100 width=8)
+                             ->  Merge Join  (cost=5.47..70.75 rows=100 width=8)
                                    Merge Cond: (b1t3.c1 = b1t2.c1)
                                    ->  Index Only Scan using t3_i1 on t3 b1t3  (cost=0.15..61.10 rows=1130 width=4)
                                    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -1080,12 +1101,12 @@ error hint:
                              ->  Seq Scan on t1 b2t1  (cost=0.00..16.00 rows=1000 width=4)
                  ->  Index Only Scan using t2_i1 on t2 b2t2  (cost=0.14..0.17 rows=1 width=4)
                        Index Cond: (c1 = b2t1.c1)
-   ->  Nested Loop  (cost=15.65..63.43 rows=100 width=4)
-         ->  Hash Join  (cost=15.50..42.03 rows=100 width=12)
+   ->  Nested Loop  (cost=13.15..60.93 rows=100 width=4)
+         ->  Hash Join  (cost=13.00..39.53 rows=100 width=12)
                Hash Cond: (bmt3.c1 = bmt1.c1)
                ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-               ->  Hash  (cost=14.25..14.25 rows=100 width=8)
-                     ->  Merge Join  (cost=8.10..14.25 rows=100 width=8)
+               ->  Hash  (cost=11.75..11.75 rows=100 width=8)
+                     ->  Merge Join  (cost=5.60..11.75 rows=100 width=8)
                            Merge Cond: (bmt1.c1 = bmt2.c1)
                            ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..44.27 rows=1000 width=4)
                            ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -1160,16 +1181,16 @@ error hint:
 
                                                      QUERY PLAN                                                     
 --------------------------------------------------------------------------------------------------------------------
- Aggregate  (cost=298.30..298.31 rows=1 width=12)
+ Aggregate  (cost=293.30..293.31 rows=1 width=12)
    InitPlan 1 (returns $1)
-     ->  Aggregate  (cost=99.16..99.17 rows=1 width=4)
-           ->  Nested Loop  (cost=73.54..99.15 rows=1 width=4)
+     ->  Aggregate  (cost=96.66..96.67 rows=1 width=4)
+           ->  Nested Loop  (cost=71.04..96.65 rows=1 width=4)
                  Join Filter: (b1t2.c1 = b1t1.c1)
-                 ->  Hash Join  (cost=73.26..98.81 rows=1 width=12)
+                 ->  Hash Join  (cost=70.76..96.31 rows=1 width=12)
                        Hash Cond: (b1t4.c1 = b1t2.c1)
                        ->  Seq Scan on t4 b1t4  (cost=0.00..21.30 rows=1130 width=4)
-                       ->  Hash  (cost=73.25..73.25 rows=1 width=8)
-                             ->  Merge Join  (cost=7.97..73.25 rows=1 width=8)
+                       ->  Hash  (cost=70.75..70.75 rows=1 width=8)
+                             ->  Merge Join  (cost=5.47..70.75 rows=1 width=8)
                                    Merge Cond: (b1t3.c1 = b1t2.c1)
                                    ->  Index Only Scan using t3_i1 on t3 b1t3  (cost=0.15..61.10 rows=1130 width=4)
                                    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -1190,12 +1211,12 @@ error hint:
                                    ->  Index Only Scan using t4_i1 on t4 b2t4  (cost=0.15..61.10 rows=1130 width=4)
                  ->  Index Only Scan using t2_i1 on t2 b2t2  (cost=0.14..0.17 rows=1 width=4)
                        Index Cond: (c1 = b2t1.c1)
-   ->  Nested Loop  (cost=14.41..40.02 rows=1 width=4)
-         ->  Hash Join  (cost=14.26..39.81 rows=1 width=12)
+   ->  Nested Loop  (cost=11.91..37.52 rows=1 width=4)
+         ->  Hash Join  (cost=11.76..37.31 rows=1 width=12)
                Hash Cond: (bmt3.c1 = bmt1.c1)
                ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-               ->  Hash  (cost=14.25..14.25 rows=1 width=8)
-                     ->  Merge Join  (cost=8.10..14.25 rows=1 width=8)
+               ->  Hash  (cost=11.75..11.75 rows=1 width=8)
+                     ->  Merge Join  (cost=5.60..11.75 rows=1 width=8)
                            Merge Cond: (bmt1.c1 = bmt2.c1)
                            ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..44.27 rows=1000 width=4)
                            ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -1270,16 +1291,16 @@ error hint:
 
                                                      QUERY PLAN                                                     
 --------------------------------------------------------------------------------------------------------------------
- Aggregate  (cost=690.49..690.50 rows=1 width=16)
+ Aggregate  (cost=685.49..685.50 rows=1 width=16)
    InitPlan 1 (returns $1)
-     ->  Aggregate  (cost=135.68..135.69 rows=1 width=4)
-           ->  Nested Loop  (cost=74.77..135.43 rows=100 width=4)
+     ->  Aggregate  (cost=133.18..133.19 rows=1 width=4)
+           ->  Nested Loop  (cost=72.27..132.93 rows=100 width=4)
                  Join Filter: (b1t2.c1 = b1t1.c1)
-                 ->  Hash Join  (cost=74.50..101.04 rows=100 width=12)
+                 ->  Hash Join  (cost=72.00..98.54 rows=100 width=12)
                        Hash Cond: (b1t4.c1 = b1t2.c1)
                        ->  Seq Scan on t4 b1t4  (cost=0.00..21.30 rows=1130 width=4)
-                       ->  Hash  (cost=73.25..73.25 rows=100 width=8)
-                             ->  Merge Join  (cost=7.97..73.25 rows=100 width=8)
+                       ->  Hash  (cost=70.75..70.75 rows=100 width=8)
+                             ->  Merge Join  (cost=5.47..70.75 rows=100 width=8)
                                    Merge Cond: (b1t3.c1 = b1t2.c1)
                                    ->  Index Only Scan using t3_i1 on t3 b1t3  (cost=0.15..61.10 rows=1130 width=4)
                                    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -1313,12 +1334,12 @@ error hint:
                              ->  Seq Scan on t2 b3t2  (cost=0.00..2.00 rows=100 width=4)
                  ->  Index Only Scan using t3_i1 on t3 b3t3  (cost=0.15..0.21 rows=1 width=4)
                        Index Cond: (c1 = b3t1.c1)
-   ->  Nested Loop  (cost=15.65..63.43 rows=100 width=4)
-         ->  Hash Join  (cost=15.50..42.03 rows=100 width=12)
+   ->  Nested Loop  (cost=13.15..60.93 rows=100 width=4)
+         ->  Hash Join  (cost=13.00..39.53 rows=100 width=12)
                Hash Cond: (bmt3.c1 = bmt1.c1)
                ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-               ->  Hash  (cost=14.25..14.25 rows=100 width=8)
-                     ->  Merge Join  (cost=8.10..14.25 rows=100 width=8)
+               ->  Hash  (cost=11.75..11.75 rows=100 width=8)
+                     ->  Merge Join  (cost=5.60..11.75 rows=100 width=8)
                            Merge Cond: (bmt1.c1 = bmt2.c1)
                            ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..44.27 rows=1000 width=4)
                            ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -1412,16 +1433,16 @@ error hint:
 
                                                      QUERY PLAN                                                     
 --------------------------------------------------------------------------------------------------------------------
- Aggregate  (cost=422.48..422.49 rows=1 width=16)
+ Aggregate  (cost=417.48..417.49 rows=1 width=16)
    InitPlan 1 (returns $1)
-     ->  Aggregate  (cost=99.16..99.17 rows=1 width=4)
-           ->  Nested Loop  (cost=73.54..99.15 rows=1 width=4)
+     ->  Aggregate  (cost=96.66..96.67 rows=1 width=4)
+           ->  Nested Loop  (cost=71.04..96.65 rows=1 width=4)
                  Join Filter: (b1t2.c1 = b1t1.c1)
-                 ->  Hash Join  (cost=73.26..98.81 rows=1 width=12)
+                 ->  Hash Join  (cost=70.76..96.31 rows=1 width=12)
                        Hash Cond: (b1t4.c1 = b1t2.c1)
                        ->  Seq Scan on t4 b1t4  (cost=0.00..21.30 rows=1130 width=4)
-                       ->  Hash  (cost=73.25..73.25 rows=1 width=8)
-                             ->  Merge Join  (cost=7.97..73.25 rows=1 width=8)
+                       ->  Hash  (cost=70.75..70.75 rows=1 width=8)
+                             ->  Merge Join  (cost=5.47..70.75 rows=1 width=8)
                                    Merge Cond: (b1t3.c1 = b1t2.c1)
                                    ->  Index Only Scan using t3_i1 on t3 b1t3  (cost=0.15..61.10 rows=1130 width=4)
                                    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -1455,12 +1476,12 @@ error hint:
                              ->  Seq Scan on t2 b3t2  (cost=0.00..2.00 rows=100 width=4)
                  ->  Index Only Scan using t3_i1 on t3 b3t3  (cost=0.15..0.21 rows=1 width=4)
                        Index Cond: (c1 = b3t1.c1)
-   ->  Nested Loop  (cost=14.41..40.02 rows=1 width=4)
-         ->  Hash Join  (cost=14.26..39.81 rows=1 width=12)
+   ->  Nested Loop  (cost=11.91..37.52 rows=1 width=4)
+         ->  Hash Join  (cost=11.76..37.31 rows=1 width=12)
                Hash Cond: (bmt3.c1 = bmt1.c1)
                ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-               ->  Hash  (cost=14.25..14.25 rows=1 width=8)
-                     ->  Merge Join  (cost=8.10..14.25 rows=1 width=8)
+               ->  Hash  (cost=11.75..11.75 rows=1 width=8)
+                     ->  Merge Join  (cost=5.60..11.75 rows=1 width=8)
                            Merge Cond: (bmt1.c1 = bmt2.c1)
                            ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..44.27 rows=1000 width=4)
                            ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -1488,15 +1509,15 @@ error hint:
 
                                           QUERY PLAN                                           
 -----------------------------------------------------------------------------------------------
- Aggregate  (cost=78.43..78.44 rows=1 width=4)
-   ->  Merge Join  (cost=72.03..78.18 rows=100 width=4)
+ Aggregate  (cost=75.93..75.94 rows=1 width=4)
+   ->  Merge Join  (cost=69.53..75.68 rows=100 width=4)
          Merge Cond: (bmt1.c1 = bmt2.c1)
          ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..44.27 rows=1000 width=4)
          ->  Sort  (cost=69.25..69.50 rows=100 width=12)
                Sort Key: bmt2.c1
-               ->  Hash Join  (cost=38.67..65.93 rows=100 width=12)
+               ->  Hash Join  (cost=38.68..65.93 rows=100 width=12)
                      Hash Cond: (bmt3.c1 = bmt2.c1)
-                     ->  Hash Join  (cost=35.42..59.70 rows=1130 width=8)
+                     ->  Hash Join  (cost=35.43..59.70 rows=1130 width=8)
                            Hash Cond: (bmt3.c1 = bmt4.c1)
                            ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
                            ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -1531,7 +1552,7 @@ error hint:
    ->  Nested Loop  (cost=35.84..60.22 rows=1 width=4)
          Join Filter: (bmt2.c1 = bmt1.c1)
          ->  Nested Loop  (cost=35.57..59.87 rows=1 width=12)
-               ->  Hash Join  (cost=35.42..59.70 rows=1 width=8)
+               ->  Hash Join  (cost=35.43..59.70 rows=1 width=8)
                      Hash Cond: (bmt3.c1 = bmt4.c1)
                      ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
                      ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -1560,15 +1581,15 @@ error hint:
 
                                           QUERY PLAN                                           
 -----------------------------------------------------------------------------------------------
- Aggregate  (cost=78.43..78.44 rows=1 width=4)
-   ->  Merge Join  (cost=72.03..78.18 rows=100 width=4)
+ Aggregate  (cost=75.93..75.94 rows=1 width=4)
+   ->  Merge Join  (cost=69.53..75.68 rows=100 width=4)
          Merge Cond: (bmt1.c1 = bmt2.c1)
          ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..44.27 rows=1000 width=4)
          ->  Sort  (cost=69.25..69.50 rows=100 width=12)
                Sort Key: bmt2.c1
-               ->  Hash Join  (cost=38.67..65.93 rows=100 width=12)
+               ->  Hash Join  (cost=38.68..65.93 rows=100 width=12)
                      Hash Cond: (bmt3.c1 = bmt2.c1)
-                     ->  Hash Join  (cost=35.42..59.70 rows=1130 width=8)
+                     ->  Hash Join  (cost=35.43..59.70 rows=1130 width=8)
                            Hash Cond: (bmt3.c1 = bmt4.c1)
                            ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
                            ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -1603,7 +1624,7 @@ error hint:
    ->  Nested Loop  (cost=35.84..60.22 rows=1 width=4)
          Join Filter: (bmt2.c1 = bmt1.c1)
          ->  Nested Loop  (cost=35.57..59.87 rows=1 width=12)
-               ->  Hash Join  (cost=35.42..59.70 rows=1 width=8)
+               ->  Hash Join  (cost=35.43..59.70 rows=1 width=8)
                      Hash Cond: (bmt3.c1 = bmt4.c1)
                      ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
                      ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -1665,16 +1686,16 @@ error hint:
 
                                                      QUERY PLAN                                                     
 --------------------------------------------------------------------------------------------------------------------
- Aggregate  (cost=542.76..542.77 rows=1 width=4)
+ Aggregate  (cost=537.76..537.77 rows=1 width=4)
    InitPlan 1 (returns $1)
-     ->  Aggregate  (cost=135.68..135.69 rows=1 width=4)
-           ->  Nested Loop  (cost=74.77..135.43 rows=100 width=4)
+     ->  Aggregate  (cost=133.18..133.19 rows=1 width=4)
+           ->  Nested Loop  (cost=72.27..132.93 rows=100 width=4)
                  Join Filter: (b1t2.c1 = b1t1.c1)
-                 ->  Hash Join  (cost=74.50..101.04 rows=100 width=12)
+                 ->  Hash Join  (cost=72.00..98.54 rows=100 width=12)
                        Hash Cond: (b1t4.c1 = b1t2.c1)
                        ->  Seq Scan on t4 b1t4  (cost=0.00..21.30 rows=1130 width=4)
-                       ->  Hash  (cost=73.25..73.25 rows=100 width=8)
-                             ->  Merge Join  (cost=7.97..73.25 rows=100 width=8)
+                       ->  Hash  (cost=70.75..70.75 rows=100 width=8)
+                             ->  Merge Join  (cost=5.47..70.75 rows=100 width=8)
                                    Merge Cond: (b1t3.c1 = b1t2.c1)
                                    ->  Index Only Scan using t3_i1 on t3 b1t3  (cost=0.15..61.10 rows=1130 width=4)
                                    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -1695,12 +1716,12 @@ error hint:
                              ->  Seq Scan on t1 b2t1  (cost=0.00..16.00 rows=1000 width=4)
                  ->  Index Only Scan using t2_i1 on t2 b2t2  (cost=0.14..0.17 rows=1 width=4)
                        Index Cond: (c1 = b2t1.c1)
-   ->  Nested Loop  (cost=16.16..63.95 rows=100 width=4)
-         ->  Hash Join  (cost=16.01..42.54 rows=100 width=12)
+   ->  Nested Loop  (cost=13.66..61.45 rows=100 width=4)
+         ->  Hash Join  (cost=13.51..40.04 rows=100 width=12)
                Hash Cond: (bmt3.c1 = bmt1.c1)
                ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-               ->  Hash  (cost=14.76..14.76 rows=100 width=8)
-                     ->  Merge Join  (cost=8.10..14.76 rows=100 width=8)
+               ->  Hash  (cost=12.26..12.26 rows=100 width=8)
+                     ->  Merge Join  (cost=5.60..12.26 rows=100 width=8)
                            Merge Cond: (bmt1.c1 = bmt2.c1)
                            ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..49.27 rows=998 width=4)
                                  Filter: ((c1 <> $1) AND (c1 <> $3))
@@ -1778,16 +1799,16 @@ error hint:
 
                                                      QUERY PLAN                                                     
 --------------------------------------------------------------------------------------------------------------------
- Aggregate  (cost=298.81..298.82 rows=1 width=4)
+ Aggregate  (cost=293.81..293.82 rows=1 width=4)
    InitPlan 1 (returns $1)
-     ->  Aggregate  (cost=99.16..99.17 rows=1 width=4)
-           ->  Nested Loop  (cost=73.54..99.15 rows=1 width=4)
+     ->  Aggregate  (cost=96.66..96.67 rows=1 width=4)
+           ->  Nested Loop  (cost=71.04..96.65 rows=1 width=4)
                  Join Filter: (b1t2.c1 = b1t1.c1)
-                 ->  Hash Join  (cost=73.26..98.81 rows=1 width=12)
+                 ->  Hash Join  (cost=70.76..96.31 rows=1 width=12)
                        Hash Cond: (b1t4.c1 = b1t2.c1)
                        ->  Seq Scan on t4 b1t4  (cost=0.00..21.30 rows=1130 width=4)
-                       ->  Hash  (cost=73.25..73.25 rows=1 width=8)
-                             ->  Merge Join  (cost=7.97..73.25 rows=1 width=8)
+                       ->  Hash  (cost=70.75..70.75 rows=1 width=8)
+                             ->  Merge Join  (cost=5.47..70.75 rows=1 width=8)
                                    Merge Cond: (b1t3.c1 = b1t2.c1)
                                    ->  Index Only Scan using t3_i1 on t3 b1t3  (cost=0.15..61.10 rows=1130 width=4)
                                    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -1808,12 +1829,12 @@ error hint:
                                    ->  Index Only Scan using t4_i1 on t4 b2t4  (cost=0.15..61.10 rows=1130 width=4)
                  ->  Index Only Scan using t2_i1 on t2 b2t2  (cost=0.14..0.17 rows=1 width=4)
                        Index Cond: (c1 = b2t1.c1)
-   ->  Nested Loop  (cost=14.92..40.53 rows=1 width=4)
-         ->  Hash Join  (cost=14.77..40.32 rows=1 width=12)
+   ->  Nested Loop  (cost=12.42..38.03 rows=1 width=4)
+         ->  Hash Join  (cost=12.27..37.82 rows=1 width=12)
                Hash Cond: (bmt3.c1 = bmt1.c1)
                ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-               ->  Hash  (cost=14.76..14.76 rows=1 width=8)
-                     ->  Merge Join  (cost=8.10..14.76 rows=1 width=8)
+               ->  Hash  (cost=12.26..12.26 rows=1 width=8)
+                     ->  Merge Join  (cost=5.60..12.26 rows=1 width=8)
                            Merge Cond: (bmt1.c1 = bmt2.c1)
                            ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..49.27 rows=998 width=4)
                                  Filter: ((c1 <> $1) AND (c1 <> $3))
@@ -1889,16 +1910,16 @@ error hint:
 
                                                      QUERY PLAN                                                     
 --------------------------------------------------------------------------------------------------------------------
- Aggregate  (cost=691.27..691.28 rows=1 width=4)
+ Aggregate  (cost=686.27..686.28 rows=1 width=4)
    InitPlan 1 (returns $1)
-     ->  Aggregate  (cost=135.68..135.69 rows=1 width=4)
-           ->  Nested Loop  (cost=74.77..135.43 rows=100 width=4)
+     ->  Aggregate  (cost=133.18..133.19 rows=1 width=4)
+           ->  Nested Loop  (cost=72.27..132.93 rows=100 width=4)
                  Join Filter: (b1t2.c1 = b1t1.c1)
-                 ->  Hash Join  (cost=74.50..101.04 rows=100 width=12)
+                 ->  Hash Join  (cost=72.00..98.54 rows=100 width=12)
                        Hash Cond: (b1t4.c1 = b1t2.c1)
                        ->  Seq Scan on t4 b1t4  (cost=0.00..21.30 rows=1130 width=4)
-                       ->  Hash  (cost=73.25..73.25 rows=100 width=8)
-                             ->  Merge Join  (cost=7.97..73.25 rows=100 width=8)
+                       ->  Hash  (cost=70.75..70.75 rows=100 width=8)
+                             ->  Merge Join  (cost=5.47..70.75 rows=100 width=8)
                                    Merge Cond: (b1t3.c1 = b1t2.c1)
                                    ->  Index Only Scan using t3_i1 on t3 b1t3  (cost=0.15..61.10 rows=1130 width=4)
                                    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -1932,12 +1953,12 @@ error hint:
                              ->  Seq Scan on t2 b3t2  (cost=0.00..2.00 rows=100 width=4)
                  ->  Index Only Scan using t3_i1 on t3 b3t3  (cost=0.15..0.21 rows=1 width=4)
                        Index Cond: (c1 = b3t1.c1)
-   ->  Nested Loop  (cost=16.41..64.21 rows=100 width=4)
-         ->  Hash Join  (cost=16.26..42.80 rows=100 width=12)
+   ->  Nested Loop  (cost=13.91..61.71 rows=100 width=4)
+         ->  Hash Join  (cost=13.76..40.30 rows=100 width=12)
                Hash Cond: (bmt3.c1 = bmt1.c1)
                ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-               ->  Hash  (cost=15.01..15.01 rows=100 width=8)
-                     ->  Merge Join  (cost=8.10..15.01 rows=100 width=8)
+               ->  Hash  (cost=12.51..12.51 rows=100 width=8)
+                     ->  Merge Join  (cost=5.60..12.51 rows=100 width=8)
                            Merge Cond: (bmt1.c1 = bmt2.c1)
                            ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..51.77 rows=997 width=4)
                                  Filter: ((c1 <> $1) AND (c1 <> $3) AND (c1 <> $5))
@@ -2032,16 +2053,16 @@ error hint:
 
                                                      QUERY PLAN                                                     
 --------------------------------------------------------------------------------------------------------------------
- Aggregate  (cost=423.25..423.26 rows=1 width=4)
+ Aggregate  (cost=418.25..418.26 rows=1 width=4)
    InitPlan 1 (returns $1)
-     ->  Aggregate  (cost=99.16..99.17 rows=1 width=4)
-           ->  Nested Loop  (cost=73.54..99.15 rows=1 width=4)
+     ->  Aggregate  (cost=96.66..96.67 rows=1 width=4)
+           ->  Nested Loop  (cost=71.04..96.65 rows=1 width=4)
                  Join Filter: (b1t2.c1 = b1t1.c1)
-                 ->  Hash Join  (cost=73.26..98.81 rows=1 width=12)
+                 ->  Hash Join  (cost=70.76..96.31 rows=1 width=12)
                        Hash Cond: (b1t4.c1 = b1t2.c1)
                        ->  Seq Scan on t4 b1t4  (cost=0.00..21.30 rows=1130 width=4)
-                       ->  Hash  (cost=73.25..73.25 rows=1 width=8)
-                             ->  Merge Join  (cost=7.97..73.25 rows=1 width=8)
+                       ->  Hash  (cost=70.75..70.75 rows=1 width=8)
+                             ->  Merge Join  (cost=5.47..70.75 rows=1 width=8)
                                    Merge Cond: (b1t3.c1 = b1t2.c1)
                                    ->  Index Only Scan using t3_i1 on t3 b1t3  (cost=0.15..61.10 rows=1130 width=4)
                                    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -2075,12 +2096,12 @@ error hint:
                              ->  Seq Scan on t2 b3t2  (cost=0.00..2.00 rows=100 width=4)
                  ->  Index Only Scan using t3_i1 on t3 b3t3  (cost=0.15..0.21 rows=1 width=4)
                        Index Cond: (c1 = b3t1.c1)
-   ->  Nested Loop  (cost=15.18..40.79 rows=1 width=4)
-         ->  Hash Join  (cost=15.02..40.57 rows=1 width=12)
+   ->  Nested Loop  (cost=12.68..38.29 rows=1 width=4)
+         ->  Hash Join  (cost=12.52..38.07 rows=1 width=12)
                Hash Cond: (bmt3.c1 = bmt1.c1)
                ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-               ->  Hash  (cost=15.01..15.01 rows=1 width=8)
-                     ->  Merge Join  (cost=8.10..15.01 rows=1 width=8)
+               ->  Hash  (cost=12.51..12.51 rows=1 width=8)
+                     ->  Merge Join  (cost=5.60..12.51 rows=1 width=8)
                            Merge Cond: (bmt1.c1 = bmt2.c1)
                            ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..51.77 rows=997 width=4)
                                  Filter: ((c1 <> $1) AND (c1 <> $3) AND (c1 <> $5))
@@ -2156,16 +2177,16 @@ error hint:
 
                                                      QUERY PLAN                                                     
 --------------------------------------------------------------------------------------------------------------------
- Aggregate  (cost=588.25..588.26 rows=1 width=4)
+ Aggregate  (cost=585.60..585.61 rows=1 width=4)
    CTE c1
-     ->  Aggregate  (cost=135.68..135.69 rows=1 width=4)
-           ->  Nested Loop  (cost=74.77..135.43 rows=100 width=4)
+     ->  Aggregate  (cost=133.18..133.19 rows=1 width=4)
+           ->  Nested Loop  (cost=72.27..132.93 rows=100 width=4)
                  Join Filter: (b1t2.c1 = b1t1.c1)
-                 ->  Hash Join  (cost=74.50..101.04 rows=100 width=12)
+                 ->  Hash Join  (cost=72.00..98.54 rows=100 width=12)
                        Hash Cond: (b1t4.c1 = b1t2.c1)
                        ->  Seq Scan on t4 b1t4  (cost=0.00..21.30 rows=1130 width=4)
-                       ->  Hash  (cost=73.25..73.25 rows=100 width=8)
-                             ->  Merge Join  (cost=7.97..73.25 rows=100 width=8)
+                       ->  Hash  (cost=70.75..70.75 rows=100 width=8)
+                             ->  Merge Join  (cost=5.47..70.75 rows=100 width=8)
                                    Merge Cond: (b1t3.c1 = b1t2.c1)
                                    ->  Index Only Scan using t3_i1 on t3 b1t3  (cost=0.15..61.10 rows=1130 width=4)
                                    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -2186,21 +2207,21 @@ error hint:
                              ->  Seq Scan on t1 b2t1  (cost=0.00..16.00 rows=1000 width=4)
                  ->  Index Only Scan using t2_i1 on t2 b2t2  (cost=0.14..0.17 rows=1 width=4)
                        Index Cond: (c1 = b2t1.c1)
-   ->  Hash Join  (cost=84.15..109.70 rows=1 width=4)
+   ->  Hash Join  (cost=84.00..109.55 rows=1 width=4)
          Hash Cond: (bmt4.c1 = bmt1.c1)
          ->  Seq Scan on t4 bmt4  (cost=0.00..21.30 rows=1130 width=4)
-         ->  Hash  (cost=84.14..84.14 rows=1 width=20)
-               ->  Merge Join  (cost=20.34..84.14 rows=1 width=20)
+         ->  Hash  (cost=83.99..83.99 rows=1 width=20)
+               ->  Merge Join  (cost=20.19..83.99 rows=1 width=20)
                      Merge Cond: (bmt3.c1 = bmt1.c1)
                      ->  Index Only Scan using t3_i1 on t3 bmt3  (cost=0.15..61.10 rows=1130 width=4)
-                     ->  Sort  (cost=20.14..20.15 rows=1 width=16)
+                     ->  Sort  (cost=20.04..20.05 rows=1 width=16)
                            Sort Key: bmt1.c1
-                           ->  Nested Loop  (cost=0.34..20.13 rows=1 width=16)
-                                 ->  Hash Join  (cost=0.20..19.96 rows=1 width=12)
+                           ->  Nested Loop  (cost=0.24..20.03 rows=1 width=16)
+                                 ->  Hash Join  (cost=0.10..19.86 rows=1 width=12)
                                        Hash Cond: (bmt1.c1 = c1.c1)
                                        ->  Seq Scan on t1 bmt1  (cost=0.00..16.00 rows=1000 width=4)
-                                       ->  Hash  (cost=0.19..0.19 rows=1 width=8)
-                                             ->  Merge Join  (cost=0.16..0.19 rows=1 width=8)
+                                       ->  Hash  (cost=0.09..0.09 rows=1 width=8)
+                                             ->  Merge Join  (cost=0.06..0.09 rows=1 width=8)
                                                    Merge Cond: (c1.c1 = c2.c1)
                                                    ->  Sort  (cost=0.03..0.04 rows=1 width=4)
                                                          Sort Key: c1.c1
@@ -2291,16 +2312,16 @@ error hint:
 
                                                      QUERY PLAN                                                     
 --------------------------------------------------------------------------------------------------------------------
- Aggregate  (cost=367.98..367.99 rows=1 width=4)
+ Aggregate  (cost=365.33..365.34 rows=1 width=4)
    CTE c1
-     ->  Aggregate  (cost=99.16..99.17 rows=1 width=4)
-           ->  Nested Loop  (cost=73.54..99.15 rows=1 width=4)
+     ->  Aggregate  (cost=96.66..96.67 rows=1 width=4)
+           ->  Nested Loop  (cost=71.04..96.65 rows=1 width=4)
                  Join Filter: (b1t2.c1 = b1t1.c1)
-                 ->  Hash Join  (cost=73.26..98.81 rows=1 width=12)
+                 ->  Hash Join  (cost=70.76..96.31 rows=1 width=12)
                        Hash Cond: (b1t4.c1 = b1t2.c1)
                        ->  Seq Scan on t4 b1t4  (cost=0.00..21.30 rows=1130 width=4)
-                       ->  Hash  (cost=73.25..73.25 rows=1 width=8)
-                             ->  Merge Join  (cost=7.97..73.25 rows=1 width=8)
+                       ->  Hash  (cost=70.75..70.75 rows=1 width=8)
+                             ->  Merge Join  (cost=5.47..70.75 rows=1 width=8)
                                    Merge Cond: (b1t3.c1 = b1t2.c1)
                                    ->  Index Only Scan using t3_i1 on t3 b1t3  (cost=0.15..61.10 rows=1130 width=4)
                                    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -2321,21 +2342,21 @@ error hint:
                                    ->  Index Only Scan using t4_i1 on t4 b2t4  (cost=0.15..61.10 rows=1130 width=4)
                  ->  Index Only Scan using t2_i1 on t2 b2t2  (cost=0.14..0.17 rows=1 width=4)
                        Index Cond: (c1 = b2t1.c1)
-   ->  Hash Join  (cost=84.15..109.70 rows=1 width=4)
+   ->  Hash Join  (cost=84.00..109.55 rows=1 width=4)
          Hash Cond: (bmt4.c1 = bmt1.c1)
          ->  Seq Scan on t4 bmt4  (cost=0.00..21.30 rows=1130 width=4)
-         ->  Hash  (cost=84.14..84.14 rows=1 width=20)
-               ->  Merge Join  (cost=20.34..84.14 rows=1 width=20)
+         ->  Hash  (cost=83.99..83.99 rows=1 width=20)
+               ->  Merge Join  (cost=20.19..83.99 rows=1 width=20)
                      Merge Cond: (bmt3.c1 = bmt1.c1)
                      ->  Index Only Scan using t3_i1 on t3 bmt3  (cost=0.15..61.10 rows=1130 width=4)
-                     ->  Sort  (cost=20.14..20.15 rows=1 width=16)
+                     ->  Sort  (cost=20.04..20.05 rows=1 width=16)
                            Sort Key: bmt1.c1
-                           ->  Nested Loop  (cost=0.34..20.13 rows=1 width=16)
-                                 ->  Hash Join  (cost=0.20..19.96 rows=1 width=12)
+                           ->  Nested Loop  (cost=0.24..20.03 rows=1 width=16)
+                                 ->  Hash Join  (cost=0.10..19.86 rows=1 width=12)
                                        Hash Cond: (bmt1.c1 = c1.c1)
                                        ->  Seq Scan on t1 bmt1  (cost=0.00..16.00 rows=1000 width=4)
-                                       ->  Hash  (cost=0.19..0.19 rows=1 width=8)
-                                             ->  Merge Join  (cost=0.16..0.19 rows=1 width=8)
+                                       ->  Hash  (cost=0.09..0.09 rows=1 width=8)
+                                             ->  Merge Join  (cost=0.06..0.09 rows=1 width=8)
                                                    Merge Cond: (c1.c1 = c2.c1)
                                                    ->  Sort  (cost=0.03..0.04 rows=1 width=4)
                                                          Sort Key: c1.c1
@@ -2427,16 +2448,16 @@ error hint:
 
                                                      QUERY PLAN                                                     
 --------------------------------------------------------------------------------------------------------------------
- Aggregate  (cost=669.52..669.53 rows=1 width=4)
+ Aggregate  (cost=664.37..664.38 rows=1 width=4)
    CTE c1
-     ->  Aggregate  (cost=135.68..135.69 rows=1 width=4)
-           ->  Nested Loop  (cost=74.77..135.43 rows=100 width=4)
+     ->  Aggregate  (cost=133.18..133.19 rows=1 width=4)
+           ->  Nested Loop  (cost=72.27..132.93 rows=100 width=4)
                  Join Filter: (b1t2.c1 = b1t1.c1)
-                 ->  Hash Join  (cost=74.50..101.04 rows=100 width=12)
+                 ->  Hash Join  (cost=72.00..98.54 rows=100 width=12)
                        Hash Cond: (b1t4.c1 = b1t2.c1)
                        ->  Seq Scan on t4 b1t4  (cost=0.00..21.30 rows=1130 width=4)
-                       ->  Hash  (cost=73.25..73.25 rows=100 width=8)
-                             ->  Merge Join  (cost=7.97..73.25 rows=100 width=8)
+                       ->  Hash  (cost=70.75..70.75 rows=100 width=8)
+                             ->  Merge Join  (cost=5.47..70.75 rows=100 width=8)
                                    Merge Cond: (b1t3.c1 = b1t2.c1)
                                    ->  Index Only Scan using t3_i1 on t3 b1t3  (cost=0.15..61.10 rows=1130 width=4)
                                    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -2470,20 +2491,20 @@ error hint:
                              ->  Seq Scan on t2 b3t2  (cost=0.00..2.00 rows=100 width=4)
                  ->  Index Only Scan using t3_i1 on t3 b3t3  (cost=0.15..0.21 rows=1 width=4)
                        Index Cond: (c1 = b3t1.c1)
-   ->  Nested Loop  (cost=17.10..42.71 rows=1 width=4)
-         ->  Hash Join  (cost=16.95..42.50 rows=1 width=24)
+   ->  Nested Loop  (cost=14.45..40.06 rows=1 width=4)
+         ->  Hash Join  (cost=14.30..39.85 rows=1 width=24)
                Hash Cond: (bmt3.c1 = bmt1.c1)
                ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-               ->  Hash  (cost=16.94..16.94 rows=1 width=20)
-                     ->  Merge Join  (cost=16.42..16.94 rows=1 width=20)
+               ->  Hash  (cost=14.29..14.29 rows=1 width=20)
+                     ->  Merge Join  (cost=13.77..14.29 rows=1 width=20)
                            Merge Cond: (bmt1.c1 = bmt2.c1)
-                           ->  Sort  (cost=8.55..8.55 rows=1 width=16)
+                           ->  Sort  (cost=8.45..8.45 rows=1 width=16)
                                  Sort Key: bmt1.c1
-                                 ->  Nested Loop  (cost=0.47..8.54 rows=1 width=16)
+                                 ->  Nested Loop  (cost=0.37..8.44 rows=1 width=16)
                                        Join Filter: (c1.c1 = bmt1.c1)
-                                       ->  Hash Join  (cost=0.19..0.23 rows=1 width=12)
+                                       ->  Hash Join  (cost=0.09..0.13 rows=1 width=12)
                                              Hash Cond: (c2.c1 = c1.c1)
-                                             ->  Merge Join  (cost=0.16..0.19 rows=1 width=8)
+                                             ->  Merge Join  (cost=0.06..0.09 rows=1 width=8)
                                                    Merge Cond: (c2.c1 = c3.c1)
                                                    ->  Sort  (cost=0.03..0.04 rows=1 width=4)
                                                          Sort Key: c2.c1
@@ -2604,16 +2625,16 @@ error hint:
 
                                                      QUERY PLAN                                                     
 --------------------------------------------------------------------------------------------------------------------
- Aggregate  (cost=425.17..425.18 rows=1 width=4)
+ Aggregate  (cost=420.02..420.03 rows=1 width=4)
    CTE c1
-     ->  Aggregate  (cost=99.16..99.17 rows=1 width=4)
-           ->  Nested Loop  (cost=73.54..99.15 rows=1 width=4)
+     ->  Aggregate  (cost=96.66..96.67 rows=1 width=4)
+           ->  Nested Loop  (cost=71.04..96.65 rows=1 width=4)
                  Join Filter: (b1t2.c1 = b1t1.c1)
-                 ->  Hash Join  (cost=73.26..98.81 rows=1 width=12)
+                 ->  Hash Join  (cost=70.76..96.31 rows=1 width=12)
                        Hash Cond: (b1t4.c1 = b1t2.c1)
                        ->  Seq Scan on t4 b1t4  (cost=0.00..21.30 rows=1130 width=4)
-                       ->  Hash  (cost=73.25..73.25 rows=1 width=8)
-                             ->  Merge Join  (cost=7.97..73.25 rows=1 width=8)
+                       ->  Hash  (cost=70.75..70.75 rows=1 width=8)
+                             ->  Merge Join  (cost=5.47..70.75 rows=1 width=8)
                                    Merge Cond: (b1t3.c1 = b1t2.c1)
                                    ->  Index Only Scan using t3_i1 on t3 b1t3  (cost=0.15..61.10 rows=1130 width=4)
                                    ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -2647,20 +2668,20 @@ error hint:
                              ->  Seq Scan on t2 b3t2  (cost=0.00..2.00 rows=100 width=4)
                  ->  Index Only Scan using t3_i1 on t3 b3t3  (cost=0.15..0.21 rows=1 width=4)
                        Index Cond: (c1 = b3t1.c1)
-   ->  Nested Loop  (cost=17.10..42.71 rows=1 width=4)
-         ->  Hash Join  (cost=16.95..42.50 rows=1 width=24)
+   ->  Nested Loop  (cost=14.45..40.06 rows=1 width=4)
+         ->  Hash Join  (cost=14.30..39.85 rows=1 width=24)
                Hash Cond: (bmt3.c1 = bmt1.c1)
                ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-               ->  Hash  (cost=16.94..16.94 rows=1 width=20)
-                     ->  Merge Join  (cost=16.42..16.94 rows=1 width=20)
+               ->  Hash  (cost=14.29..14.29 rows=1 width=20)
+                     ->  Merge Join  (cost=13.77..14.29 rows=1 width=20)
                            Merge Cond: (bmt1.c1 = bmt2.c1)
-                           ->  Sort  (cost=8.55..8.55 rows=1 width=16)
+                           ->  Sort  (cost=8.45..8.45 rows=1 width=16)
                                  Sort Key: bmt1.c1
-                                 ->  Nested Loop  (cost=0.47..8.54 rows=1 width=16)
+                                 ->  Nested Loop  (cost=0.37..8.44 rows=1 width=16)
                                        Join Filter: (c1.c1 = bmt1.c1)
-                                       ->  Hash Join  (cost=0.19..0.23 rows=1 width=12)
+                                       ->  Hash Join  (cost=0.09..0.13 rows=1 width=12)
                                              Hash Cond: (c2.c1 = c1.c1)
-                                             ->  Merge Join  (cost=0.16..0.19 rows=1 width=8)
+                                             ->  Merge Join  (cost=0.06..0.09 rows=1 width=8)
                                                    Merge Cond: (c2.c1 = c3.c1)
                                                    ->  Sort  (cost=0.03..0.04 rows=1 width=4)
                                                          Sort Key: c2.c1
@@ -2871,24 +2892,24 @@ error hint:
 
                                          QUERY PLAN                                         
 --------------------------------------------------------------------------------------------
- Hash Join  (cost=61.63..84.88 rows=10 width=8)
+ Hash Join  (cost=49.13..72.38 rows=10 width=8)
    Hash Cond: (bmt1.c1 = bmt2.c1)
    CTE c1
-     ->  Merge Join  (cost=8.10..14.25 rows=100 width=4)
+     ->  Merge Join  (cost=5.60..11.75 rows=100 width=4)
            Merge Cond: (b1t1.c1 = b1t2.c1)
            ->  Index Only Scan using t1_i1 on t1 b1t1  (cost=0.28..44.27 rows=1000 width=4)
            ->  Sort  (cost=5.32..5.57 rows=100 width=4)
                  Sort Key: b1t2.c1
                  ->  Seq Scan on t2 b1t2  (cost=0.00..2.00 rows=100 width=4)
    InitPlan 2 (returns $1)
-     ->  Merge Join  (cost=8.10..14.25 rows=100 width=4)
+     ->  Merge Join  (cost=5.60..11.75 rows=100 width=4)
            Merge Cond: (b2t1.c1 = b2t2.c1)
            ->  Index Only Scan using t1_i1 on t1 b2t1  (cost=0.28..44.27 rows=1000 width=4)
            ->  Sort  (cost=5.32..5.57 rows=100 width=4)
                  Sort Key: b2t2.c1
                  ->  Seq Scan on t2 b2t2  (cost=0.00..2.00 rows=100 width=4)
    InitPlan 3 (returns $2)
-     ->  Merge Join  (cost=8.10..14.25 rows=100 width=4)
+     ->  Merge Join  (cost=5.60..11.75 rows=100 width=4)
            Merge Cond: (b3t1.c1 = b3t2.c1)
            ->  Index Only Scan using t1_i1 on t1 b3t1  (cost=0.28..44.27 rows=1000 width=4)
            ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -2896,8 +2917,8 @@ error hint:
                  ->  Seq Scan on t2 b3t2  (cost=0.00..2.00 rows=100 width=4)
    ->  Seq Scan on t1 bmt1  (cost=0.00..18.50 rows=999 width=4)
          Filter: (c1 <> $2)
-   ->  Hash  (cost=17.64..17.64 rows=100 width=8)
-         ->  Merge Join  (cost=15.64..17.64 rows=100 width=8)
+   ->  Hash  (cost=12.64..12.64 rows=100 width=8)
+         ->  Merge Join  (cost=10.64..12.64 rows=100 width=8)
                Merge Cond: (bmt2.c1 = c1.c1)
                ->  Sort  (cost=5.32..5.57 rows=100 width=4)
                      Sort Key: bmt2.c1
@@ -2987,24 +3008,24 @@ error hint:
 
                                          QUERY PLAN                                         
 --------------------------------------------------------------------------------------------
- Hash Join  (cost=51.17..73.43 rows=1 width=8)
+ Hash Join  (cost=41.12..63.38 rows=1 width=8)
    Hash Cond: (bmt1.c1 = bmt2.c1)
    CTE c1
-     ->  Merge Join  (cost=8.10..14.25 rows=1 width=4)
+     ->  Merge Join  (cost=5.60..11.75 rows=1 width=4)
            Merge Cond: (b1t1.c1 = b1t2.c1)
            ->  Index Only Scan using t1_i1 on t1 b1t1  (cost=0.28..44.27 rows=1000 width=4)
            ->  Sort  (cost=5.32..5.57 rows=100 width=4)
                  Sort Key: b1t2.c1
                  ->  Seq Scan on t2 b1t2  (cost=0.00..2.00 rows=100 width=4)
    InitPlan 2 (returns $1)
-     ->  Merge Join  (cost=8.10..14.25 rows=1 width=4)
+     ->  Merge Join  (cost=5.60..11.75 rows=1 width=4)
            Merge Cond: (b2t1.c1 = b2t2.c1)
            ->  Index Only Scan using t1_i1 on t1 b2t1  (cost=0.28..44.27 rows=1000 width=4)
            ->  Sort  (cost=5.32..5.57 rows=100 width=4)
                  Sort Key: b2t2.c1
                  ->  Seq Scan on t2 b2t2  (cost=0.00..2.00 rows=100 width=4)
    InitPlan 3 (returns $2)
-     ->  Merge Join  (cost=8.10..14.25 rows=1 width=4)
+     ->  Merge Join  (cost=5.60..11.75 rows=1 width=4)
            Merge Cond: (b3t1.c1 = b3t2.c1)
            ->  Index Only Scan using t1_i1 on t1 b3t1  (cost=0.28..44.27 rows=1000 width=4)
            ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -3012,8 +3033,8 @@ error hint:
                  ->  Seq Scan on t2 b3t2  (cost=0.00..2.00 rows=100 width=4)
    ->  Seq Scan on t1 bmt1  (cost=0.00..18.50 rows=999 width=4)
          Filter: (c1 <> $2)
-   ->  Hash  (cost=8.42..8.42 rows=1 width=8)
-         ->  Merge Join  (cost=7.90..8.42 rows=1 width=8)
+   ->  Hash  (cost=5.87..5.87 rows=1 width=8)
+         ->  Merge Join  (cost=5.35..5.87 rows=1 width=8)
                Merge Cond: (bmt2.c1 = c1.c1)
                ->  Sort  (cost=5.32..5.57 rows=100 width=4)
                      Sort Key: bmt2.c1
@@ -3109,16 +3130,16 @@ error hint:
 
                                                     QUERY PLAN                                                    
 ------------------------------------------------------------------------------------------------------------------
- Merge Join  (cost=918.36..924.77 rows=10 width=8)
+ Merge Join  (cost=905.86..912.27 rows=10 width=8)
    Merge Cond: (bmt1.c1 = bmt2.c1)
    CTE c1
-     ->  Merge Join  (cost=258.57..264.72 rows=100 width=4)
+     ->  Merge Join  (cost=256.07..262.22 rows=100 width=4)
            Merge Cond: (b1t1.c1 = b1t2.c1)
            ->  Index Only Scan using t1_i1 on t1 b1t1  (cost=0.28..44.27 rows=1000 width=4)
            ->  Sort  (cost=255.80..256.05 rows=100 width=12)
                  Sort Key: b1t2.c1
                  ->  Nested Loop  (cost=35.57..252.48 rows=100 width=12)
-                       ->  Hash Join  (cost=35.42..59.70 rows=1130 width=8)
+                       ->  Hash Join  (cost=35.43..59.70 rows=1130 width=8)
                              Hash Cond: (b1t3.c1 = b1t4.c1)
                              ->  Seq Scan on t3 b1t3  (cost=0.00..21.30 rows=1130 width=4)
                              ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -3126,13 +3147,13 @@ error hint:
                        ->  Index Only Scan using t2_i1 on t2 b1t2  (cost=0.14..0.17 rows=1 width=4)
                              Index Cond: (c1 = b1t3.c1)
    InitPlan 2 (returns $3)
-     ->  Merge Join  (cost=258.57..264.72 rows=100 width=4)
+     ->  Merge Join  (cost=256.07..262.22 rows=100 width=4)
            Merge Cond: (b2t1.c1 = b2t2.c1)
            ->  Index Only Scan using t1_i1 on t1 b2t1  (cost=0.28..44.27 rows=1000 width=4)
            ->  Sort  (cost=255.80..256.05 rows=100 width=12)
                  Sort Key: b2t2.c1
                  ->  Nested Loop  (cost=35.57..252.48 rows=100 width=12)
-                       ->  Hash Join  (cost=35.42..59.70 rows=1130 width=8)
+                       ->  Hash Join  (cost=35.43..59.70 rows=1130 width=8)
                              Hash Cond: (b2t3.c1 = b2t4.c1)
                              ->  Seq Scan on t3 b2t3  (cost=0.00..21.30 rows=1130 width=4)
                              ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -3140,13 +3161,13 @@ error hint:
                        ->  Index Only Scan using t2_i1 on t2 b2t2  (cost=0.14..0.17 rows=1 width=4)
                              Index Cond: (c1 = b2t3.c1)
    InitPlan 3 (returns $5)
-     ->  Merge Join  (cost=258.57..264.72 rows=100 width=4)
+     ->  Merge Join  (cost=256.07..262.22 rows=100 width=4)
            Merge Cond: (b3t1.c1 = b3t2.c1)
            ->  Index Only Scan using t1_i1 on t1 b3t1  (cost=0.28..44.27 rows=1000 width=4)
            ->  Sort  (cost=255.80..256.05 rows=100 width=12)
                  Sort Key: b3t2.c1
                  ->  Nested Loop  (cost=35.57..252.48 rows=100 width=12)
-                       ->  Hash Join  (cost=35.42..59.70 rows=1130 width=8)
+                       ->  Hash Join  (cost=35.43..59.70 rows=1130 width=8)
                              Hash Cond: (b3t3.c1 = b3t4.c1)
                              ->  Seq Scan on t3 b3t3  (cost=0.00..21.30 rows=1130 width=4)
                              ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -3155,14 +3176,14 @@ error hint:
                              Index Cond: (c1 = b3t3.c1)
    ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..46.77 rows=999 width=4)
          Filter: (c1 <> $5)
-   ->  Sort  (cost=121.42..121.67 rows=100 width=16)
+   ->  Sort  (cost=118.92..119.17 rows=100 width=16)
          Sort Key: bmt2.c1
-         ->  Nested Loop  (cost=74.64..118.10 rows=100 width=16)
-               ->  Hash Join  (cost=74.50..101.04 rows=100 width=12)
+         ->  Nested Loop  (cost=72.14..115.60 rows=100 width=16)
+               ->  Hash Join  (cost=72.00..98.54 rows=100 width=12)
                      Hash Cond: (bmt3.c1 = bmt4.c1)
                      ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-                     ->  Hash  (cost=73.25..73.25 rows=100 width=8)
-                           ->  Merge Join  (cost=7.97..73.25 rows=100 width=8)
+                     ->  Hash  (cost=70.75..70.75 rows=100 width=8)
+                           ->  Merge Join  (cost=5.47..70.75 rows=100 width=8)
                                  Merge Cond: (bmt4.c1 = c1.c1)
                                  ->  Index Only Scan using t4_i1 on t4 bmt4  (cost=0.15..61.10 rows=1130 width=4)
                                  ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -3296,16 +3317,16 @@ error hint:
 
                                                     QUERY PLAN                                                    
 ------------------------------------------------------------------------------------------------------------------
- Merge Join  (cost=284.72..289.64 rows=1 width=8)
+ Merge Join  (cost=284.47..289.39 rows=1 width=8)
    Merge Cond: (bmt1.c1 = bmt2.c1)
    CTE c1
-     ->  Merge Join  (cost=60.21..64.88 rows=1 width=4)
+     ->  Merge Join  (cost=60.16..64.83 rows=1 width=4)
            Merge Cond: (b1t1.c1 = b1t2.c1)
            ->  Index Only Scan using t1_i1 on t1 b1t1  (cost=0.28..44.27 rows=1000 width=4)
            ->  Sort  (cost=59.88..59.89 rows=1 width=12)
                  Sort Key: b1t2.c1
                  ->  Nested Loop  (cost=35.57..59.87 rows=1 width=12)
-                       ->  Hash Join  (cost=35.42..59.70 rows=1 width=8)
+                       ->  Hash Join  (cost=35.43..59.70 rows=1 width=8)
                              Hash Cond: (b1t3.c1 = b1t4.c1)
                              ->  Seq Scan on t3 b1t3  (cost=0.00..21.30 rows=1130 width=4)
                              ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -3313,13 +3334,13 @@ error hint:
                        ->  Index Only Scan using t2_i1 on t2 b1t2  (cost=0.14..0.17 rows=1 width=4)
                              Index Cond: (c1 = b1t3.c1)
    InitPlan 2 (returns $3)
-     ->  Merge Join  (cost=60.21..64.88 rows=1 width=4)
+     ->  Merge Join  (cost=60.16..64.83 rows=1 width=4)
            Merge Cond: (b2t1.c1 = b2t2.c1)
            ->  Index Only Scan using t1_i1 on t1 b2t1  (cost=0.28..44.27 rows=1000 width=4)
            ->  Sort  (cost=59.88..59.89 rows=1 width=12)
                  Sort Key: b2t2.c1
                  ->  Nested Loop  (cost=35.57..59.87 rows=1 width=12)
-                       ->  Hash Join  (cost=35.42..59.70 rows=1 width=8)
+                       ->  Hash Join  (cost=35.43..59.70 rows=1 width=8)
                              Hash Cond: (b2t3.c1 = b2t4.c1)
                              ->  Seq Scan on t3 b2t3  (cost=0.00..21.30 rows=1130 width=4)
                              ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -3327,13 +3348,13 @@ error hint:
                        ->  Index Only Scan using t2_i1 on t2 b2t2  (cost=0.14..0.17 rows=1 width=4)
                              Index Cond: (c1 = b2t3.c1)
    InitPlan 3 (returns $5)
-     ->  Merge Join  (cost=60.21..64.88 rows=1 width=4)
+     ->  Merge Join  (cost=60.16..64.83 rows=1 width=4)
            Merge Cond: (b3t1.c1 = b3t2.c1)
            ->  Index Only Scan using t1_i1 on t1 b3t1  (cost=0.28..44.27 rows=1000 width=4)
            ->  Sort  (cost=59.88..59.89 rows=1 width=12)
                  Sort Key: b3t2.c1
                  ->  Nested Loop  (cost=35.57..59.87 rows=1 width=12)
-                       ->  Hash Join  (cost=35.42..59.70 rows=1 width=8)
+                       ->  Hash Join  (cost=35.43..59.70 rows=1 width=8)
                              Hash Cond: (b3t3.c1 = b3t4.c1)
                              ->  Seq Scan on t3 b3t3  (cost=0.00..21.30 rows=1130 width=4)
                              ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -3342,14 +3363,14 @@ error hint:
                              Index Cond: (c1 = b3t3.c1)
    ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..46.77 rows=999 width=4)
          Filter: (c1 <> $5)
-   ->  Sort  (cost=89.77..89.77 rows=1 width=16)
+   ->  Sort  (cost=89.72..89.72 rows=1 width=16)
          Sort Key: bmt2.c1
-         ->  Nested Loop  (cost=64.18..89.76 rows=1 width=16)
-               ->  Hash Join  (cost=64.04..89.59 rows=1 width=12)
+         ->  Nested Loop  (cost=64.13..89.71 rows=1 width=16)
+               ->  Hash Join  (cost=63.99..89.53 rows=1 width=12)
                      Hash Cond: (bmt3.c1 = bmt4.c1)
                      ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-                     ->  Hash  (cost=64.03..64.03 rows=1 width=8)
-                           ->  Merge Join  (cost=0.23..64.03 rows=1 width=8)
+                     ->  Hash  (cost=63.97..63.97 rows=1 width=8)
+                           ->  Merge Join  (cost=0.18..63.97 rows=1 width=8)
                                  Merge Cond: (bmt4.c1 = c1.c1)
                                  ->  Index Only Scan using t4_i1 on t4 bmt4  (cost=0.15..61.10 rows=1130 width=4)
                                  ->  Sort  (cost=0.03..0.04 rows=1 width=4)
@@ -3421,7 +3442,7 @@ error hint:
 
                                                     QUERY PLAN                                                    
 ------------------------------------------------------------------------------------------------------------------
- Merge Join  (cost=328.27..334.67 rows=10 width=8)
+ Merge Join  (cost=323.27..329.67 rows=10 width=8)
    Merge Cond: (bmt1.c1 = bmt2.c1)
    CTE c1
      ->  Nested Loop  (cost=3.83..179.78 rows=100 width=4)
@@ -3443,14 +3464,14 @@ error hint:
      ->  Seq Scan on t1 b3t1  (cost=0.00..16.00 rows=1000 width=4)
    ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..46.77 rows=999 width=4)
          Filter: (c1 <> $3)
-   ->  Sort  (cost=121.42..121.67 rows=100 width=16)
+   ->  Sort  (cost=118.92..119.17 rows=100 width=16)
          Sort Key: bmt2.c1
-         ->  Nested Loop  (cost=74.64..118.10 rows=100 width=16)
-               ->  Hash Join  (cost=74.50..101.04 rows=100 width=12)
+         ->  Nested Loop  (cost=72.14..115.60 rows=100 width=16)
+               ->  Hash Join  (cost=72.00..98.54 rows=100 width=12)
                      Hash Cond: (bmt3.c1 = bmt4.c1)
                      ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-                     ->  Hash  (cost=73.25..73.25 rows=100 width=8)
-                           ->  Merge Join  (cost=7.97..73.25 rows=100 width=8)
+                     ->  Hash  (cost=70.75..70.75 rows=100 width=8)
+                           ->  Merge Join  (cost=5.47..70.75 rows=100 width=8)
                                  Merge Cond: (bmt4.c1 = c1.c1)
                                  ->  Index Only Scan using t4_i1 on t4 bmt4  (cost=0.15..61.10 rows=1130 width=4)
                                  ->  Sort  (cost=5.32..5.57 rows=100 width=4)
@@ -3542,7 +3563,7 @@ error hint:
 
                                                     QUERY PLAN                                                    
 ------------------------------------------------------------------------------------------------------------------
- Merge Join  (cost=257.14..262.06 rows=1 width=8)
+ Merge Join  (cost=257.04..261.96 rows=1 width=8)
    Merge Cond: (bmt1.c1 = bmt2.c1)
    CTE c1
      ->  Nested Loop  (cost=3.83..142.75 rows=1 width=4)
@@ -3564,14 +3585,14 @@ error hint:
      ->  Seq Scan on t1 b3t1  (cost=0.00..16.00 rows=1000 width=4)
    ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..46.77 rows=999 width=4)
          Filter: (c1 <> $3)
-   ->  Sort  (cost=89.77..89.77 rows=1 width=16)
+   ->  Sort  (cost=89.72..89.72 rows=1 width=16)
          Sort Key: bmt2.c1
-         ->  Nested Loop  (cost=64.18..89.76 rows=1 width=16)
-               ->  Hash Join  (cost=64.04..89.59 rows=1 width=12)
+         ->  Nested Loop  (cost=64.13..89.71 rows=1 width=16)
+               ->  Hash Join  (cost=63.99..89.53 rows=1 width=12)
                      Hash Cond: (bmt3.c1 = bmt4.c1)
                      ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
-                     ->  Hash  (cost=64.03..64.03 rows=1 width=8)
-                           ->  Merge Join  (cost=0.23..64.03 rows=1 width=8)
+                     ->  Hash  (cost=63.97..63.97 rows=1 width=8)
+                           ->  Merge Join  (cost=0.18..63.97 rows=1 width=8)
                                  Merge Cond: (bmt4.c1 = c1.c1)
                                  ->  Index Only Scan using t4_i1 on t4 bmt4  (cost=0.15..61.10 rows=1130 width=4)
                                  ->  Sort  (cost=0.03..0.04 rows=1 width=4)
@@ -3602,19 +3623,19 @@ error hint:
 
                                           QUERY PLAN                                           
 -----------------------------------------------------------------------------------------------
- Aggregate  (cost=22.44..22.45 rows=1 width=4)
-   ->  Nested Loop  (cost=2.59..22.44 rows=1 width=4)
+ Aggregate  (cost=22.39..22.40 rows=1 width=4)
+   ->  Nested Loop  (cost=2.54..22.39 rows=1 width=4)
          Join Filter: (t1.c1 = t4.c1)
-         ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
+         ->  Nested Loop  (cost=2.54..18.36 rows=1 width=12)
                Join Filter: (t1.c1 = t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.53..14.34 rows=1 width=8)
                      Merge Cond: (t1.c1 = t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
                            ->  Seq Scan on r1  (cost=0.00..24.12 rows=6 width=0)
                                  Filter: (c1 = 1)
-                     ->  Sort  (cost=2.26..2.26 rows=1 width=4)
+                     ->  Sort  (cost=2.26..2.27 rows=1 width=4)
                            Sort Key: t2.c1
                            ->  Seq Scan on t2  (cost=0.00..2.25 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
@@ -3690,19 +3711,19 @@ error hint:
 
                                              QUERY PLAN                                             
 ----------------------------------------------------------------------------------------------------
- Aggregate  (cost=22.44..22.45 rows=1 width=4)
-   ->  Nested Loop  (cost=2.59..22.44 rows=1 width=4)
+ Aggregate  (cost=22.39..22.40 rows=1 width=4)
+   ->  Nested Loop  (cost=2.54..22.39 rows=1 width=4)
          Join Filter: (b1t1.c1 = b1t4.c1)
-         ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
+         ->  Nested Loop  (cost=2.54..18.36 rows=1 width=12)
                Join Filter: (b1t1.c1 = b1t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.53..14.34 rows=1 width=8)
                      Merge Cond: (b1t1.c1 = b1t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1 b1t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
                            ->  Seq Scan on r1_  (cost=0.00..24.12 rows=6 width=0)
                                  Filter: (c1 = 1)
-                     ->  Sort  (cost=2.26..2.26 rows=1 width=4)
+                     ->  Sort  (cost=2.26..2.27 rows=1 width=4)
                            Sort Key: b1t2.c1
                            ->  Seq Scan on t2 b1t2  (cost=0.00..2.25 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
@@ -3786,19 +3807,19 @@ error hint:
 
                                           QUERY PLAN                                           
 -----------------------------------------------------------------------------------------------
- Aggregate  (cost=22.44..22.45 rows=1 width=4)
-   ->  Nested Loop  (cost=2.59..22.44 rows=1 width=4)
+ Aggregate  (cost=22.39..22.40 rows=1 width=4)
+   ->  Nested Loop  (cost=2.54..22.39 rows=1 width=4)
          Join Filter: (t1.c1 = t4.c1)
-         ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
+         ->  Nested Loop  (cost=2.54..18.36 rows=1 width=12)
                Join Filter: (t1.c1 = t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.53..14.34 rows=1 width=8)
                      Merge Cond: (t1.c1 = t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
                            ->  Seq Scan on r2  (cost=0.00..24.12 rows=6 width=0)
                                  Filter: (c1 = 1)
-                     ->  Sort  (cost=2.26..2.26 rows=1 width=4)
+                     ->  Sort  (cost=2.26..2.27 rows=1 width=4)
                            Sort Key: t2.c1
                            ->  Seq Scan on t2  (cost=0.00..2.25 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
@@ -3807,19 +3828,19 @@ error hint:
          ->  Tid Scan on t4  (cost=0.00..4.01 rows=1 width=4)
                TID Cond: (ctid = '(1,1)'::tid)
  
- Aggregate  (cost=22.44..22.45 rows=1 width=4)
-   ->  Nested Loop  (cost=2.59..22.44 rows=1 width=4)
+ Aggregate  (cost=22.39..22.40 rows=1 width=4)
+   ->  Nested Loop  (cost=2.54..22.39 rows=1 width=4)
          Join Filter: (t1.c1 = t4.c1)
-         ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
+         ->  Nested Loop  (cost=2.54..18.36 rows=1 width=12)
                Join Filter: (t1.c1 = t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.53..14.34 rows=1 width=8)
                      Merge Cond: (t1.c1 = t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
                            ->  Seq Scan on r2  (cost=0.00..24.12 rows=6 width=0)
                                  Filter: (c1 = 1)
-                     ->  Sort  (cost=2.26..2.26 rows=1 width=4)
+                     ->  Sort  (cost=2.26..2.27 rows=1 width=4)
                            Sort Key: t2.c1
                            ->  Seq Scan on t2  (cost=0.00..2.25 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
@@ -3936,19 +3957,19 @@ error hint:
 
                                              QUERY PLAN                                             
 ----------------------------------------------------------------------------------------------------
- Aggregate  (cost=22.44..22.45 rows=1 width=4)
-   ->  Nested Loop  (cost=2.59..22.44 rows=1 width=4)
+ Aggregate  (cost=22.39..22.40 rows=1 width=4)
+   ->  Nested Loop  (cost=2.54..22.39 rows=1 width=4)
          Join Filter: (b1t1.c1 = b1t4.c1)
-         ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
+         ->  Nested Loop  (cost=2.54..18.36 rows=1 width=12)
                Join Filter: (b1t1.c1 = b1t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.53..14.34 rows=1 width=8)
                      Merge Cond: (b1t1.c1 = b1t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1 b1t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
                            ->  Seq Scan on r2_  (cost=0.00..24.12 rows=6 width=0)
                                  Filter: (c1 = 1)
-                     ->  Sort  (cost=2.26..2.26 rows=1 width=4)
+                     ->  Sort  (cost=2.26..2.27 rows=1 width=4)
                            Sort Key: b1t2.c1
                            ->  Seq Scan on t2 b1t2  (cost=0.00..2.25 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
@@ -3957,19 +3978,19 @@ error hint:
          ->  Tid Scan on t4 b1t4  (cost=0.00..4.01 rows=1 width=4)
                TID Cond: (ctid = '(1,1)'::tid)
  
- Aggregate  (cost=22.44..22.45 rows=1 width=4)
-   ->  Nested Loop  (cost=2.59..22.44 rows=1 width=4)
+ Aggregate  (cost=22.39..22.40 rows=1 width=4)
+   ->  Nested Loop  (cost=2.54..22.39 rows=1 width=4)
          Join Filter: (b2t1.c1 = b2t4.c1)
-         ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
+         ->  Nested Loop  (cost=2.54..18.36 rows=1 width=12)
                Join Filter: (b2t1.c1 = b2t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.53..14.34 rows=1 width=8)
                      Merge Cond: (b2t1.c1 = b2t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1 b2t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
                            ->  Seq Scan on r2_  (cost=0.00..24.12 rows=6 width=0)
                                  Filter: (c1 = 1)
-                     ->  Sort  (cost=2.26..2.26 rows=1 width=4)
+                     ->  Sort  (cost=2.26..2.27 rows=1 width=4)
                            Sort Key: b2t2.c1
                            ->  Seq Scan on t2 b2t2  (cost=0.00..2.25 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
@@ -4110,19 +4131,19 @@ error hint:
 
                                           QUERY PLAN                                           
 -----------------------------------------------------------------------------------------------
- Aggregate  (cost=22.44..22.45 rows=1 width=4)
-   ->  Nested Loop  (cost=2.59..22.44 rows=1 width=4)
+ Aggregate  (cost=22.39..22.40 rows=1 width=4)
+   ->  Nested Loop  (cost=2.54..22.39 rows=1 width=4)
          Join Filter: (t1.c1 = t4.c1)
-         ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
+         ->  Nested Loop  (cost=2.54..18.36 rows=1 width=12)
                Join Filter: (t1.c1 = t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.53..14.34 rows=1 width=8)
                      Merge Cond: (t1.c1 = t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
                            ->  Seq Scan on r3  (cost=0.00..24.12 rows=6 width=0)
                                  Filter: (c1 = 1)
-                     ->  Sort  (cost=2.26..2.26 rows=1 width=4)
+                     ->  Sort  (cost=2.26..2.27 rows=1 width=4)
                            Sort Key: t2.c1
                            ->  Seq Scan on t2  (cost=0.00..2.25 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
@@ -4131,19 +4152,19 @@ error hint:
          ->  Tid Scan on t4  (cost=0.00..4.01 rows=1 width=4)
                TID Cond: (ctid = '(1,1)'::tid)
  
- Aggregate  (cost=22.44..22.45 rows=1 width=4)
-   ->  Nested Loop  (cost=2.59..22.44 rows=1 width=4)
+ Aggregate  (cost=22.39..22.40 rows=1 width=4)
+   ->  Nested Loop  (cost=2.54..22.39 rows=1 width=4)
          Join Filter: (t1.c1 = t4.c1)
-         ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
+         ->  Nested Loop  (cost=2.54..18.36 rows=1 width=12)
                Join Filter: (t1.c1 = t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.53..14.34 rows=1 width=8)
                      Merge Cond: (t1.c1 = t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
                            ->  Seq Scan on r3  (cost=0.00..24.12 rows=6 width=0)
                                  Filter: (c1 = 1)
-                     ->  Sort  (cost=2.26..2.26 rows=1 width=4)
+                     ->  Sort  (cost=2.26..2.27 rows=1 width=4)
                            Sort Key: t2.c1
                            ->  Seq Scan on t2  (cost=0.00..2.25 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
@@ -4152,19 +4173,19 @@ error hint:
          ->  Tid Scan on t4  (cost=0.00..4.01 rows=1 width=4)
                TID Cond: (ctid = '(1,1)'::tid)
  
- Aggregate  (cost=22.44..22.45 rows=1 width=4)
-   ->  Nested Loop  (cost=2.59..22.44 rows=1 width=4)
+ Aggregate  (cost=22.39..22.40 rows=1 width=4)
+   ->  Nested Loop  (cost=2.54..22.39 rows=1 width=4)
          Join Filter: (t1.c1 = t4.c1)
-         ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
+         ->  Nested Loop  (cost=2.54..18.36 rows=1 width=12)
                Join Filter: (t1.c1 = t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.53..14.34 rows=1 width=8)
                      Merge Cond: (t1.c1 = t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
                            ->  Seq Scan on r3  (cost=0.00..24.12 rows=6 width=0)
                                  Filter: (c1 = 1)
-                     ->  Sort  (cost=2.26..2.26 rows=1 width=4)
+                     ->  Sort  (cost=2.26..2.27 rows=1 width=4)
                            Sort Key: t2.c1
                            ->  Seq Scan on t2  (cost=0.00..2.25 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
@@ -4324,19 +4345,19 @@ error hint:
 
                                              QUERY PLAN                                             
 ----------------------------------------------------------------------------------------------------
- Aggregate  (cost=22.44..22.45 rows=1 width=4)
-   ->  Nested Loop  (cost=2.59..22.44 rows=1 width=4)
+ Aggregate  (cost=22.39..22.40 rows=1 width=4)
+   ->  Nested Loop  (cost=2.54..22.39 rows=1 width=4)
          Join Filter: (b1t1.c1 = b1t4.c1)
-         ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
+         ->  Nested Loop  (cost=2.54..18.36 rows=1 width=12)
                Join Filter: (b1t1.c1 = b1t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.53..14.34 rows=1 width=8)
                      Merge Cond: (b1t1.c1 = b1t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1 b1t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
                            ->  Seq Scan on r3_  (cost=0.00..24.12 rows=6 width=0)
                                  Filter: (c1 = 1)
-                     ->  Sort  (cost=2.26..2.26 rows=1 width=4)
+                     ->  Sort  (cost=2.26..2.27 rows=1 width=4)
                            Sort Key: b1t2.c1
                            ->  Seq Scan on t2 b1t2  (cost=0.00..2.25 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
@@ -4345,19 +4366,19 @@ error hint:
          ->  Tid Scan on t4 b1t4  (cost=0.00..4.01 rows=1 width=4)
                TID Cond: (ctid = '(1,1)'::tid)
  
- Aggregate  (cost=22.44..22.45 rows=1 width=4)
-   ->  Nested Loop  (cost=2.59..22.44 rows=1 width=4)
+ Aggregate  (cost=22.39..22.40 rows=1 width=4)
+   ->  Nested Loop  (cost=2.54..22.39 rows=1 width=4)
          Join Filter: (b2t1.c1 = b2t4.c1)
-         ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
+         ->  Nested Loop  (cost=2.54..18.36 rows=1 width=12)
                Join Filter: (b2t1.c1 = b2t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.53..14.34 rows=1 width=8)
                      Merge Cond: (b2t1.c1 = b2t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1 b2t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
                            ->  Seq Scan on r3_  (cost=0.00..24.12 rows=6 width=0)
                                  Filter: (c1 = 1)
-                     ->  Sort  (cost=2.26..2.26 rows=1 width=4)
+                     ->  Sort  (cost=2.26..2.27 rows=1 width=4)
                            Sort Key: b2t2.c1
                            ->  Seq Scan on t2 b2t2  (cost=0.00..2.25 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
@@ -4366,19 +4387,19 @@ error hint:
          ->  Tid Scan on t4 b2t4  (cost=0.00..4.01 rows=1 width=4)
                TID Cond: (ctid = '(1,1)'::tid)
  
- Aggregate  (cost=22.44..22.45 rows=1 width=4)
-   ->  Nested Loop  (cost=2.59..22.44 rows=1 width=4)
+ Aggregate  (cost=22.39..22.40 rows=1 width=4)
+   ->  Nested Loop  (cost=2.54..22.39 rows=1 width=4)
          Join Filter: (b3t1.c1 = b3t4.c1)
-         ->  Nested Loop  (cost=2.59..18.41 rows=1 width=12)
+         ->  Nested Loop  (cost=2.54..18.36 rows=1 width=12)
                Join Filter: (b3t1.c1 = b3t3.c1)
-               ->  Merge Join  (cost=2.58..14.39 rows=1 width=8)
+               ->  Merge Join  (cost=2.53..14.34 rows=1 width=8)
                      Merge Cond: (b3t1.c1 = b3t2.c1)
                      ->  Nested Loop  (cost=0.28..70.96 rows=6 width=4)
                            ->  Index Scan using t1_i1 on t1 b3t1  (cost=0.28..46.77 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
                            ->  Seq Scan on r3_  (cost=0.00..24.12 rows=6 width=0)
                                  Filter: (c1 = 1)
-                     ->  Sort  (cost=2.26..2.26 rows=1 width=4)
+                     ->  Sort  (cost=2.26..2.27 rows=1 width=4)
                            Sort Key: b3t2.c1
                            ->  Seq Scan on t2 b3t2  (cost=0.00..2.25 rows=1 width=4)
                                  Filter: (ctid = '(1,1)'::tid)
@@ -4552,36 +4573,48 @@ error hint:
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1 v2 WHERE v1.c1 = v2.c1;
 LOG:  statement: /*+HashJoin(v1t1 v1t1)*/
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1 v2 WHERE v1.c1 = v2.c1;
+INFO:  pg_hint_plan: hint syntax error at or near "HashJoin(v1t1 v1t1)"
+DETAIL:  Relation name "v1t1" is ambiguous.
 LOG:  pg_hint_plan:
 used hint:
 not used hint:
-HashJoin(v1t1 v1t1)
 duplication hint:
 error hint:
+HashJoin(v1t1 v1t1)
 
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1000 width=30)
+   Hash Cond: (v1t1.c1 = v1t1_1.c1)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 v1t1_1  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 /*+HashJoin(v1t1 v1t1)Rows(v1t1 v1t1 #1)*/
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1 v2 WHERE v1.c1 = v2.c1;
 LOG:  statement: /*+HashJoin(v1t1 v1t1)Rows(v1t1 v1t1 #1)*/
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1 v2 WHERE v1.c1 = v2.c1;
+INFO:  pg_hint_plan: hint syntax error at or near "HashJoin(v1t1 v1t1)Rows(v1t1 v1t1 #1)"
+DETAIL:  Relation name "v1t1" is ambiguous.
+INFO:  pg_hint_plan: hint syntax error at or near "Rows(v1t1 v1t1 #1)"
+DETAIL:  Relation name "v1t1" is ambiguous.
 LOG:  pg_hint_plan:
 used hint:
 not used hint:
-HashJoin(v1t1 v1t1)
-Rows(v1t1 v1t1 #1)
 duplication hint:
 error hint:
+HashJoin(v1t1 v1t1)
+Rows(v1t1 v1t1 #1)
 
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1000 width=30)
+   Hash Cond: (v1t1.c1 = v1t1_1.c1)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 v1t1_1  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 -- No. R-2-3-5
 /*+NestLoop(v1t1 v1t1_)*/
@@ -4590,16 +4623,18 @@ LOG:  statement: /*+NestLoop(v1t1 v1t1_)*/
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1_ v2 WHERE v1.c1 = v2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 NestLoop(v1t1 v1t1_)
+not used hint:
 duplication hint:
 error hint:
 
-                         QUERY PLAN                          
--------------------------------------------------------------
- Seq Scan on t1 v1t1_  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                 QUERY PLAN                                  
+-----------------------------------------------------------------------------
+ Nested Loop  (cost=0.28..352.44 rows=1000 width=30)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Index Scan using t1_i1 on t1 v1t1_  (cost=0.28..0.34 rows=1 width=15)
+         Index Cond: (c1 = v1t1.c1)
+(4 rows)
 
 /*+NestLoop(v1t1 v1t1_)Rows(v1t1 v1t1_ #1)*/
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1_ v2 WHERE v1.c1 = v2.c1;
@@ -4607,17 +4642,19 @@ LOG:  statement: /*+NestLoop(v1t1 v1t1_)Rows(v1t1 v1t1_ #1)*/
 EXPLAIN SELECT * FROM s1.v1 v1, s1.v1_ v2 WHERE v1.c1 = v2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 NestLoop(v1t1 v1t1_)
 Rows(v1t1 v1t1_ #1)
+not used hint:
 duplication hint:
 error hint:
 
-                         QUERY PLAN                          
--------------------------------------------------------------
- Seq Scan on t1 v1t1_  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                 QUERY PLAN                                  
+-----------------------------------------------------------------------------
+ Nested Loop  (cost=0.28..352.44 rows=1 width=30)
+   ->  Seq Scan on t1 v1t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Index Scan using t1_i1 on t1 v1t1_  (cost=0.28..0.34 rows=1 width=15)
+         Index Cond: (c1 = v1t1.c1)
+(4 rows)
 
 -- No. R-2-3-6
 /*+RowsHashJoin(r4t1 r4t1)*/
@@ -4626,11 +4663,14 @@ LOG:  statement: /*+RowsHashJoin(r4t1 r4t1)*/
 EXPLAIN SELECT * FROM s1.r4 t1, s1.r4 t2 WHERE t1.c1 = t2.c1;
 INFO:  pg_hint_plan: hint syntax error at or near "RowsHashJoin(r4t1 r4t1)"
 DETAIL:  Unrecognized hint keyword "RowsHashJoin".
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 r4t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1000 width=30)
+   Hash Cond: (r4t1.c1 = r4t1_1.c1)
+   ->  Seq Scan on t1 r4t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 r4t1_1  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 /*+RowsHashJoin(r4t1 r4t1)Rows(r4t1 r4t1 #1)*/
 EXPLAIN SELECT * FROM s1.r4 t1, s1.r4 t2 WHERE t1.c1 = t2.c1;
@@ -4638,11 +4678,14 @@ LOG:  statement: /*+RowsHashJoin(r4t1 r4t1)Rows(r4t1 r4t1 #1)*/
 EXPLAIN SELECT * FROM s1.r4 t1, s1.r4 t2 WHERE t1.c1 = t2.c1;
 INFO:  pg_hint_plan: hint syntax error at or near "RowsHashJoin(r4t1 r4t1)Rows(r4t1 r4t1 #1)"
 DETAIL:  Unrecognized hint keyword "RowsHashJoin".
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 r4t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Hash Join  (cost=28.50..47.14 rows=1000 width=30)
+   Hash Cond: (r4t1.c1 = r4t1_1.c1)
+   ->  Seq Scan on t1 r4t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Hash  (cost=16.00..16.00 rows=1000 width=15)
+         ->  Seq Scan on t1 r4t1_1  (cost=0.00..16.00 rows=1000 width=15)
+(5 rows)
 
 -- No. R-2-3-7
 /*+NestLoop(r4t1 r5t1)*/
@@ -4651,16 +4694,18 @@ LOG:  statement: /*+NestLoop(r4t1 r5t1)*/
 EXPLAIN SELECT * FROM s1.r4 t1, s1.r5 t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 NestLoop(r4t1 r5t1)
+not used hint:
 duplication hint:
 error hint:
 
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 r5t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                 QUERY PLAN                                 
+----------------------------------------------------------------------------
+ Nested Loop  (cost=0.28..352.44 rows=1000 width=30)
+   ->  Seq Scan on t1 r4t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Index Scan using t1_i1 on t1 r5t1  (cost=0.28..0.34 rows=1 width=15)
+         Index Cond: (c1 = r4t1.c1)
+(4 rows)
 
 /*+NestLoop(r4t1 r5t1)Rows(r4t1 r5t1 #1)*/
 EXPLAIN SELECT * FROM s1.r4 t1, s1.r5 t2 WHERE t1.c1 = t2.c1;
@@ -4668,17 +4713,19 @@ LOG:  statement: /*+NestLoop(r4t1 r5t1)Rows(r4t1 r5t1 #1)*/
 EXPLAIN SELECT * FROM s1.r4 t1, s1.r5 t2 WHERE t1.c1 = t2.c1;
 LOG:  pg_hint_plan:
 used hint:
-not used hint:
 NestLoop(r4t1 r5t1)
 Rows(r4t1 r5t1 #1)
+not used hint:
 duplication hint:
 error hint:
 
-                         QUERY PLAN                         
-------------------------------------------------------------
- Seq Scan on t1 r5t1  (cost=0.00..16.00 rows=1000 width=30)
-   Filter: (c1 IS NOT NULL)
-(2 rows)
+                                 QUERY PLAN                                 
+----------------------------------------------------------------------------
+ Nested Loop  (cost=0.28..352.44 rows=1 width=30)
+   ->  Seq Scan on t1 r4t1  (cost=0.00..16.00 rows=1000 width=15)
+   ->  Index Scan using t1_i1 on t1 r5t1  (cost=0.28..0.34 rows=1 width=15)
+         Index Cond: (c1 = r4t1.c1)
+(4 rows)
 
 ----
 ---- No. R-2-4 VALUES clause
@@ -4753,7 +4800,7 @@ LOG:  statement: EXPLAIN SELECT * FROM s1.t1, s1.t2, (VALUES(1,1,1,'1'), (2,2,2,
                                       QUERY PLAN                                      
 --------------------------------------------------------------------------------------
  Nested Loop  (cost=0.33..3.27 rows=1 width=117)
-   ->  Nested Loop  (cost=0.05..2.53 rows=1 width=102)
+   ->  Nested Loop  (cost=0.05..2.54 rows=1 width=102)
          Join Filter: (t2.c1 = "*VALUES*_1".column1)
          ->  Hash Join  (cost=0.05..2.44 rows=2 width=58)
                Hash Cond: (t2.c1 = "*VALUES*".column1)
@@ -4783,7 +4830,7 @@ error hint:
                                       QUERY PLAN                                      
 --------------------------------------------------------------------------------------
  Nested Loop  (cost=0.33..3.27 rows=1 width=117)
-   ->  Nested Loop  (cost=0.05..2.53 rows=1 width=102)
+   ->  Nested Loop  (cost=0.05..2.54 rows=1 width=102)
          Join Filter: (t2.c1 = "*VALUES*_1".column1)
          ->  Hash Join  (cost=0.05..2.44 rows=2 width=58)
                Hash Cond: (t2.c1 = "*VALUES*".column1)
@@ -4819,7 +4866,7 @@ Rows(*VALUES* t1 t2 t3 #2)
                                       QUERY PLAN                                      
 --------------------------------------------------------------------------------------
  Nested Loop  (cost=0.33..3.27 rows=1 width=117)
-   ->  Nested Loop  (cost=0.05..2.53 rows=1 width=102)
+   ->  Nested Loop  (cost=0.05..2.54 rows=1 width=102)
          Join Filter: (t2.c1 = "*VALUES*_1".column1)
          ->  Hash Join  (cost=0.05..2.44 rows=2 width=58)
                Hash Cond: (t2.c1 = "*VALUES*".column1)
@@ -4840,19 +4887,19 @@ EXPLAIN SELECT max(bmt1.c1) FROM s1.t1 bmt1, (SELECT ctid, * FROM s1.t2 bmt2) sb
 LOG:  statement: EXPLAIN SELECT max(bmt1.c1) FROM s1.t1 bmt1, (SELECT ctid, * FROM s1.t2 bmt2) sbmt2, (SELECT ctid, * FROM s1.t3 bmt3) sbmt3, (SELECT ctid, * FROM s1.t4 bmt4) sbmt4 WHERE bmt1.c1 = sbmt2.c1 AND bmt1.c1 = sbmt3.c1 AND bmt1.c1 = sbmt4.c1;
                                               QUERY PLAN                                              
 ------------------------------------------------------------------------------------------------------
- Aggregate  (cost=30.06..30.07 rows=1 width=4)
-   ->  Merge Join  (cost=8.40..29.81 rows=100 width=4)
-         Merge Cond: (bmt1.c1 = bmt2.c1)
-         ->  Merge Join  (cost=0.58..197.13 rows=1000 width=12)
-               Merge Cond: (bmt1.c1 = bmt4.c1)
+ Aggregate  (cost=41.18..41.19 rows=1 width=4)
+   ->  Nested Loop  (cost=5.90..40.93 rows=100 width=4)
+         ->  Merge Join  (cost=5.75..19.53 rows=100 width=12)
+               Merge Cond: (bmt1.c1 = bmt2.c1)
                ->  Merge Join  (cost=0.43..120.70 rows=1000 width=8)
                      Merge Cond: (bmt1.c1 = bmt3.c1)
                      ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..44.27 rows=1000 width=4)
                      ->  Index Only Scan using t3_i1 on t3 bmt3  (cost=0.15..61.10 rows=1130 width=4)
-               ->  Index Only Scan using t4_i1 on t4 bmt4  (cost=0.15..61.10 rows=1130 width=4)
-         ->  Sort  (cost=5.32..5.57 rows=100 width=4)
-               Sort Key: bmt2.c1
-               ->  Seq Scan on t2 bmt2  (cost=0.00..2.00 rows=100 width=4)
+               ->  Sort  (cost=5.32..5.57 rows=100 width=4)
+                     Sort Key: bmt2.c1
+                     ->  Seq Scan on t2 bmt2  (cost=0.00..2.00 rows=100 width=4)
+         ->  Index Only Scan using t4_i1 on t4 bmt4  (cost=0.15..0.21 rows=1 width=4)
+               Index Cond: (c1 = bmt1.c1)
 (13 rows)
 
 /*+
@@ -4875,14 +4922,14 @@ error hint:
 
                                        QUERY PLAN                                        
 -----------------------------------------------------------------------------------------
- Merge Join  (cost=72.03..78.18 rows=70 width=4)
+ Merge Join  (cost=69.53..75.68 rows=70 width=4)
    Merge Cond: (bmt1.c1 = bmt2.c1)
    ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..44.27 rows=1000 width=4)
    ->  Sort  (cost=69.25..69.50 rows=100 width=12)
          Sort Key: bmt2.c1
-         ->  Hash Join  (cost=38.67..65.93 rows=100 width=12)
+         ->  Hash Join  (cost=38.68..65.93 rows=100 width=12)
                Hash Cond: (bmt3.c1 = bmt2.c1)
-               ->  Hash Join  (cost=35.42..59.70 rows=1130 width=8)
+               ->  Hash Join  (cost=35.43..59.70 rows=1130 width=8)
                      Hash Cond: (bmt3.c1 = bmt4.c1)
                      ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
                      ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -4896,18 +4943,18 @@ EXPLAIN SELECT bmt1.c1 FROM s1.t1 bmt1, (SELECT ctid, * FROM s1.t2 bmt2) sbmt2, 
 LOG:  statement: EXPLAIN SELECT bmt1.c1 FROM s1.t1 bmt1, (SELECT ctid, * FROM s1.t2 bmt2) sbmt2, (SELECT ctid, * FROM s1.t3 bmt3) sbmt3, (SELECT ctid, * FROM s1.t4 bmt4) sbmt4 WHERE bmt1.c1 = sbmt2.c1 AND bmt1.c1 = sbmt3.c1 AND bmt1.c1 = sbmt4.c1;
                                            QUERY PLAN                                           
 ------------------------------------------------------------------------------------------------
- Merge Join  (cost=8.40..29.81 rows=100 width=4)
-   Merge Cond: (bmt1.c1 = bmt2.c1)
-   ->  Merge Join  (cost=0.58..197.13 rows=1000 width=12)
-         Merge Cond: (bmt1.c1 = bmt4.c1)
+ Nested Loop  (cost=5.90..40.93 rows=100 width=4)
+   ->  Merge Join  (cost=5.75..19.53 rows=100 width=12)
+         Merge Cond: (bmt1.c1 = bmt2.c1)
          ->  Merge Join  (cost=0.43..120.70 rows=1000 width=8)
                Merge Cond: (bmt1.c1 = bmt3.c1)
                ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..44.27 rows=1000 width=4)
                ->  Index Only Scan using t3_i1 on t3 bmt3  (cost=0.15..61.10 rows=1130 width=4)
-         ->  Index Only Scan using t4_i1 on t4 bmt4  (cost=0.15..61.10 rows=1130 width=4)
-   ->  Sort  (cost=5.32..5.57 rows=100 width=4)
-         Sort Key: bmt2.c1
-         ->  Seq Scan on t2 bmt2  (cost=0.00..2.00 rows=100 width=4)
+         ->  Sort  (cost=5.32..5.57 rows=100 width=4)
+               Sort Key: bmt2.c1
+               ->  Seq Scan on t2 bmt2  (cost=0.00..2.00 rows=100 width=4)
+   ->  Index Only Scan using t4_i1 on t4 bmt4  (cost=0.15..0.21 rows=1 width=4)
+         Index Cond: (c1 = bmt1.c1)
 (12 rows)
 
 /*+
@@ -4930,14 +4977,14 @@ error hint:
 
                                        QUERY PLAN                                        
 -----------------------------------------------------------------------------------------
- Merge Join  (cost=68.29..73.84 rows=60 width=4)
+ Merge Join  (cost=66.79..72.34 rows=60 width=4)
    Merge Cond: (bmt1.c1 = bmt2.c1)
    ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..44.27 rows=1000 width=4)
    ->  Sort  (cost=66.52..66.67 rows=60 width=12)
          Sort Key: bmt2.c1
-         ->  Hash Join  (cost=38.67..64.74 rows=60 width=12)
+         ->  Hash Join  (cost=38.68..64.74 rows=60 width=12)
                Hash Cond: (bmt3.c1 = bmt2.c1)
-               ->  Hash Join  (cost=35.42..59.70 rows=678 width=8)
+               ->  Hash Join  (cost=35.43..59.70 rows=678 width=8)
                      Hash Cond: (bmt3.c1 = bmt4.c1)
                      ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
                      ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -4951,18 +4998,18 @@ EXPLAIN SELECT bmt1.c1 FROM s1.t1 bmt1, (SELECT ctid, * FROM s1.t2 bmt2) sbmt2, 
 LOG:  statement: EXPLAIN SELECT bmt1.c1 FROM s1.t1 bmt1, (SELECT ctid, * FROM s1.t2 bmt2) sbmt2, (SELECT ctid, * FROM s1.t3 bmt3) sbmt3, (SELECT ctid, * FROM s1.t4 bmt4) sbmt4 WHERE bmt1.c1 = sbmt2.c1 AND bmt1.c1 = sbmt3.c1 AND bmt1.c1 = sbmt4.c1;
                                            QUERY PLAN                                           
 ------------------------------------------------------------------------------------------------
- Merge Join  (cost=8.40..29.81 rows=100 width=4)
-   Merge Cond: (bmt1.c1 = bmt2.c1)
-   ->  Merge Join  (cost=0.58..197.13 rows=1000 width=12)
-         Merge Cond: (bmt1.c1 = bmt4.c1)
+ Nested Loop  (cost=5.90..40.93 rows=100 width=4)
+   ->  Merge Join  (cost=5.75..19.53 rows=100 width=12)
+         Merge Cond: (bmt1.c1 = bmt2.c1)
          ->  Merge Join  (cost=0.43..120.70 rows=1000 width=8)
                Merge Cond: (bmt1.c1 = bmt3.c1)
                ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..44.27 rows=1000 width=4)
                ->  Index Only Scan using t3_i1 on t3 bmt3  (cost=0.15..61.10 rows=1130 width=4)
-         ->  Index Only Scan using t4_i1 on t4 bmt4  (cost=0.15..61.10 rows=1130 width=4)
-   ->  Sort  (cost=5.32..5.57 rows=100 width=4)
-         Sort Key: bmt2.c1
-         ->  Seq Scan on t2 bmt2  (cost=0.00..2.00 rows=100 width=4)
+         ->  Sort  (cost=5.32..5.57 rows=100 width=4)
+               Sort Key: bmt2.c1
+               ->  Seq Scan on t2 bmt2  (cost=0.00..2.00 rows=100 width=4)
+   ->  Index Only Scan using t4_i1 on t4 bmt4  (cost=0.15..0.21 rows=1 width=4)
+         Index Cond: (c1 = bmt1.c1)
 (12 rows)
 
 /*+
@@ -4985,14 +5032,14 @@ error hint:
 
                                        QUERY PLAN                                        
 -----------------------------------------------------------------------------------------
- Merge Join  (cost=72.03..78.18 rows=50 width=4)
+ Merge Join  (cost=69.53..75.68 rows=50 width=4)
    Merge Cond: (bmt1.c1 = bmt2.c1)
    ->  Index Only Scan using t1_i1 on t1 bmt1  (cost=0.28..44.27 rows=1000 width=4)
    ->  Sort  (cost=69.25..69.50 rows=100 width=12)
          Sort Key: bmt2.c1
-         ->  Hash Join  (cost=38.67..65.93 rows=100 width=12)
+         ->  Hash Join  (cost=38.68..65.93 rows=100 width=12)
                Hash Cond: (bmt3.c1 = bmt2.c1)
-               ->  Hash Join  (cost=35.42..59.70 rows=1130 width=8)
+               ->  Hash Join  (cost=35.43..59.70 rows=1130 width=8)
                      Hash Cond: (bmt3.c1 = bmt4.c1)
                      ->  Seq Scan on t3 bmt3  (cost=0.00..21.30 rows=1130 width=4)
                      ->  Hash  (cost=21.30..21.30 rows=1130 width=4)
@@ -5019,7 +5066,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5041,7 +5088,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=5 width=29)
+ Merge Join  (cost=5.60..11.75 rows=5 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5066,7 +5113,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=101 width=29)
+ Merge Join  (cost=5.60..11.75 rows=101 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5088,7 +5135,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=99 width=29)
+ Merge Join  (cost=5.60..11.75 rows=99 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5111,7 +5158,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5137,7 +5184,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5159,7 +5206,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=200 width=29)
+ Merge Join  (cost=5.60..11.75 rows=200 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5181,7 +5228,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=10 width=29)
+ Merge Join  (cost=5.60..11.75 rows=10 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5320,7 +5367,7 @@ EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5344,7 +5391,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5357,7 +5404,7 @@ EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5384,7 +5431,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5397,7 +5444,7 @@ EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5421,7 +5468,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5434,7 +5481,7 @@ EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5461,7 +5508,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=1 width=29)
+ Merge Join  (cost=5.60..11.75 rows=1 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5479,7 +5526,7 @@ EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 LOG:  statement: EXPLAIN SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=100 width=29)
+ Merge Join  (cost=5.60..11.75 rows=100 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
@@ -5501,7 +5548,7 @@ error hint:
 
                                 QUERY PLAN                                 
 ---------------------------------------------------------------------------
- Merge Join  (cost=8.10..14.25 rows=101 width=29)
+ Merge Join  (cost=5.60..11.75 rows=101 width=29)
    Merge Cond: (t1.c1 = t2.c1)
    ->  Index Scan using t1_i1 on t1  (cost=0.28..44.27 rows=1000 width=15)
    ->  Sort  (cost=5.32..5.57 rows=100 width=14)
