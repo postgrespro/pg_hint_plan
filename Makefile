@@ -7,20 +7,31 @@
 MODULES = pg_hint_plan
 HINTPLANVER = 1.3.7
 
-REGRESS = init base_plan pg_hint_plan ut-init ut-A ut-S ut-J ut-L ut-G ut-R ut-fdw ut-W ut-T ut-fini
+REGRESS = init base_plan pg_hint_plan ut-init ut-A ut-S ut-S-selfjoin ut-J ut-L \
+	ut-G ut-R ut-fdw ut-W ut-T ut-fini
 
 REGRESSION_EXPECTED = expected/init.out expected/base_plan.out expected/pg_hint_plan.out expected/ut-A.out expected/ut-S.out expected/ut-J.out expected/ut-L.out expected/ut-G.out
 
-REGRESS_OPTS = --encoding=UTF8
+#REGRESS_OPTS = --encoding=UTF8
 
 EXTENSION = pg_hint_plan
-DATA = pg_hint_plan--*.sql
+DATA = pg_hint_plan--$(HINTPLANVER).sql
+EXTRA_REGRESS_OPTS=--temp-config=$(top_srcdir)/$(subdir)/conf.add --temp-instance=./tmp_check
+EXTRA_INSTALL=contrib/pg_stat_statements contrib/btree_gist contrib/btree_gin contrib/file_fdw
 
 EXTRA_CLEAN = sql/ut-fdw.sql expected/ut-fdw.out RPMS
 
+ifdef USE_PGXS
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
+else
+subdir = contrib/pg_hint_plan
+top_builddir = ../..
+include $(top_builddir)/src/Makefile.global
+include $(top_srcdir)/contrib/contrib-global.mk
+override CPPFLAGS += -I$(top_srcdir)/src/pl/plpgsql/src
+endif
 
 STARBALL12 = pg_hint_plan12-$(HINTPLANVER).tar.gz
 STARBALLS = $(STARBALL12)
@@ -31,9 +42,10 @@ TARSOURCES = Makefile *.c  *.h COPYRIGHT* \
 	doc/* expected/*.out sql/*.sql sql/maskout.sh \
 	data/data.csv input/*.source output/*.source SPECS/*.spec
 
-ifneq ($(shell uname), SunOS)
-LDFLAGS+=-Wl,--build-id
-endif
+# XXX: for some reason we do not need this in EE
+#ifneq ($(shell uname), SunOS)
+#LDFLAGS+=-Wl,--build-id
+#endif
 
 installcheck: $(REGRESSION_EXPECTED)
 

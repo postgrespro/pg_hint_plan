@@ -23,7 +23,7 @@ CREATE UNIQUE INDEX p2_val_idx ON p2 (val);
 CREATE INDEX p2_ununi_id_val_idx ON p2 (val);
 CREATE INDEX p2_val_idx_1 ON p2 USING hash (val);
 CREATE INDEX p2_val_id_idx ON p2 (val, id);
-CREATE INDEX p2_val_idx2 ON p2 (val COLLATE "ja_JP");
+CREATE INDEX p2_val_idx2 ON p2 (val COLLATE "C");
 CREATE INDEX p2_val_idx3 ON p2 (val varchar_ops);
 CREATE INDEX p2_val_idx4 ON p2 (val DESC NULLS LAST);
 CREATE INDEX p2_val_idx5 ON p2 (val NULLS FIRST);
@@ -123,13 +123,5 @@ CREATE VIEW v4 AS SELECT v_2.t1_id, t_3.id FROM v2 v_2, t3 t_3 WHERE v_2.t1_id =
 ALTER SYSTEM SET effective_cache_size TO 16384;
 SELECT pg_reload_conf();
 SET effective_cache_size TO 16384;
-
-CREATE VIEW settings AS
-SELECT name, setting, category
-  FROM pg_settings
- WHERE category LIKE 'Query Tuning%'
-    OR name = 'client_min_messages'
- ORDER BY category, name;
-SELECT * FROM settings;
 
 ANALYZE;

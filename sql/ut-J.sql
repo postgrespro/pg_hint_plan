@@ -152,11 +152,8 @@ EXPLAIN (COSTS false) SELECT * FROM s1.v1 t1, s1.v1_ t2 WHERE t1.c1 = t2.c1;
 -- No. J-1-6-11
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1 AND t1.c1 = (SELECT max(st1.c1) FROM s1.t1 st1, s1.t2 st2 WHERE st1.c1 = st2.c1);
 
-\o results/ut-J.tmpout
 /*+MergeJoin(t1 t2)NestLoop(st1 st2)*/
-EXPLAIN (COSTS true) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1 AND t1.c1 = (SELECT max(st1.c1) FROM s1.t1 st1, s1.t2 st2 WHERE st1.c1 = st2.c1);
-\o
-\! sql/maskout.sh results/ut-J.tmpout
+EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1 AND t1.c1 = (SELECT max(st1.c1) FROM s1.t1 st1, s1.t2 st2 WHERE st1.c1 = st2.c1);
 
 --
 -- There are cases where difference in the measured value and predicted value
@@ -480,7 +477,7 @@ SELECT max(b3t1.c1) FROM s1.t1 b3t1, s1.t2 b3t2, s1.t3 b3t3, s1.t4 b3t4 WHERE b3
 ;
 /*+
 Leading(c1 bmt4 bmt3 bmt2 bmt1)
-Leading(b1t4 b1t3 b1t2 b1t1) 
+Leading(b1t4 b1t3 b1t2 b1t1)
 Leading(b2t4 b2t3 b2t2 b2t1)
 Leading(b3t4 b3t3 b3t2 b3t1)
 MergeJoin(c1 bmt4)
@@ -823,9 +820,5 @@ SELECT * FROM s1.t1, s1.t2, s1.t3 WHERE false;
 ----
 -- No. J-3-5-1
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 FULL OUTER JOIN s1.t2 ON (t1.c1 = t2.c1);
-\o results/ut-J.tmpout
 /*+NestLoop(t1 t2)*/
-EXPLAIN (COSTS true) SELECT * FROM s1.t1 FULL OUTER JOIN s1.t2 ON (t1.c1 = t2.c1);
-\o
-\! sql/maskout.sh results/ut-J.tmpout
-\! rm results/ut-J.tmpout
+EXPLAIN (COSTS false) SELECT * FROM s1.t1 FULL OUTER JOIN s1.t2 ON (t1.c1 = t2.c1);

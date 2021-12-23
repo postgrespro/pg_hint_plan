@@ -76,6 +76,9 @@ rm -rf %{buildroot}
 %{_datadir}/extension/pg_hint_plan--1.3.7.sql
 %{_datadir}/extension/pg_hint_plan--1.3.6--1.3.7.sql
 %{_datadir}/extension/pg_hint_plan--1.3.5--1.3.6.sql
+%{_datadir}/extension/pg_hint_plan--1.3.4--1.3.5.sql
+%{_datadir}/extension/pg_hint_plan--1.3.3--1.3.4.sql
+%{_datadir}/extension/pg_hint_plan--1.3.2--1.3.3.sql
 %{_datadir}/extension/pg_hint_plan.control
 
 %files llvmjit

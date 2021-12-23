@@ -2,11 +2,12 @@ LOAD 'pg_hint_plan';
 ALTER SYSTEM SET session_preload_libraries TO 'pg_hint_plan';
 SET pg_hint_plan.enable_hint TO on;
 SET pg_hint_plan.debug_print TO on;
-SET client_min_messages TO LOG;
 
 
 CREATE TABLE s1.tl (a int);
 INSERT INTO s1.tl (SELECT a FROM generate_series(0, 100000) a);
+SET client_min_messages TO LOG;
+\t
 
 -- Queries on ordinary tables with default setting
 EXPLAIN (COSTS false) SELECT * FROM s1.t1;
@@ -89,6 +90,7 @@ SET parallel_setup_cost to 0;
 SET parallel_tuple_cost to 0;
 SET min_parallel_table_scan_size to 0;
 SET min_parallel_index_scan_size to 0;
+SET max_parallel_workers_per_gather to 0;
 SET enable_parallel_append to false;
 /*+Parallel(p1 8)*/
 EXPLAIN (COSTS false) SELECT * FROM p1 join p2 on p1.id = p2.id;
@@ -202,7 +204,11 @@ EXPLAIN (COSTS false) SELECT * FROM p1;
    Parallel(p1 8 hoge)Parallel(p1)Parallel(p1 100 soft x)*/
 EXPLAIN (COSTS false) SELECT id FROM p1 UNION ALL SELECT id FROM p2;
 
+-- Use tuples-only mode so that long \@abs_srcdir\@ won't let the
+-- following query make an unstable result.
+\t
 -- Hints on unhintable relations are just ignored
+\pset format unaligned
 /*+Parallel(p1 5 hard) Parallel(s1 3 hard) IndexScan(ft1) SeqScan(cte1)
   TidScan(fs1) IndexScan(t) IndexScan(*VALUES*) */
 \o results/ut-W.tmpout
@@ -217,6 +223,7 @@ SELECT userid FROM pg_stat_statements fs1
 SELECT x FROM (VALUES (1), (2), (3)) t(x);
 \o
 \! sql/maskout2.sh results/ut-W.tmpout
+\pset format unaligned
 
 ALTER SYSTEM SET session_preload_libraries TO DEFAULT;
 SELECT pg_reload_conf();

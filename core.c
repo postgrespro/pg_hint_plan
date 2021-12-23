@@ -37,6 +37,7 @@
  *     has_join_restriction()
  *     restriction_is_constant_false()
  *     build_child_join_sjinfo()
+ *     mark_dummy_rel()
  *     try_partitionwise_join()
  *
  * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
@@ -131,12 +132,6 @@ set_append_rel_pathlist(PlannerInfo *root, RelOptInfo *rel,
 		 */
 		if (IS_DUMMY_REL(childrel))
 			continue;
-
-		/* Bubble up childrel's partitioned children. */
-		if (rel->part_scheme)
-			rel->partitioned_child_rels =
-				list_concat(rel->partitioned_child_rels,
-							list_copy(childrel->partitioned_child_rels));
 
 		/*
 		 * Child is live, so add it to the live_childrels list for use below.
@@ -608,6 +603,10 @@ join_is_legal(PlannerInfo *root, RelOptInfo *rel1, RelOptInfo *rel2,
 	{
 		SpecialJoinInfo *sjinfo = (SpecialJoinInfo *) lfirst(l);
 
+		/* ignore full joins --- their ordering is predetermined */
+					if (sjinfo->jointype == JOIN_FULL)
+						continue;
+
 		/*
 		 * This special join is not relevant unless its RHS overlaps the
 		 * proposed join.  (Check this first as a fast path for dismissing
@@ -938,6 +937,51 @@ has_join_restriction(PlannerInfo *root, RelOptInfo *rel)
 
 
 /*
+ * Mark a relation as proven empty.
+ *
+ * During GEQO planning, this can get invoked more than once on the same
+ * baserel struct, so it's worth checking to see if the rel is already marked
+ * dummy.
+ *
+ * Also, when called during GEQO join planning, we are in a short-lived
+ * memory context.  We must make sure that the dummy path attached to a
+ * baserel survives the GEQO cycle, else the baserel is trashed for future
+ * GEQO cycles.  On the other hand, when we are marking a joinrel during GEQO,
+ * we don't want the dummy path to clutter the main planning context.  Upshot
+ * is that the best solution is to explicitly make the dummy path in the same
+ * context the given RelOptInfo is in.
+ */
+void
+mark_dummy_rel(RelOptInfo *rel)
+{
+	MemoryContext oldcontext;
+
+	/* Already marked? */
+	if (is_dummy_rel(rel))
+		return;
+
+	/* No, so choose correct context to make the dummy path in */
+	oldcontext = MemoryContextSwitchTo(GetMemoryChunkContext(rel));
+
+	/* Set dummy size estimate */
+	rel->rows = 0;
+
+	/* Evict any previously chosen paths */
+	rel->pathlist = NIL;
+	rel->partial_pathlist = NIL;
+
+	/* Set up the dummy path */
+	add_path(rel, (Path *) create_append_path(NULL, rel, NIL, NIL, NIL, NULL,
+											  0, false, NIL, -1, false));
+
+	/* Set or update cheapest_total_path and related fields */
+	set_cheapest(rel);
+
+	MemoryContextSwitchTo(oldcontext);
+}
+
+
+/*
  * restriction_is_constant_false --- is a restrictlist just FALSE?
  *
  * In cases where a qual is provably constant FALSE, eval_const_expressions
@@ -1085,20 +1129,6 @@ try_partitionwise_join(PlannerInfo *root, RelOptInfo *rel1, RelOptInfo *rel2,
 	 */
 	Assert(joinrel->part_scheme == rel1->part_scheme &&
 		   joinrel->part_scheme == rel2->part_scheme);
-
-	/*
-	 * Since we allow partitionwise join only when the partition bounds of the
-	 * joining relations exactly match, the partition bounds of the join
-	 * should match those of the joining relations.
-	 */
-	Assert(partition_bounds_equal(joinrel->part_scheme->partnatts,
-								  joinrel->part_scheme->parttyplen,
-								  joinrel->part_scheme->parttypbyval,
-								  joinrel->boundinfo, rel1->boundinfo));
-	Assert(partition_bounds_equal(joinrel->part_scheme->partnatts,
-								  joinrel->part_scheme->parttyplen,
-								  joinrel->part_scheme->parttypbyval,
-								  joinrel->boundinfo, rel2->boundinfo));
 
 	nparts = joinrel->nparts;
 
