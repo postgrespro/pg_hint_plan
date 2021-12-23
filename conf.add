@@ -1,0 +1,5 @@
+shared_preload_libraries='pg_stat_statements'
+log_statement=all
+jit=off
+enable_self_join_removal=off
+random_page_cost=4

@@ -20,6 +20,7 @@ my %defs =
 				 'has_join_restriction',
 				 'restriction_is_constant_false',
 				 'build_child_join_sjinfo',
+				 'mark_dummy_rel',
 				 'get_matching_part_pairs',
 				 'compute_partition_bounds',
 				 'try_partitionwise_join'],
@@ -162,6 +163,7 @@ sub core_c_head()
  *     has_join_restriction()
  *     restriction_is_constant_false()
  *     build_child_join_sjinfo()
+ *     mark_dummy_rel()
  *     get_matching_part_pairs()
  *     compute_partition_bounds()
  *     try_partitionwise_join()

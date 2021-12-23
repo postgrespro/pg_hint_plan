@@ -1,0 +1,145 @@
+LOAD 'pg_hint_plan';
+-- We cannot do ALTER USER current_user SET ...
+DELETE FROM pg_db_role_setting WHERE setrole = (SELECT oid FROM pg_roles WHERE rolname = current_user);
+INSERT INTO pg_db_role_setting (SELECT 0, (SELECT oid FROM pg_roles WHERE rolname = current_user), '{client_min_messages=log,pg_hint_plan.debug_print=on}');
+ALTER SYSTEM SET session_preload_libraries TO 'pg_hint_plan';
+SELECT pg_reload_conf();
+ pg_reload_conf 
+----------------
+ t
+(1 row)
+
+SET pg_hint_plan.enable_hint TO on;
+SET pg_hint_plan.debug_print TO on;
+SET client_min_messages TO LOG;
+SET search_path TO public;
+LOG:  statement: SET search_path TO public;
+SET max_parallel_workers_per_gather TO 0;
+LOG:  statement: SET max_parallel_workers_per_gather TO 0;
+SET enable_self_join_removal TO on;
+LOG:  statement: SET enable_self_join_removal TO on;
+-- No. S-2-3-4
+EXPLAIN (COSTS false) SELECT * FROM s1.v1 v1, s1.v1 v2 WHERE v1.c1 = v2.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.v1 v1, s1.v1 v2 WHERE v1.c1 = v2.c1;
+         QUERY PLAN         
+----------------------------
+ Seq Scan on t1 v1t1
+   Filter: (c1 IS NOT NULL)
+(2 rows)
+
+/*+BitmapScan(v1t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.v1 v1, s1.v1 v2 WHERE v1.c1 = v2.c1;
+LOG:  statement: /*+BitmapScan(v1t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.v1 v1, s1.v1 v2 WHERE v1.c1 = v2.c1;
+LOG:  pg_hint_plan:
+used hint:
+BitmapScan(v1t1)
+not used hint:
+duplication hint:
+error hint:
+
+              QUERY PLAN              
+--------------------------------------
+ Bitmap Heap Scan on t1 v1t1
+   Recheck Cond: (c1 IS NOT NULL)
+   ->  Bitmap Index Scan on t1_i1
+         Index Cond: (c1 IS NOT NULL)
+(4 rows)
+
+-- No. S-2-3-5
+EXPLAIN (COSTS false) SELECT * FROM s1.v1 v1, s1.v1_ v2 WHERE v1.c1 = v2.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.v1 v1, s1.v1_ v2 WHERE v1.c1 = v2.c1;
+         QUERY PLAN         
+----------------------------
+ Seq Scan on t1 v1t1_
+   Filter: (c1 IS NOT NULL)
+(2 rows)
+
+/*+SeqScan(v1t1)BitmapScan(v1t1_)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.v1 v1, s1.v1_ v2 WHERE v1.c1 = v2.c1;
+LOG:  statement: /*+SeqScan(v1t1)BitmapScan(v1t1_)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.v1 v1, s1.v1_ v2 WHERE v1.c1 = v2.c1;
+LOG:  pg_hint_plan:
+used hint:
+BitmapScan(v1t1_)
+not used hint:
+SeqScan(v1t1)
+duplication hint:
+error hint:
+
+              QUERY PLAN              
+--------------------------------------
+ Bitmap Heap Scan on t1 v1t1_
+   Recheck Cond: (c1 IS NOT NULL)
+   ->  Bitmap Index Scan on t1_i1
+         Index Cond: (c1 IS NOT NULL)
+(4 rows)
+
+-- No. S-2-3-6
+EXPLAIN (COSTS false) SELECT * FROM s1.r4 t1, s1.r4 t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.r4 t1, s1.r4 t2 WHERE t1.c1 = t2.c1;
+         QUERY PLAN         
+----------------------------
+ Seq Scan on t1 r4t1
+   Filter: (c1 IS NOT NULL)
+(2 rows)
+
+/*+BitmapScan(r4t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.r4 t1, s1.r4 t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: /*+BitmapScan(r4t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.r4 t1, s1.r4 t2 WHERE t1.c1 = t2.c1;
+LOG:  pg_hint_plan:
+used hint:
+BitmapScan(r4t1)
+not used hint:
+duplication hint:
+error hint:
+
+              QUERY PLAN              
+--------------------------------------
+ Bitmap Heap Scan on t1 r4t1
+   Recheck Cond: (c1 IS NOT NULL)
+   ->  Bitmap Index Scan on t1_i1
+         Index Cond: (c1 IS NOT NULL)
+(4 rows)
+
+-- No. S-2-3-7
+EXPLAIN (COSTS false) SELECT * FROM s1.r4 t1, s1.r5 t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: EXPLAIN (COSTS false) SELECT * FROM s1.r4 t1, s1.r5 t2 WHERE t1.c1 = t2.c1;
+         QUERY PLAN         
+----------------------------
+ Seq Scan on t1 r5t1
+   Filter: (c1 IS NOT NULL)
+(2 rows)
+
+/*+SeqScan(r4t1)BitmapScan(r5t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.r4 t1, s1.r5 t2 WHERE t1.c1 = t2.c1;
+LOG:  statement: /*+SeqScan(r4t1)BitmapScan(r5t1)*/
+EXPLAIN (COSTS false) SELECT * FROM s1.r4 t1, s1.r5 t2 WHERE t1.c1 = t2.c1;
+LOG:  pg_hint_plan:
+used hint:
+BitmapScan(r5t1)
+not used hint:
+SeqScan(r4t1)
+duplication hint:
+error hint:
+
+              QUERY PLAN              
+--------------------------------------
+ Bitmap Heap Scan on t1 r5t1
+   Recheck Cond: (c1 IS NOT NULL)
+   ->  Bitmap Index Scan on t1_i1
+         Index Cond: (c1 IS NOT NULL)
+(4 rows)
+
+DELETE FROM pg_db_role_setting WHERE setrole = (SELECT oid FROM pg_roles WHERE rolname = current_user);
+LOG:  statement: DELETE FROM pg_db_role_setting WHERE setrole = (SELECT oid FROM pg_roles WHERE rolname = current_user);
+ALTER SYSTEM SET session_preload_libraries TO DEFAULT;
+LOG:  statement: ALTER SYSTEM SET session_preload_libraries TO DEFAULT;
+SELECT pg_reload_conf();
+LOG:  statement: SELECT pg_reload_conf();
+ pg_reload_conf 
+----------------
+ t
+(1 row)
+

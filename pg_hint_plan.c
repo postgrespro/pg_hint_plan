@@ -35,7 +35,6 @@
 #include "parser/analyze.h"
 #include "parser/parsetree.h"
 #include "parser/scansup.h"
-#include "partitioning/partbounds.h"
 #include "tcop/utility.h"
 #include "utils/builtins.h"
 #include "utils/float.h"
@@ -1724,7 +1723,7 @@ parse_hints(HintState *hstate, Query *parse, const char *str)
 }
 
 
-/* 
+/*
  * Get hints from table by client-supplied query string and application name.
  */
 static const char *
@@ -1756,9 +1755,9 @@ get_hints_from_table(const char *client_query, const char *client_application)
 			PushActiveSnapshot(GetTransactionSnapshot());
 			snapshot_set = true;
 		}
-	
+
 		SPI_connect();
-	
+
 		if (plan == NULL)
 		{
 			SPIPlanPtr	p;
@@ -1766,18 +1765,18 @@ get_hints_from_table(const char *client_query, const char *client_application)
 			plan = SPI_saveplan(p);
 			SPI_freeplan(p);
 		}
-	
+
 		qry = cstring_to_text(client_query);
 		app = cstring_to_text(client_application);
 		values[0] = PointerGetDatum(qry);
 		values[1] = PointerGetDatum(app);
-	
+
 		SPI_execute_plan(plan, values, nulls, true, 1);
-	
+
 		if (SPI_processed > 0)
 		{
 			char	*buf;
-	
+
 			hints = SPI_getvalue(SPI_tuptable->vals[0],
 								 SPI_tuptable->tupdesc, 1);
 			/*
@@ -1790,7 +1789,7 @@ get_hints_from_table(const char *client_query, const char *client_application)
 			strcpy(buf, hints);
 			hints = buf;
 		}
-	
+
 		SPI_finish();
 
 		if (snapshot_set)
@@ -1850,7 +1849,7 @@ get_query_string(ParseState *pstate, Query *query, Query **jumblequery)
 		if (IsA(target_query, ExplainStmt))
 		{
 			ExplainStmt *stmt = (ExplainStmt *)target_query;
-			
+
 			Assert(IsA(stmt->query, Query));
 			target_query = (Query *)stmt->query;
 
@@ -1906,7 +1905,7 @@ get_query_string(ParseState *pstate, Query *query, Query **jumblequery)
 				target_query = NULL;
 			}
 		}
-			
+
 		/* JumbleQuery accespts only a non-utility Query */
 		if (target_query &&
 			(!IsA(target_query, Query) ||
@@ -2492,7 +2491,7 @@ ParallelHintParse(ParallelHint *hint, HintState *hstate, Query *parse,
 	}
 
 	hint->relname = linitial(name_list);
-		
+
 	/* The second parameter is number of workers */
 	hint->nworkers_str = list_nth(name_list, 1);
 	nworkers = strtod(hint->nworkers_str, &end_ptr);
@@ -2780,12 +2779,22 @@ set_join_config_options(unsigned char enforce_mask, GucContext context)
 
 	/*
 	 * Hash join may be rejected for the reason of estimated memory usage. Try
-	 * getting rid of that limitation.
+	 * getting rid of that limitation. This change on work_mem is reverted just
+	 * after searching join path so no suginificant side-effects are expected.
 	 */
 	if (enforce_mask == ENABLE_HASHJOIN)
 	{
 		char			buf[32];
 		int				new_multipler;
+
+		/* See final_cost_hashjoin(). */
+		if (work_mem < MAX_KILOBYTES)
+		{
+			snprintf(buf, sizeof(buf), UINT64_FORMAT, (uint64)MAX_KILOBYTES);
+			set_config_option_noerror("work_mem", buf,
+									  context, PGC_S_SESSION, GUC_ACTION_SAVE,
+									  true, ERROR);
+		}
 
 		/* See final_cost_hashjoin(). */
 		new_multipler = MAX_KILOBYTES / work_mem;
@@ -2894,7 +2903,7 @@ get_current_hint_string(ParseState *pstate, Query *query)
 			pfree((void *)current_hint_str);
 			current_hint_str = NULL;
 		}
-		
+
 		if (jumblequery)
 		{
 			/*
@@ -3064,7 +3073,7 @@ pg_hint_plan_planner(Query *parse, const char *query_string, int cursorOptions, 
 	const char 	   *prev_hint_str = NULL;
 
 	/*
-	 * Use standard planner if pg_hint_plan is disabled or current nesting 
+	 * Use standard planner if pg_hint_plan is disabled or current nesting
 	 * depth is nesting depth of SPI calls. Other hook functions try to change
 	 * plan with current_hint_state if any, so set it to NULL.
 	 */
@@ -3114,7 +3123,7 @@ pg_hint_plan_planner(Query *parse, const char *query_string, int cursorOptions, 
 	/* run standard planner if the statement has not valid hint */
 	if (!hstate)
 		goto standard_planner_proc;
-	
+
 	/*
 	 * Push new hint struct to the hint stack to disable previous hint context.
 	 */
@@ -3127,7 +3136,7 @@ pg_hint_plan_planner(Query *parse, const char *query_string, int cursorOptions, 
 	setup_guc_enforcement(current_hint_state->set_hints,
 						   current_hint_state->num_hints[HINT_TYPE_SET],
 						   current_hint_state->context);
-	
+
 	current_hint_state->init_scan_mask = get_current_scan_mask();
 	current_hint_state->init_join_mask = get_current_join_mask();
 	current_hint_state->init_min_para_tablescan_size =
@@ -3150,7 +3159,7 @@ pg_hint_plan_planner(Query *parse, const char *query_string, int cursorOptions, 
 	{
 		ereport(pg_hint_plan_debug_message_level,
 				(errhidestmt(msgqno != qno),
-				 errmsg("pg_hint_plan%s: planner", qnostr))); 
+				 errmsg("pg_hint_plan%s: planner", qnostr)));
 		msgqno = qno;
 	}
 
@@ -3334,7 +3343,7 @@ find_parallel_hint(PlannerInfo *root, Index relid)
 
 	/*
 	 * Parallel planning is appliable only on base relation, which has
-	 * RelOptInfo. 
+	 * RelOptInfo.
 	 */
 	if (!rel)
 		return NULL;
@@ -3421,7 +3430,6 @@ restrict_indexes(PlannerInfo *root, ScanMethodHint *hint, RelOptInfo *rel,
 			   bool using_parent_hint)
 {
 	ListCell	   *cell;
-	ListCell	   *next;
 	StringInfoData	buf;
 	RangeTblEntry  *rte = root->simple_rte_array[rel->relid];
 	Oid				relationObjectId = rte->relid;
@@ -3453,14 +3461,13 @@ restrict_indexes(PlannerInfo *root, ScanMethodHint *hint, RelOptInfo *rel,
 	if (debug_level > 0)
 		initStringInfo(&buf);
 
-	for (cell = list_head(rel->indexlist); cell; cell = next)
+	foreach(cell, rel->indexlist)
 	{
 		IndexOptInfo   *info = (IndexOptInfo *) lfirst(cell);
 		char		   *indexname = get_rel_name(info->indexoid);
 		ListCell	   *l;
 		bool			use_index = false;
 
-		next = lnext(rel->indexlist, cell);
 		foreach(l, hint->indexnames)
 		{
 			char   *hintname = (char *) lfirst(l);
@@ -3630,18 +3637,8 @@ restrict_indexes(PlannerInfo *root, ScanMethodHint *hint, RelOptInfo *rel,
 		}
 
 		if (!use_index)
-		{
-			rel->indexlist = list_delete_cell(rel->indexlist, cell);
+			rel->indexlist = foreach_delete_current(rel->indexlist, cell);
 
-			/*
-			 * The cells after the deleted cell have been moved towards the
-			 * list head by 1 element.  the next iteration should visit the
-			 * cell at the same address if any.
-			 */
-			if (next)
-				next = cell;
-		}
-			
 		pfree(indexname);
 	}
 
@@ -3658,7 +3655,7 @@ restrict_indexes(PlannerInfo *root, ScanMethodHint *hint, RelOptInfo *rel,
 			disprelname = get_rel_name(rte->relid);
 		else
 			disprelname = hint->relname;
-			
+
 
 		initStringInfo(&rel_buf);
 		quote_value(&rel_buf, disprelname);
@@ -3673,7 +3670,7 @@ restrict_indexes(PlannerInfo *root, ScanMethodHint *hint, RelOptInfo *rel,
 	}
 }
 
-/* 
+/*
  * Return information of index definition.
  */
 static ParentIndexInfo *
@@ -3875,7 +3872,7 @@ setup_hint_enforcement(PlannerInfo *root, RelOptInfo *rel,
 		 * redundant setup cost.
 		 */
 		current_hint_state->parent_relid = new_parent_relid;
-				
+
 		/* Find hints for the parent */
 		current_hint_state->parent_scan_hint =
 			find_scan_hint(root, current_hint_state->parent_relid);
@@ -4413,13 +4410,10 @@ transform_join_hints(HintState *hstate, PlannerInfo *root, int nbaserel,
 		{
 			if (hstate->join_hint_level[i] != NIL)
 			{
-				ListCell *next = NULL;
-				for(l = list_head(hstate->join_hint_level[i]); l; l = next)
+				foreach(l, hstate->join_hint_level[i])
 				{
 
 					JoinMethodHint *hint = (JoinMethodHint *)lfirst(l);
-
-					next = lnext(hstate->join_hint_level[i], l);
 
 					if (hint->inner_nrels == 0 &&
 						!(bms_intersect(hint->joinrelids, joinrelids) == NULL ||
@@ -4427,15 +4421,7 @@ transform_join_hints(HintState *hstate, PlannerInfo *root, int nbaserel,
 						  hint->joinrelids)))
 					{
 						hstate->join_hint_level[i] =
-							list_delete_cell(hstate->join_hint_level[i], l);
-						/*
-						 * The cells after the deleted cell have been moved
-						 * towards the list head by 1 element.  the next
-						 * iteration should visit the cell at the same address
-						 * if any.
-						 */
-						if (next)
-							next = l;
+							foreach_delete_current(hstate->join_hint_level[i], l);
 					}
 				}
 			}
@@ -4621,7 +4607,7 @@ pg_hint_plan_join_search(PlannerInfo *root, int levels_needed,
 	{
 		ListCell   *lc;
 		int 		nworkers = 0;
-	
+
 		foreach (lc, initial_rels)
 		{
 			ListCell *lcp;
@@ -4764,7 +4750,7 @@ pg_hint_plan_set_rel_pathlist(PlannerInfo * root, RelOptInfo *rel,
 		/*
 		 * When hint is specified on non-parent relations, discard existing
 		 * paths and regenerate based on the hint considered. Otherwise we
-		 * already have hinted childx paths then just adjust the number of
+		 * already have hinted child paths then just adjust the number of
 		 * planned number of workers.
 		 */
 		if (root->simple_rte_array[rel->relid]->inh)

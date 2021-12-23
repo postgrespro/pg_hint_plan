@@ -37,6 +37,7 @@
  *     has_join_restriction()
  *     restriction_is_constant_false()
  *     build_child_join_sjinfo()
+ *     mark_dummy_rel()
  *     get_matching_part_pairs()
  *     compute_partition_bounds()
  *     try_partitionwise_join()
@@ -46,6 +47,8 @@
  *
  *-------------------------------------------------------------------------
  */
+
+#include <partitioning/partbounds.h>
 
 static void populate_joinrel_with_paths(PlannerInfo *root, RelOptInfo *rel1,
 										RelOptInfo *rel2, RelOptInfo *joinrel,
@@ -627,6 +630,10 @@ join_is_legal(PlannerInfo *root, RelOptInfo *rel1, RelOptInfo *rel2,
 	{
 		SpecialJoinInfo *sjinfo = (SpecialJoinInfo *) lfirst(l);
 
+		/* ignore full joins --- their ordering is predetermined */
+					if (sjinfo->jointype == JOIN_FULL)
+						continue;
+
 		/*
 		 * This special join is not relevant unless its RHS overlaps the
 		 * proposed join.  (Check this first as a fast path for dismissing
@@ -953,6 +960,51 @@ has_join_restriction(PlannerInfo *root, RelOptInfo *rel)
 	}
 
 	return false;
+}
+
+
+/*
+ * Mark a relation as proven empty.
+ *
+ * During GEQO planning, this can get invoked more than once on the same
+ * baserel struct, so it's worth checking to see if the rel is already marked
+ * dummy.
+ *
+ * Also, when called during GEQO join planning, we are in a short-lived
+ * memory context.  We must make sure that the dummy path attached to a
+ * baserel survives the GEQO cycle, else the baserel is trashed for future
+ * GEQO cycles.  On the other hand, when we are marking a joinrel during GEQO,
+ * we don't want the dummy path to clutter the main planning context.  Upshot
+ * is that the best solution is to explicitly make the dummy path in the same
+ * context the given RelOptInfo is in.
+ */
+void
+mark_dummy_rel(RelOptInfo *rel)
+{
+	MemoryContext oldcontext;
+
+	/* Already marked? */
+	if (is_dummy_rel(rel))
+		return;
+
+	/* No, so choose correct context to make the dummy path in */
+	oldcontext = MemoryContextSwitchTo(GetMemoryChunkContext(rel));
+
+	/* Set dummy size estimate */
+	rel->rows = 0;
+
+	/* Evict any previously chosen paths */
+	rel->pathlist = NIL;
+	rel->partial_pathlist = NIL;
+
+	/* Set up the dummy path */
+	add_path(rel, (Path *) create_append_path(NULL, rel, NIL, NIL, NIL, NULL,
+											  0, false, NIL, -1));
+
+	/* Set or update cheapest_total_path and related fields */
+	set_cheapest(rel);
+
+	MemoryContextSwitchTo(oldcontext);
 }
 
 
