@@ -2,6 +2,7 @@ LOAD 'pg_hint_plan';
 SET search_path TO public;
 SET pg_hint_plan.debug_print TO on;
 SET client_min_messages TO LOG;
+SET log_statement TO 'all';
 SET pg_hint_plan.enable_hint TO on;
 
 CREATE EXTENSION file_fdw;
@@ -43,9 +44,5 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1, ft1 ft_1, ft1 ft_2 WHERE t1.c1 = ft_1
 ----
 
 -- No. R-1-6-6
-\o results/ut-fdw.tmpout
 /*+Rows(ft_1 ft_2 #1)Leading(ft_1 ft_2 t1)*/
-EXPLAIN SELECT * FROM s1.t1, ft1 ft_1, ft1 ft_2 WHERE t1.c1 = ft_1.id AND t1.c1 = ft_2.id;
-\o
-\! sql/maskout.sh results/ut-fdw.tmpout
-\! rm results/ut-fdw.tmpout
+EXPLAIN (COSTS false) SELECT * FROM s1.t1, ft1 ft_1, ft1 ft_2 WHERE t1.c1 = ft_1.id AND t1.c1 = ft_2.id;

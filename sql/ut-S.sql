@@ -7,6 +7,7 @@ SELECT pg_reload_conf();
 SET pg_hint_plan.enable_hint TO on;
 SET pg_hint_plan.debug_print TO on;
 SET client_min_messages TO LOG;
+SET log_statement TO 'all';
 SET search_path TO public;
 SET max_parallel_workers_per_gather TO 0;
 
@@ -75,6 +76,7 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1, s2.t1 s2t1 WHERE s1.t1.c1 = 1 AND s1.
 EXPLAIN (COSTS false) SELECT * FROM s1.t1, s2.t1 s2t1 WHERE s1.t1.c1 = 1 AND s1.t1.c1 = s2t1.c1;
 
 -- No. S-1-4-3
+SET enable_bitmapscan TO off;
 EXPLAIN (COSTS false) SELECT (SELECT max(c1) FROM s1.t1 WHERE s1.t1.c1 = 1) FROM s1.t1 WHERE s1.t1.c1 = 1;
 /*+BitmapScan(t1)*/
 EXPLAIN (COSTS false) SELECT (SELECT max(c1) FROM s1.t1 WHERE s1.t1.c1 = 1) FROM s1.t1 WHERE s1.t1.c1 = 1;
@@ -83,6 +85,7 @@ EXPLAIN (COSTS false) SELECT (SELECT max(c1) FROM s1.t1 WHERE s1.t1.c1 = 1) FROM
 EXPLAIN (COSTS false) SELECT (SELECT max(c1) FROM s1.t1 t11 WHERE t11.c1 = 1) FROM s1.t1 t12 WHERE t12.c1 = 1;
 /*+BitmapScan(t12)*/
 EXPLAIN (COSTS false) SELECT (SELECT max(c1) FROM s1.t1 t11 WHERE t11.c1 = 1) FROM s1.t1 t12 WHERE t12.c1 = 1;
+RESET enable_bitmapscan;
 
 ----
 ---- No. S-1-5 object type for the hint
@@ -655,7 +658,6 @@ EXPLAIN (COSTS false) SELECT c2 FROM s1.ti1 WHERE ti1.c2 >= 1;
 ---- No. S-3-4 index type
 ----
 
-\d s1.ti1
 EXPLAIN (COSTS false) SELECT * FROM s1.ti1 WHERE c1 < 100 AND c2 = 1 AND lower(c4) = '1' AND to_tsvector('english', c4) @@ 'a & b' AND ctid = '(1,1)';
 
 -- No. S-3-4-1
@@ -802,32 +804,6 @@ EXPLAIN (COSTS false) SELECT c2 FROM s1.ti1 WHERE c2 >= 1;
 EXPLAIN (COSTS false) SELECT c2 FROM s1.ti1 WHERE c2 >= 1;
 
 ----
----- No. S-3-5 not used index
-----
-
--- No. S-3-5-1
-\! psql contrib_regression -c "/*+IndexScan(ti1 ti1_pred)*/ EXPLAIN (COSTS true) SELECT * FROM s1.ti1 WHERE c1 = 100" | grep -v "Planning time:"
-
--- No. S-3-5-2
-\! psql contrib_regression -c "/*+BitmapScan(ti1 ti1_pred)*/ EXPLAIN (COSTS true) SELECT * FROM s1.ti1 WHERE c1 = 100" | grep -v "Planning time:"
-
--- No. S-3-5-3
-\! psql contrib_regression -c "/*+IndexOnlyScan(ti1 ti1_pred)*/ EXPLAIN (COSTS true) SELECT c1 FROM s1.ti1 WHERE c1 = 100" | grep -v "Planning time:"
-
--- No. S-3-5-4
-\! psql contrib_regression -c "/*+IndexScan(ti1 not_exist)*/ EXPLAIN (COSTS true) SELECT * FROM s1.ti1 WHERE c1 = 100" | grep -v "Planning time:"
-
--- No. S-3-5-5
-\! psql contrib_regression -c "/*+BitmapScan(ti1 not_exist)*/ EXPLAIN (COSTS true) SELECT * FROM s1.ti1 WHERE c1 = 100" | grep -v "Planning time:"
-
--- No. S-3-5-6
-\! psql contrib_regression -c "/*+IndexOnlyScan(ti1 not_exist)*/ EXPLAIN (COSTS true) SELECT c1 FROM s1.ti1 WHERE c1 = 100" | grep -v "Planning time:"
-
--- No. S-3-5-7
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 WHERE t1.c1 = 1;
-\! psql contrib_regression -c "/*+TidScan(t1)*/ EXPLAIN (COSTS true) SELECT * FROM s1.t1 WHERE t1.c1 = 1" | grep -v "Planning time:"
-
-----
 ---- No. S-3-6 query structure
 ----
 
@@ -962,29 +938,16 @@ EXPLAIN (COSTS false) SELECT * FROM s1.p2 WHERE c1 = 1;
 EXPLAIN (COSTS false) SELECT * FROM s1.p2 WHERE c1 = 1;
 
 -- No. S-3-10-3
-\o results/ut-S.tmpout
-EXPLAIN SELECT c4 FROM s1.p1 WHERE c2 * 2 < 100 AND c1 < 10;
-\o
-\! sql/maskout.sh results/ut-S.tmpout
+EXPLAIN (COSTS false) SELECT c4 FROM s1.p1 WHERE c2 * 2 < 100 AND c1 < 10;
 
-\o results/ut-S.tmpout
-/*+IndexScan(p1 p1_parent)*/ EXPLAIN SELECT c4 FROM s1.p1 WHERE c2 * 2 < 100 AND c1 < 10;
-\o
-\! sql/maskout.sh results/ut-S.tmpout
+/*+IndexScan(p1 p1_parent)*/ EXPLAIN (COSTS false) SELECT c4 FROM s1.p1 WHERE c2 * 2 < 100 AND c1 < 10;
 
 
 -- No. S-3-10-4
-\o results/ut-S.tmpout
-/*+IndexScan(p1 p1_i2)*/ EXPLAIN SELECT c2 FROM s1.p1 WHERE c2 = 1;
-\o
-\! sql/maskout.sh results/ut-S.tmpout
+/*+IndexScan(p1 p1_i2)*/ EXPLAIN (COSTS false) SELECT c2 FROM s1.p1 WHERE c2 = 1;
 
 -- No. S-3-10-5
-\o results/ut-S.tmpout
-/*+IndexScan(p2 p2c1_pkey)*/ EXPLAIN (COSTS true) SELECT * FROM s1.p2 WHERE c1 = 1;
-\o
-\! sql/maskout.sh results/ut-S.tmpout
-
+/*+IndexScan(p2 p2c1_pkey)*/ EXPLAIN (COSTS false) SELECT * FROM s1.p2 WHERE c1 = 1;
 
 ----
 ---- No. S-3-12 specified same table
@@ -1184,4 +1147,3 @@ DELETE FROM pg_db_role_setting WHERE setrole = (SELECT oid FROM pg_roles WHERE r
 
 ALTER SYSTEM SET session_preload_libraries TO DEFAULT;
 SELECT pg_reload_conf();
-\! rm results/ut-S.tmpout

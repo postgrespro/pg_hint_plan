@@ -12,20 +12,20 @@
  *
  * src/backend/optimizer/path/allpaths.c
  *
+ *	static functions:
+ *	   set_plain_rel_pathlist()
+ *     set_append_rel_pathlist()
+ *     add_paths_to_append_rel()
+ *     generate_mergeappend_paths()
+ *     get_cheapest_parameterized_child_path()
+ *     accumulate_append_subpath()
+ *
  *  public functions:
  *     standard_join_search(): This funcion is not static. The reason for
  *        including this function is make_rels_by_clause_joins. In order to
  *        avoid generating apparently unwanted join combination, we decided to
  *        change the behavior of make_join_rel, which is called under this
  *        function.
- *
- *	static functions:
- *	   set_plain_rel_pathlist()
- *	   create_plain_partial_paths()
- *	   set_append_rel_pathlist()
- *	   add_paths_to_append_rel()
- *	   generate_mergeappend_paths()
- *	   get_cheapest_parameterized_child_path()
  *
  * src/backend/optimizer/path/joinrels.c
  *
@@ -41,15 +41,13 @@
  *     mark_dummy_rel()
  *     restriction_is_constant_false()
  *
+ *
  * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *-------------------------------------------------------------------------
  */
 
-static void populate_joinrel_with_paths(PlannerInfo *root, RelOptInfo *rel1,
-							RelOptInfo *rel2, RelOptInfo *joinrel,
-							SpecialJoinInfo *sjinfo, List *restrictlist);
 
 /*
  * set_plain_rel_pathlist
@@ -99,69 +97,6 @@ create_plain_partial_paths(PlannerInfo *root, RelOptInfo *rel)
 
 	/* Add an unordered partial path based on a parallel sequential scan. */
 	add_partial_path(rel, create_seqscan_path(root, rel, NULL, parallel_workers));
-}
-
-
-/*
- * set_append_rel_pathlist
- *	  Build access paths for an "append relation"
- */
-static void
-set_append_rel_pathlist(PlannerInfo *root, RelOptInfo *rel,
-						Index rti, RangeTblEntry *rte)
-{
-	int			parentRTindex = rti;
-	List	   *live_childrels = NIL;
-	ListCell   *l;
-
-	/*
-	 * Generate access paths for each member relation, and remember the
-	 * non-dummy children.
-	 */
-	foreach(l, root->append_rel_list)
-	{
-		AppendRelInfo *appinfo = (AppendRelInfo *) lfirst(l);
-		int			childRTindex;
-		RangeTblEntry *childRTE;
-		RelOptInfo *childrel;
-
-		/* append_rel_list contains all append rels; ignore others */
-		if (appinfo->parent_relid != parentRTindex)
-			continue;
-
-		/* Re-locate the child RTE and RelOptInfo */
-		childRTindex = appinfo->child_relid;
-		childRTE = root->simple_rte_array[childRTindex];
-		childrel = root->simple_rel_array[childRTindex];
-
-		/*
-		 * If set_append_rel_size() decided the parent appendrel was
-		 * parallel-unsafe at some point after visiting this child rel, we
-		 * need to propagate the unsafety marking down to the child, so that
-		 * we don't generate useless partial paths for it.
-		 */
-		if (!rel->consider_parallel)
-			childrel->consider_parallel = false;
-
-		/*
-		 * Compute the child's access paths.
-		 */
-		set_rel_pathlist(root, childrel, childRTindex, childRTE);
-
-		/*
-		 * If child is dummy, ignore it.
-		 */
-		if (IS_DUMMY_REL(childrel))
-			continue;
-
-		/*
-		 * Child is live, so add it to the live_childrels list for use below.
-		 */
-		live_childrels = lappend(live_childrels, childrel);
-	}
-
-	/* Add paths to the "append" relation. */
-	add_paths_to_append_rel(root, rel, live_childrels);
 }
 
 
@@ -332,7 +267,8 @@ add_paths_to_append_rel(PlannerInfo *root, RelOptInfo *rel,
 	 */
 	if (subpaths_valid)
 		add_path(rel, (Path *) create_append_path(rel, subpaths, NULL, 0,
-												  partitioned_rels));
+												  partitioned_rels,
+												  false, NIL));
 
 	/*
 	 * Consider an append of partial unordered, unparameterized partial paths.
@@ -359,7 +295,8 @@ add_paths_to_append_rel(PlannerInfo *root, RelOptInfo *rel,
 
 		/* Generate a partial append path. */
 		appendpath = create_append_path(rel, partial_subpaths, NULL,
-										parallel_workers, partitioned_rels);
+										parallel_workers, partitioned_rels,
+										false, NIL);
 		add_partial_path(rel, (Path *) appendpath);
 	}
 
@@ -413,8 +350,70 @@ add_paths_to_append_rel(PlannerInfo *root, RelOptInfo *rel,
 		if (subpaths_valid)
 			add_path(rel, (Path *)
 					 create_append_path(rel, subpaths, required_outer, 0,
-										partitioned_rels));
+										partitioned_rels, false, NIL));
 	}
+}
+
+/*
+ * set_append_rel_pathlist
+ *	  Build access paths for an "append relation"
+ */
+static void
+set_append_rel_pathlist(PlannerInfo *root, RelOptInfo *rel,
+						Index rti, RangeTblEntry *rte)
+{
+	int			parentRTindex = rti;
+	List	   *live_childrels = NIL;
+	ListCell   *l;
+
+	/*
+	 * Generate access paths for each member relation, and remember the
+	 * non-dummy children.
+	 */
+	foreach(l, root->append_rel_list)
+	{
+		AppendRelInfo *appinfo = (AppendRelInfo *) lfirst(l);
+		int			childRTindex;
+		RangeTblEntry *childRTE;
+		RelOptInfo *childrel;
+
+		/* append_rel_list contains all append rels; ignore others */
+		if (appinfo->parent_relid != parentRTindex)
+			continue;
+
+		/* Re-locate the child RTE and RelOptInfo */
+		childRTindex = appinfo->child_relid;
+		childRTE = root->simple_rte_array[childRTindex];
+		childrel = root->simple_rel_array[childRTindex];
+
+		/*
+		 * If set_append_rel_size() decided the parent appendrel was
+		 * parallel-unsafe at some point after visiting this child rel, we
+		 * need to propagate the unsafety marking down to the child, so that
+		 * we don't generate useless partial paths for it.
+		 */
+		if (!rel->consider_parallel)
+			childrel->consider_parallel = false;
+
+		/*
+		 * Compute the child's access paths.
+		 */
+		set_rel_pathlist(root, childrel, childRTindex, childRTE);
+
+		/*
+		 * If child is dummy, ignore it.
+		 */
+		if (IS_DUMMY_REL(childrel))
+			continue;
+
+		/*
+		 * Child is live, so add it to the live_childrels list for use below.
+		 */
+		live_childrels = lappend(live_childrels, childrel);
+	}
+
+	/* Add paths to the "append" relation. */
+	add_paths_to_append_rel(root, rel, live_childrels);
 }
 
 
@@ -736,7 +735,6 @@ standard_join_search(PlannerInfo *root, int levels_needed, List *initial_rels)
 
 	return rel;
 }
-
 
 /*
  * join_search_one_level
@@ -1325,6 +1323,15 @@ join_is_legal(PlannerInfo *root, RelOptInfo *rel1, RelOptInfo *rel2,
 														sjinfo->min_righthand);
 						more = true;
 					}
+					/* full joins constrain both sides symmetrically */
+					if (sjinfo->jointype == JOIN_FULL &&
+						bms_overlap(sjinfo->min_righthand, join_plus_rhs) &&
+						!bms_is_subset(sjinfo->min_lefthand, join_plus_rhs))
+					{
+						join_plus_rhs = bms_add_members(join_plus_rhs,
+														sjinfo->min_lefthand);
+						more = true;
+					}
 				}
 			} while (more);
 			if (bms_overlap(join_plus_rhs, join_lateral_rels))
@@ -1425,9 +1432,8 @@ mark_dummy_rel(RelOptInfo *rel)
 	rel->partial_pathlist = NIL;
 
 	/* Set up the dummy path */
-	add_path(rel, (Path *) create_append_path(rel, NIL,
-											  rel->lateral_relids,
-											  0, NIL));
+	add_path(rel, (Path *) create_append_path(rel, NIL, NULL, 0, NIL,
+											  false, NIL));
 
 	/* Set or update cheapest_total_path and related fields */
 	set_cheapest(rel);

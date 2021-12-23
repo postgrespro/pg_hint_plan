@@ -19,6 +19,11 @@
  *-------------------------------------------------------------------------
  */
 
+static void
+populate_joinrel_with_paths(PlannerInfo *root, RelOptInfo *rel1,
+							RelOptInfo *rel2, RelOptInfo *joinrel,
+							SpecialJoinInfo *sjinfo, List *restrictlist);
+
 /*
  * adjust_rows: tweak estimated row numbers according to the hint.
  */
@@ -48,7 +53,6 @@ adjust_rows(double rows, RowsHint *hint)
 
 	return result;
 }
-
 
 /*
  * make_join_rel
@@ -222,7 +226,6 @@ make_join_rel(PlannerInfo *root, RelOptInfo *rel1, RelOptInfo *rel2)
 
 	return joinrel;
 }
-
 
 /*
  * populate_joinrel_with_paths

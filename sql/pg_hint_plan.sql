@@ -1,5 +1,6 @@
 SET search_path TO public;
 SET client_min_messages TO log;
+SET log_statement TO 'all';
 \set SHOW_CONTEXT always
 
 EXPLAIN (COSTS false) SELECT * FROM t1, t2 WHERE t1.id = t2.id;
@@ -618,7 +619,6 @@ Set(cursor_tuple_fraction 0.1234567890123456789012345678901234567890123456789012
 EXPLAIN (COSTS false) SELECT * FROM t1 "1234567890123456789012345678901234567890123456789012345678901234" JOIN t2 ON ("1234567890123456789012345678901234567890123456789012345678901234".id = t2.id) JOIN t3 ON (t2.id = t3.id);
 SET "123456789012345678901234567890123456789012345678901234567890123" TO 1;
 SET "1234567890123456789012345678901234567890123456789012345678901234" TO 1;
-SET cursor_tuple_fraction TO 1234567890123456789012345678901234567890123456789012345678901234;
 
 -- multi error
 /*+ Set(enable_seqscan 100)Set(seq_page_cost on)*/
@@ -1057,76 +1057,42 @@ SELECT val::int FROM p2 WHERE id < 1000;
 /*+ Rows(x) */ SELECT 1;
 
 -- value types
-\o results/pg_hint_plan.tmpout
-EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
+EXPLAIN (COSTS false) SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 #99) */
-EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
+EXPLAIN (COSTS false) SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 +99) */
-EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
+EXPLAIN (COSTS false) SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 -99) */
-EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
+EXPLAIN (COSTS false) SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 *99) */
-EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
+EXPLAIN (COSTS false) SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 *0.01) */
-EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
+EXPLAIN (COSTS false) SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 #aa) */
-EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id); -- ERROR
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
+EXPLAIN (COSTS false) SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id); -- ERROR
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 /99) */
-EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id); -- ERROR
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
+EXPLAIN (COSTS false) SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id); -- ERROR
 
 -- round up to 1
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 -99999) */
-EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
+EXPLAIN (COSTS false) SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id);
 
 -- complex join tree
-\o results/pg_hint_plan.tmpout
-EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id) JOIN t3 ON (t3.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
+EXPLAIN (COSTS false) SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id) JOIN t3 ON (t3.id = t2.id);
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t2 #22) */
-EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id) JOIN t3 ON (t3.id = t2.id);
-\o
-\! sql/maskout.sh results/pg_hint_plan.tmpout
+EXPLAIN (COSTS false) SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id) JOIN t3 ON (t3.id = t2.id);
 
-\o results/pg_hint_plan.tmpout
 /*+ Rows(t1 t3 *10) */
-EXPLAIN SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id) JOIN t3 ON (t3.id = t2.id);
-\o
+EXPLAIN (COSTS false) SELECT * FROM t1 JOIN t2 ON (t1.id = t2.id) JOIN t3 ON (t3.id = t2.id);
+
 set max_parallel_workers_per_gather to DEFAULT;
 \! sql/maskout.sh results/pg_hint_plan.tmpout
 \! rm results/pg_hint_plan.tmpout

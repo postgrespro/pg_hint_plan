@@ -2,6 +2,7 @@ LOAD 'pg_hint_plan';
 SET pg_hint_plan.enable_hint TO on;
 SET pg_hint_plan.debug_print TO on;
 SET client_min_messages TO LOG;
+SET log_statement TO 'all';
 SET search_path TO public;
 
 ----
@@ -69,8 +70,6 @@ EXPLAIN (COSTS false) SELECT * /*+SeqScan(t1)*/ FROM s1.t1 WHERE t1.c1 = 1;
 ----
 
 SET pg_hint_plan.enable_hint_table TO on;
--- No. A-6-1-1
-\d hint_plan.hints
 
 ----
 ---- No. A-6-2 search condition
@@ -440,17 +439,6 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1 "Set" WHERE "Set".c1 = 1;
 /*+SeqScan("Set SeqScan Leading")*/
 EXPLAIN (COSTS false) SELECT * FROM s1.t1 "Set SeqScan Leading" WHERE "Set SeqScan Leading".c1 = 1;
 
--- No. A-7-3-10
--- No. A-9-2-10
-/*+SeqScan(あ)*/
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 あ WHERE あ.c1 = 1;
-/*+SeqScan(あいう)*/
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 あいう WHERE あいう.c1 = 1;
-/*+SeqScan("あ")*/
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 あ WHERE あ.c1 = 1;
-/*+SeqScan("あいう")*/
-EXPLAIN (COSTS false) SELECT * FROM s1.t1 あいう WHERE あいう.c1 = 1;
-
 -- No. A-7-3-11
 -- No. A-9-2-11
 /*+SeqScan(/**/)*/
@@ -613,43 +601,6 @@ SHOW pg_hint_plan.debug_print;
 ----
 ---- No. A-8-4 original GUC parameter pg_hint_plan.parse_messages
 ----
-
-SET client_min_messages TO debug5;
-
--- No. A-8-4-1
-SET pg_hint_plan.parse_messages TO debug5;
-SHOW pg_hint_plan.parse_messages;
-/*+Set*/SELECT 1;
-SET client_min_messages TO debug4;
-/*+Set*/SELECT 1;
-
--- No. A-8-4-2
-SET pg_hint_plan.parse_messages TO debug4;
-SHOW pg_hint_plan.parse_messages;
-/*+Set*/SELECT 1;
-SET client_min_messages TO debug3;
-/*+Set*/SELECT 1;
-
--- No. A-8-4-3
-SET pg_hint_plan.parse_messages TO debug3;
-SHOW pg_hint_plan.parse_messages;
-/*+Set*/SELECT 1;
-SET client_min_messages TO debug2;
-/*+Set*/SELECT 1;
-
--- No. A-8-4-4
-SET pg_hint_plan.parse_messages TO debug2;
-SHOW pg_hint_plan.parse_messages;
-/*+Set*/SELECT 1;
-SET client_min_messages TO debug1;
-/*+Set*/SELECT 1;
-
--- No. A-8-4-5
-SET pg_hint_plan.parse_messages TO debug1;
-SHOW pg_hint_plan.parse_messages;
-/*+Set*/SELECT 1;
-SET client_min_messages TO log;
-/*+Set*/SELECT 1;
 
 -- No. A-8-4-6
 SET pg_hint_plan.parse_messages TO log;
@@ -1062,6 +1013,7 @@ EXPLAIN (COSTS false) SELECT * FROM s1.t1, s1.t2 WHERE t1.c1 = t2.c1;
 SET pg_hint_plan.enable_hint TO on;
 SET pg_hint_plan.debug_print TO on;
 SET client_min_messages TO LOG;
+SET log_statement TO 'all';
 SET search_path TO public;
 RESET enable_indexscan;
 RESET enable_mergejoin;
